@@ -6,6 +6,7 @@ import SwiftUI
 import CometChatSDK
 import SafariServices
 import MessageUI
+import CometChatUIKitSwift.Components.Shared.Constants
 
 public struct CometChatLinkPreviewBubbleSwiftUI: View {
     
@@ -35,15 +36,15 @@ public struct CometChatLinkPreviewBubbleSwiftUI: View {
                     Image(uiImage: image)
                         .resizable()
                         .aspectRatio(contentMode: .fill)
-                        .frame(width: 232, height: 160)
+                        .frame(width: LayoutMetrics.loadingContentWidth + LayoutMetrics.spacingLarge, height: LayoutMetrics.loadingContentHeight * 2.5)
                         .clipped()
                 }
                 
-                VStack(alignment: .leading, spacing: CometChatSpacing.Padding.p1) {
+                VStack(alignment: .leading, spacing: LayoutMetrics.spacingSmall) {
                     if let title = title, !title.isEmpty {
-                        HStack(spacing: CometChatSpacing.Padding.p1) {
+                        HStack(spacing: LayoutMetrics.spacingSmall) {
                             Text(title)
-                                .font(Font(style.titleTextFont))
+                                .font(.headline)
                                 .foregroundColor(Color(style.titleTextColor))
                                 .lineLimit(3)
                             
@@ -51,7 +52,7 @@ public struct CometChatLinkPreviewBubbleSwiftUI: View {
                                 Image(uiImage: image)
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
-                                    .frame(width: 40, height: 40)
+                                    .frame(width: LayoutMetrics.avatarMedium, height: LayoutMetrics.avatarMedium)
                                     .cornerRadius(style.linkIconImageCornerRadios.cornerRadius)
                             }
                         }
@@ -59,36 +60,36 @@ public struct CometChatLinkPreviewBubbleSwiftUI: View {
                     
                     if let subtitle = subtitle, !subtitle.isEmpty {
                         Text(subtitle)
-                            .font(Font(style.subtitleTextFont))
+                            .font(.subheadline)
                             .foregroundColor(Color(style.subtitleTextColor))
                             .lineLimit(4)
                     }
                     
                     if let url = url {
                         Text(url)
-                            .font(Font(style.linkTextFont))
+                            .font(.caption)
                             .foregroundColor(Color(style.linkTextColor))
                     }
                 }
-                .padding(CometChatSpacing.Padding.p2)
+                .padding(LayoutMetrics.spacingStandard)
             }
             .background(Color(style.previewBackgroundColor))
             .cornerRadius(style.previewCornerRadius.cornerRadius)
             .onTapGesture {
                 onLinkPreviewClick()
             }
-            .padding(CometChatSpacing.Padding.p1)
+            .padding(LayoutMetrics.spacingSmall)
             
             if let attributedText = attributedText {
                 AttributedTextView(attributedText: attributedText)
-                    .padding(.horizontal, CometChatSpacing.Padding.p3)
-                    .padding(.top, CometChatSpacing.Padding.p3)
+                    .padding(.horizontal, LayoutMetrics.spacingMedium)
+                    .padding(.top, LayoutMetrics.spacingMedium)
             } else if let message = message {
                 Text(message.text)
-                    .font(Font(style.messageTextFont))
+                    .font(.body)
                     .foregroundColor(Color(style.messageTextColor))
-                    .padding(.horizontal, CometChatSpacing.Padding.p3)
-                    .padding(.top, CometChatSpacing.Padding.p3)
+                    .padding(.horizontal, LayoutMetrics.spacingMedium)
+                    .padding(.top, LayoutMetrics.spacingMedium)
             }
         }
         .onAppear {
@@ -208,12 +209,17 @@ struct AttributedTextView: UIViewRepresentable {
 
 struct CometChatLinkPreviewBubbleSwiftUI_Previews: PreviewProvider {
     static var previews: some View {
-        VStack {
+        Group {
             CometChatLinkPreviewBubbleSwiftUI()
                 .set(message: createMockMessage())
                 .padding()
-                .previewLayout(.sizeThatFits)
-                .previewDisplayName("Link Preview Bubble")
+                .previewDisplayName("Link Preview Bubble (Light)")
+                
+            CometChatLinkPreviewBubbleSwiftUI()
+                .set(message: createMockMessage())
+                .padding()
+                .preferredColorScheme(.dark)
+                .previewDisplayName("Link Preview Bubble (Dark)")
         }
     }
     
