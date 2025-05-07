@@ -127,9 +127,16 @@ extension CometChatOngoingCallSwiftUI {
 
 struct CometChatOngoingCallSwiftUI_Previews: PreviewProvider {
     static var previews: some View {
-        CometChatOngoingCallSwiftUI()
-            .set(sessionId: "mock-session-id")
-            .previewDisplayName("Ongoing Call")
+        Group {
+            CometChatOngoingCallSwiftUI()
+                .set(sessionId: "mock-session-id")
+                .previewDisplayName("Ongoing Call (Light)")
+            
+            CometChatOngoingCallSwiftUI()
+                .set(sessionId: "mock-session-id")
+                .preferredColorScheme(.dark)
+                .previewDisplayName("Ongoing Call (Dark)")
+        }
     }
 }
 
