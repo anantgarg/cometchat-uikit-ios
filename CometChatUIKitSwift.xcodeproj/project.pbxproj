@@ -69,7 +69,6 @@
 		11601D6E2D6CF4C400129BBA /* CometChatMessageEventListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601BFC2D6CF4C400129BBA /* CometChatMessageEventListener.swift */; };
 		11601D6F2D6CF4C400129BBA /* GroupMembersViewModel + GroupsEventListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B892D6CF4C400129BBA /* GroupMembersViewModel + GroupsEventListener.swift */; };
 		11601D702D6CF4C400129BBA /* CometChatConversationSimmer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B312D6CF4C400129BBA /* CometChatConversationSimmer.swift */; };
-		11601D712D6CF4C400129BBA /* MessageTranslationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B512D6CF4C400129BBA /* MessageTranslationViewModel.swift */; };
 		11601D722D6CF4C400129BBA /* NewMessageIndicatorStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601CFF2D6CF4C400129BBA /* NewMessageIndicatorStyle.swift */; };
 		11601D742D6CF4C400129BBA /* CometChatViewModel + CallEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B322D6CF4C400129BBA /* CometChatViewModel + CallEvent.swift */; };
 		11601D762D6CF4C400129BBA /* MessageList + ContextMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601BB62D6CF4C400129BBA /* MessageList + ContextMenu.swift */; };
@@ -5941,7 +5940,6 @@
 				11601D6E2D6CF4C400129BBA /* CometChatMessageEventListener.swift in Sources */,
 				11601D6F2D6CF4C400129BBA /* GroupMembersViewModel + GroupsEventListener.swift in Sources */,
 				11601D702D6CF4C400129BBA /* CometChatConversationSimmer.swift in Sources */,
-				11601D712D6CF4C400129BBA /* MessageTranslationViewModel.swift in Sources */,
 				11601D722D6CF4C400129BBA /* NewMessageIndicatorStyle.swift in Sources */,
 				11601D742D6CF4C400129BBA /* CometChatViewModel + CallEvent.swift in Sources */,
 				11601D762D6CF4C400129BBA /* MessageList + ContextMenu.swift in Sources */,
