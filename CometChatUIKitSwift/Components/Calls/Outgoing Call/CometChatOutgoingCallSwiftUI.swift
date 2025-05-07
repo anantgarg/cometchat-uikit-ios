@@ -6,6 +6,7 @@
 
 import SwiftUI
 import CometChatSDK
+import CometChatUIKitSwift.Components.Shared.Constants
 
 public struct CometChatOutgoingCallSwiftUI: View {
     @StateObject private var viewModel = OutgoingCallViewModelSwiftUI()
@@ -38,7 +39,7 @@ public struct CometChatOutgoingCallSwiftUI: View {
                 .edgesIgnoringSafeArea(.all)
             
             if let call = viewModel.call {
-                VStack(spacing: 20) {
+                VStack(spacing: LayoutMetrics.spacingLarge) {
                     if let titleView = titleView, let call = viewModel.call {
                         titleView(call)
                     } else {
@@ -59,50 +60,50 @@ public struct CometChatOutgoingCallSwiftUI: View {
                     
                     if let avatarView = avatarView, let call = viewModel.call {
                         avatarView(call)
-                            .frame(width: 150, height: 150)
+                            .frame(width: LayoutMetrics.avatarLarge * 3, height: LayoutMetrics.avatarLarge * 3)
                     } else {
                         ZStack {
                             if let callReceiver = (call.receiver as? User) {
                                 CometChatAvatarSwiftUI(style: avatarStyle)
                                     .set(user: callReceiver)
-                                    .set(width: 120)
-                                    .set(height: 120)
+                                    .set(width: LayoutMetrics.avatarLarge * 2.5)
+                                    .set(height: LayoutMetrics.avatarLarge * 2.5)
                             } else {
                                 CometChatAvatarSwiftUI(style: avatarStyle)
-                                    .set(width: 120)
-                                    .set(height: 120)
+                                    .set(width: LayoutMetrics.avatarLarge * 2.5)
+                                    .set(height: LayoutMetrics.avatarLarge * 2.5)
                             }
                         }
-                        .frame(width: 150, height: 150)
+                        .frame(width: LayoutMetrics.avatarLarge * 3, height: LayoutMetrics.avatarLarge * 3)
                     }
                     
                     Spacer()
                     
                     if let cancelView = cancelView, let call = viewModel.call {
                         cancelView(call)
-                            .frame(width: 100, height: 100)
+                            .frame(width: LayoutMetrics.avatarLarge * 2, height: LayoutMetrics.avatarLarge * 2)
                     } else {
                         Button(action: {
                             onDeclineButtonTapped()
                         }) {
-                            Image(uiImage: style.declineButtonIcon)
+                            Image(systemName: "phone.down.fill")
                                 .resizable()
                                 .scaledToFit()
-                                .frame(width: 24, height: 24)
+                                .frame(width: LayoutMetrics.largeIconSize, height: LayoutMetrics.largeIconSize)
                                 .foregroundColor(Color(style.declineButtonIconTint))
-                                .padding(15)
+                                .padding(LayoutMetrics.spacingMedium)
                         }
-                        .frame(width: 54, height: 54)
+                        .frame(width: LayoutMetrics.avatarLarge + 6, height: LayoutMetrics.avatarLarge + 6)
                         .background(Color(style.declineButtonBackgroundColor))
-                        .cornerRadius(style.declineButtonCornerRadius?.cornerRadius ?? 27)
+                        .cornerRadius(style.declineButtonCornerRadius?.cornerRadius ?? LayoutMetrics.cornerRadiusRound)
                         .overlay(
-                            RoundedRectangle(cornerRadius: style.declineButtonCornerRadius?.cornerRadius ?? 27)
+                            RoundedRectangle(cornerRadius: style.declineButtonCornerRadius?.cornerRadius ?? LayoutMetrics.cornerRadiusRound)
                                 .stroke(Color(style.declineButtonBorderColor), lineWidth: style.declineButtonBorderWidth)
                         )
-                        .padding(.bottom, 80)
+                        .padding(.bottom, LayoutMetrics.spacingExtraLarge * 5)
                     }
                 }
-                .padding(.top, 80)
+                .padding(.top, LayoutMetrics.spacingExtraLarge * 5)
             }
         }
         .onAppear {
@@ -306,16 +307,21 @@ struct CometChatOutgoingCallSwiftUI_Previews: PreviewProvider {
         Group {
             CometChatOutgoingCallSwiftUI()
                 .set(call: createMockCall(type: .audio))
-                .previewDisplayName("Audio Call")
+                .previewDisplayName("Audio Call (Light)")
+            
+            CometChatOutgoingCallSwiftUI()
+                .set(call: createMockCall(type: .audio))
+                .preferredColorScheme(.dark)
+                .previewDisplayName("Audio Call (Dark)")
             
             CometChatOutgoingCallSwiftUI()
                 .set(call: createMockCall(type: .video))
-                .previewDisplayName("Video Call")
+                .previewDisplayName("Video Call (Light)")
             
             CometChatOutgoingCallSwiftUI()
                 .set(call: createMockCall(type: .video))
                 .preferredColorScheme(.dark)
-                .previewDisplayName("Dark Mode")
+                .previewDisplayName("Video Call (Dark)")
         }
     }
     
