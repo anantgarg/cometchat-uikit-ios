@@ -31,15 +31,16 @@ open class CreateConversationVC: UIViewController {
         return controller
     }()
 
-    public lazy var usersViewController: CometChatUsers = {
-        let vc = CometChatUsers()
-        vc.set(onItemClick: { [weak self] users, indexPath in
-            let messages = MessagesVC()
-            messages.user = users
-            self?.navigationController?.pushViewController(messages, animated: true)
-        })
-        vc.searchController.hidesNavigationBarDuringPresentation = false
-        return vc
+    public lazy var usersViewController: UIViewController = {
+        let usersView = CometChatUsersSwiftUI()
+            .set(onItemClick: { [weak self] user, section, row in
+                let messages = MessagesVC()
+                messages.user = user
+                self?.navigationController?.pushViewController(messages, animated: true)
+            })
+        let hostingController = UIHostingController(rootView: usersView)
+        hostingController.view.backgroundColor = .clear
+        return hostingController
     }()
 
     public lazy var groupsViewController: CometChatGroups = {
@@ -62,7 +63,6 @@ open class CreateConversationVC: UIViewController {
         setupPageViewController()
 
         segmentedControl.addTarget(self, action: #selector(segmentChanged(_:)), for: .valueChanged)
-        self.navigationItem.searchController = usersViewController.searchController
 
     }
 
@@ -113,7 +113,6 @@ open class CreateConversationVC: UIViewController {
         let index = sender.selectedSegmentIndex
         let direction: UIPageViewController.NavigationDirection = index == 0 ? .reverse : .forward
         if index == 0{
-            self.navigationItem.searchController = usersViewController.searchController
         }else{
             self.navigationItem.searchController = groupsViewController.searchController
         }
@@ -139,8 +138,10 @@ extension CreateConversationVC: UIPageViewControllerDelegate {
     public func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
         if completed, let visibleViewController = pageViewController.viewControllers?.first, let index = pages.firstIndex(of: visibleViewController) {
             segmentedControl.selectedSegmentIndex = index
-            groupsViewController.hideSearch = false
-            groupsViewController.navigationItem.searchController = nil
+            if index == 1 { // Groups tab
+                groupsViewController.hideSearch = false
+                groupsViewController.navigationItem.searchController = nil
+            }
         }
     }
 }

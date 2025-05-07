@@ -42,14 +42,14 @@ class HomeScreenViewController: UITabBarController {
     }()
     #endif
     
-    lazy var users: CometChatUsers = {
-        let users = CometChatUsers()
-        users.set(onItemClick: { [weak self] users, indexPath in
-            let messages = MessagesVC()
-            messages.user = users
-            self?.navigationController?.pushViewController(messages, animated: true)
-        })
-        return users
+    lazy var users: UIView = {
+        let usersView = CometChatUsersSwiftUI()
+            .set(onItemClick: { [weak self] user, section, row in
+                let messages = MessagesVC()
+                messages.user = user
+                self?.navigationController?.pushViewController(messages, animated: true)
+            })
+        return usersView.toUIKit()
     }()
         
     lazy var groups: CometChatGroups = {
@@ -130,11 +130,6 @@ class HomeScreenViewController: UITabBarController {
                     }
                 }
             case 2:
-                if let table = users.tableView, table.numberOfSections > 0{
-                    if table.numberOfRows(inSection: 0) > 0{
-                        table.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
-                    }
-                }
             case 3:
                 if let table = groups.tableView, table.numberOfSections > 0{
                     if table.numberOfRows(inSection: 0) > 0{
@@ -151,9 +146,6 @@ class HomeScreenViewController: UITabBarController {
                     conversations.tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
                 }
             case 1:
-                if users.tableView.numberOfRows(inSection: 0) > 0{
-                    users.tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
-                }
             case 2:
                 if groups.tableView.numberOfRows(inSection: 0) > 0{
                     groups.tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
