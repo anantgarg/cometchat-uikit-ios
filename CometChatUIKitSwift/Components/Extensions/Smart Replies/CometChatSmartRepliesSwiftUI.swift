@@ -4,6 +4,7 @@
 
 import SwiftUI
 import CometChatSDK
+import CometChatUIKitSwift.Components.Shared.Constants
 
 public struct CometChatSmartRepliesSwiftUI: View {
     
@@ -21,39 +22,39 @@ public struct CometChatSmartRepliesSwiftUI: View {
     
     public var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 8) {
+            HStack(spacing: LayoutMetrics.spacingStandard) {
                 ForEach(titles, id: \.self) { title in
                     if !title.isEmpty {
                         Button(action: {
                             onReplySelectedCallback?(title)
                         }) {
                             Text(title)
-                                .font(Font(style.textFont))
+                                .font(.body)
                                 .foregroundColor(Color(style.textColor))
-                                .padding(.horizontal, 16)
-                                .padding(.vertical, 8)
+                                .padding(.horizontal, LayoutMetrics.spacingLarge)
+                                .padding(.vertical, LayoutMetrics.spacingStandard)
                                 .background(Color(style.textBackground))
                                 .clipShape(RoundedRectangle(cornerRadius: style.borderRadius.cornerRadius))
                                 .overlay(
                                     RoundedRectangle(cornerRadius: style.borderRadius.cornerRadius)
                                         .stroke(Color(style.borderColor), lineWidth: style.borderWidth)
                                 )
-                                .shadow(color: Color(style.shadowColor).opacity(0.3), radius: 2, x: 0, y: 1)
+                                .shadow(color: Color(style.shadowColor).opacity(0.3), radius: LayoutMetrics.cornerRadiusSmall / 2, x: 0, y: 1)
                         }
                     } else {
                         Button(action: {
                             onReplySelectedCallback?("")
                         }) {
                             Image(systemName: "xmark.circle.fill")
-                                .font(.system(size: 24))
+                                .font(.system(size: LayoutMetrics.largeIconSize))
                                 .foregroundColor(Color(style.textColor))
-                                .padding(8)
+                                .padding(LayoutMetrics.spacingStandard)
                         }
                     }
                 }
             }
-            .padding(.horizontal, 8)
-            .padding(.vertical, 4)
+            .padding(.horizontal, LayoutMetrics.spacingStandard)
+            .padding(.vertical, LayoutMetrics.spacingSmall)
         }
         .background(Color(style.background))
         .cornerRadius(style.cornerRadius.cornerRadius)
@@ -138,16 +139,20 @@ struct CometChatSmartRepliesSwiftUI_Previews: PreviewProvider {
         Group {
             CometChatSmartRepliesSwiftUI()
                 .set(titles: ["Thanks!", "I'll check it out", "Not interested", ""])
-                .previewLayout(.sizeThatFits)
                 .padding()
-                .previewDisplayName("Default Smart Replies")
+                .previewDisplayName("Default Smart Replies (Light)")
             
             CometChatSmartRepliesSwiftUI()
                 .set(titles: ["Yes, I agree", "Maybe later", "No, thanks", ""])
                 .set(style: SmartRepliesStyle().set(textColor: .blue).set(textBackground: .yellow))
-                .previewLayout(.sizeThatFits)
                 .padding()
-                .previewDisplayName("Custom Style Smart Replies")
+                .previewDisplayName("Custom Style Smart Replies (Light)")
+                
+            CometChatSmartRepliesSwiftUI()
+                .set(titles: ["Thanks!", "I'll check it out", "Not interested", ""])
+                .padding()
+                .preferredColorScheme(.dark)
+                .previewDisplayName("Default Smart Replies (Dark)")
         }
     }
 }
