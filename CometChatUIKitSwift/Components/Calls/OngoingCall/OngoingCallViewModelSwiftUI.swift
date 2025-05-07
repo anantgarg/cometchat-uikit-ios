@@ -89,17 +89,17 @@
             }
 
             func onUserJoined(user: NSDictionary) {
-                if let user = OngoingCallViewModel.userFromDictionary(userData: user) {}
+                if let user = OngoingCallViewModelSwiftUI.userFromDictionary(userData: user) {}
             }
 
             func onUserLeft(user: NSDictionary) {
-                if let user = OngoingCallViewModel.userFromDictionary(userData: user) {}
+                if let user = OngoingCallViewModelSwiftUI.userFromDictionary(userData: user) {}
             }
 
             func onUserListChanged(userList: NSArray) {
                 var users: [User] = []
                 for userDict in userList {
-                    if let userDict = userDict as? [String: Any], let user = OngoingCallViewModel.userFromDictionary(userData: userDict as NSDictionary) {
+                    if let userDict = userDict as? [String: Any], let user = OngoingCallViewModelSwiftUI.userFromDictionary(userData: userDict as NSDictionary) {
                         users.append(user)
                     }
                 }
@@ -111,7 +111,7 @@
             func onAudioModeChanged(audioModeList: NSArray) {
                 var audioDevices: [AudioDevice] = []
                 for audioDict in audioModeList {
-                    if let audioDict = audioDict as? [String: Any], let audio = OngoingCallViewModel.audioFromDictionary(audioData: audioDict as NSDictionary) {
+                    if let audioDict = audioDict as? [String: Any], let audio = OngoingCallViewModelSwiftUI.audioFromDictionary(audioData: audioDict as NSDictionary) {
                         audioDevices.append(audio)
                     }
                 }
@@ -125,7 +125,7 @@
             func onUserMuted(info _: NSDictionary) {}
 
             func onRecordingToggled(info: NSDictionary) {
-                if let userDict = info["user"] as? NSDictionary, let recordStarted = info["recordingStarted"], let user = OngoingCallViewModel.userFromDictionary(userData: userDict) {
+                if let userDict = info["user"] as? NSDictionary, let recordStarted = info["recordingStarted"], let user = OngoingCallViewModelSwiftUI.userFromDictionary(userData: userDict) {
                     if let recordingStarted = recordStarted as? Bool {
                         DispatchQueue.main.async {
                             self.parent.isRecordingStarted = recordingStarted
@@ -154,7 +154,101 @@
             }
         }
 
-        typealias AudioDevice = OngoingCallViewModel.AudioDevice
+        class AudioDevice: NSObject {
+            var mode: String?
+            var isSelected: Bool?
+        }
+        
+        static func userFromDictionary(userData: NSDictionary) -> User? {
+            let user: User?
+            let decoder = JSONDecoder()
+
+            do {
+                let user_ = try decoder.decode(UserCodable.self, from: JSONSerialization.data(withJSONObject: userData, options: []))
+
+                user = User(uid: user_.uid, name: user_.name)
+                user?.avatar = user_.avatar
+                user?.link = user_.link
+                user?.role = user_.role
+                if let status = userData["status"] as? String {
+                    if status == "offline" {
+                        user?.status = .offline
+                    } else {
+                        user?.status = .online
+                    }
+                }
+                user?.statusMessage = user_.statusMessage
+                user?.lastActiveAt = user_.lastActiveAt ?? 0.0
+                user?.hasBlockedMe = user_.hasBlockedMe ?? false
+                user?.blockedByMe = user_.blockedByMe ?? false
+                user?.tags = user_.tags ?? []
+                user?.deactivatedAt = user_.deactivatedAt ?? 0.0
+
+                if let metadata = userData["metadata"] as? [String: Any] {
+                    user?.metadata = metadata
+                }
+
+            } catch {
+                return nil
+            }
+            return user
+        }
+
+        static func audioFromDictionary(audioData: NSDictionary) -> AudioDevice? {
+            let audio: AudioDevice?
+            let decoder = JSONDecoder()
+
+            do {
+                let _audio = try decoder.decode(AudioModeCodable.self, from: JSONSerialization.data(withJSONObject: audioData, options: []))
+                audio = AudioDevice()
+                audio?.mode = _audio.type
+                audio?.isSelected = _audio.selected
+
+            } catch {
+                return nil
+            }
+            return audio
+        }
+
+        struct UserCodable: Codable {
+            let uid: String
+            let name: String
+            let avatar: String?
+            let link: String?
+            let role: String?
+            let status: String?
+            let lastActiveAt: Double?
+            let statusMessage: String?
+            let blockedByMe: Bool?
+            let hasBlockedMe: Bool?
+            let tags: [String]?
+            let deactivatedAt: Double?
+
+            private enum CodingKeys: String, CodingKey {
+                case uid
+                case name
+                case avatar
+                case link
+                case role
+                case status
+                case lastActiveAt
+                case statusMessage
+                case blockedByMe
+                case hasBlockedMe
+                case tags
+                case deactivatedAt
+            }
+        }
+
+        struct AudioModeCodable: Codable {
+            let type: String
+            let selected: Bool
+
+            private enum CodingKeys: String, CodingKey {
+                case type
+                case selected
+            }
+        }
     }
 
 #endif
