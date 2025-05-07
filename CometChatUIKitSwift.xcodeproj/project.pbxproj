@@ -55,7 +55,6 @@
 		11601D5C2D6CF4C400129BBA /* MessageInformationConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601BB22D6CF4C400129BBA /* MessageInformationConfiguration.swift */; };
 		11601D5D2D6CF4C400129BBA /* CometChatConversationEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601BF72D6CF4C400129BBA /* CometChatConversationEvents.swift */; };
 		11601D5E2D6CF4C400129BBA /* CometChatEmojiHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601CB02D6CF4C400129BBA /* CometChatEmojiHeader.swift */; };
-		11601D5F2D6CF4C400129BBA /* CometChatAISmartReply.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601AEF2D6CF4C400129BBA /* CometChatAISmartReply.swift */; };
 		11601D602D6CF4C400129BBA /* CallButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B0C2D6CF4C400129BBA /* CallButtonStyle.swift */; };
 		11601D612D6CF4C400129BBA /* CometChatLocalize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601C322D6CF4C400129BBA /* CometChatLocalize.swift */; };
 		11601D622D6CF4C400129BBA /* PanModalPresentable+LayoutHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601CEA2D6CF4C400129BBA /* PanModalPresentable+LayoutHelpers.swift */; };
@@ -5950,7 +5949,6 @@
 				11601D5C2D6CF4C400129BBA /* MessageInformationConfiguration.swift in Sources */,
 				11601D5D2D6CF4C400129BBA /* CometChatConversationEvents.swift in Sources */,
 				11601D5E2D6CF4C400129BBA /* CometChatEmojiHeader.swift in Sources */,
-				11601D5F2D6CF4C400129BBA /* CometChatAISmartReply.swift in Sources */,
 				11601D602D6CF4C400129BBA /* CallButtonStyle.swift in Sources */,
 				11601D612D6CF4C400129BBA /* CometChatLocalize.swift in Sources */,
 				11601D622D6CF4C400129BBA /* PanModalPresentable+LayoutHelpers.swift in Sources */,
