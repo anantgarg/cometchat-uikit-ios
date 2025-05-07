@@ -24,7 +24,7 @@ final public class CometChatUIKit {
     static public let soundManager = CometChatSoundManager()
     
     #if canImport(CometChatCallsSDK)
-    static var callingExtension: CallingExtension?
+    static var callingExtension: CallingExtensionSwiftUI?
     #endif
     
     @discardableResult
@@ -38,7 +38,7 @@ final public class CometChatUIKit {
                     if let customCallingExtension = uiKitSettings.callingExtensions {
                         CometChatUIKit.callingExtension = customCallingExtension
                     } else {
-                        CometChatUIKit.callingExtension = CallingExtension()
+                        CometChatUIKit.callingExtension = CallingExtensionSwiftUI()
                     }
                     CometChatUIKit.callingExtension?.enable()
                 }

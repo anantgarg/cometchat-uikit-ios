@@ -25,7 +25,7 @@ final public class UIKitSettings {
     var aiExtensions: [ExtensionDataSource]?
     
     #if canImport(CometChatCallsSDK)
-    var callingExtensions: CallingExtension?
+    var callingExtensions: CallingExtensionSwiftUI?
     #endif
     
     
@@ -158,7 +158,7 @@ final public class UIKitSettings {
     
 #if canImport(CometChatCallsSDK)
     @discardableResult
-    public func set(callingExtensions: CallingExtension) -> Self {
+    public func set(callingExtensions: CallingExtensionSwiftUI) -> Self {
         self.callingExtensions = callingExtensions
         return self
     }
