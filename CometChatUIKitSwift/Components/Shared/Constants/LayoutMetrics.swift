@@ -51,7 +51,14 @@ public enum LayoutMetrics {
     
     public static let spacingNone: CGFloat = 0
     public static let dividerHeight: CGFloat = 1
+    public static let thinDividerHeight: CGFloat = 0.3
     public static let standardOpacity: CGFloat = 0.3
     public static let stickerKeyboardHeight: CGFloat = 250
     public static let previewWidth: CGFloat = 375
+    
+    public static let whiteboardTopImageHeight: CGFloat = 140
+    public static let whiteboardIconSize: CGFloat = 32
+    public static let whiteboardButtonHeight: CGFloat = 25
+    public static let whiteboardBubbleWidth: CGFloat = 228
+    public static let whiteboardBubbleHeight: CGFloat = 145
 }
