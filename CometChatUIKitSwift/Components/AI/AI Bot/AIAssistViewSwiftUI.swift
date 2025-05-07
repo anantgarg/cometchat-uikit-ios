@@ -4,6 +4,7 @@
 
 import SwiftUI
 import CometChatSDK
+import CometChatUIKitSwift.Components.Shared.Constants
 
 public struct AIAssistViewSwiftUI: View {
     @StateObject private var viewModel = AIAssistViewModelSwiftUI()
@@ -11,7 +12,7 @@ public struct AIAssistViewSwiftUI: View {
     @State private var scrollToBottom = false
     
     private var titleMain: String?
-    private var closeIcon = UIImage(named: "multiply", in: CometChatUIKit.bundle, compatibleWith: nil)?.withRenderingMode(.alwaysTemplate) ?? UIImage()
+    private var closeIconName = "xmark"
     private var configuration = AIAssistBotConfiguration()
     private var onSendButtonClick: ((BaseMessage) -> Void)?
     
@@ -20,23 +21,23 @@ public struct AIAssistViewSwiftUI: View {
     public var body: some View {
         VStack(spacing: 0) {
             headerView
-                .frame(height: 60)
+                .frame(height: LayoutMetrics.avatarLarge + LayoutMetrics.spacingStandard)
                 .background(Color(CometChatTheme_v4.palatte.background))
             
             ScrollViewReader { scrollView in
                 ScrollView {
-                    LazyVStack(spacing: 8) {
+                    LazyVStack(spacing: LayoutMetrics.spacingStandard) {
                         ForEach(viewModel.messageDataSource, id: \.id) { message in
                             messageBubbleView(for: message)
                                 .id(message.id)
                         }
                         
                         Color.clear
-                            .frame(height: 1)
+                            .frame(height: LayoutMetrics.dividerHeight)
                             .id("bottomAnchor")
                     }
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 4)
+                    .padding(.horizontal, LayoutMetrics.spacingStandard)
+                    .padding(.vertical, LayoutMetrics.spacingSmall)
                 }
                 .onChange(of: viewModel.messageDataSource.count) { _ in
                     scrollToBottom = true
@@ -99,15 +100,15 @@ public struct AIAssistViewSwiftUI: View {
                 hideKeyboard()
                 presentationMode.wrappedValue.dismiss()
             }) {
-                Image(uiImage: closeIcon)
+                Image(systemName: closeIconName)
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 24, height: 24)
+                    .frame(width: LayoutMetrics.largeIconSize, height: LayoutMetrics.largeIconSize)
                     .foregroundColor(Color(configuration.style?.closeIconTint ?? CometChatTheme_v4.palatte.accent))
             }
-            .frame(width: 30, height: 30)
+            .frame(width: LayoutMetrics.avatarSmall, height: LayoutMetrics.avatarSmall)
         }
-        .padding(.horizontal, 10)
+        .padding(.horizontal, LayoutMetrics.spacingStandard)
     }
     
     private func messageBubbleView(for message: TextMessage) -> some View {
@@ -123,19 +124,19 @@ public struct AIAssistViewSwiftUI: View {
                     if !isLoggedInUser && !message.hideAvatar {
                         CometChatAvatarSwiftUI()
                             .set(user: message.sender)
-                            .set(width: 30)
-                            .set(height: 30)
+                            .set(width: LayoutMetrics.avatarSmall)
+                            .set(height: LayoutMetrics.avatarSmall)
                     }
                     
                     VStack(alignment: alignment) {
                         Text(message.text)
                             .font(Font(getBubbleStyle(isLoggedInUser: isLoggedInUser).textFont))
                             .foregroundColor(Color(getBubbleStyle(isLoggedInUser: isLoggedInUser).textColor))
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 8)
+                            .padding(.horizontal, LayoutMetrics.spacingMedium)
+                            .padding(.vertical, LayoutMetrics.spacingStandard)
                             .background(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .fill(Color(getBubbleBackgroundColor(isLoggedInUser: isLoggedInUser)))
+                                RoundedRectangle(cornerRadius: LayoutMetrics.cornerRadiusMedium)
+                                    .fill(getBubbleBackgroundColor(isLoggedInUser: isLoggedInUser))
                             )
                         
                         HStack(spacing: 4) {
@@ -176,12 +177,11 @@ public struct AIAssistViewSwiftUI: View {
         }
     }
     
-    private func getBubbleBackgroundColor(isLoggedInUser: Bool) -> UIColor {
+    private func getBubbleBackgroundColor(isLoggedInUser: Bool) -> Color {
         if isLoggedInUser {
-            return CometChatTheme_v4.palatte.primary
+            return Color(CometChatTheme_v4.palatte.primary)
         } else {
-            return UITraitCollection.current.userInterfaceStyle == .dark ? 
-                CometChatTheme_v4.palatte.accent100 : CometChatTheme_v4.palatte.secondary
+            return Color(CometChatTheme_v4.palatte.secondary)
         }
     }
     
@@ -193,7 +193,9 @@ public struct AIAssistViewSwiftUI: View {
     }
     
     private func hideKeyboard() {
+        #if canImport(UIKit)
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+        #endif
     }
     
     public func set(title: String) -> AIAssistViewSwiftUI {
@@ -202,9 +204,9 @@ public struct AIAssistViewSwiftUI: View {
         return view
     }
     
-    public func set(closeIcon: UIImage) -> AIAssistViewSwiftUI {
+    public func set(closeIconName: String) -> AIAssistViewSwiftUI {
         var view = self
-        view.closeIcon = closeIcon.withRenderingMode(.alwaysTemplate)
+        view.closeIconName = closeIconName
         return view
     }
     
@@ -255,14 +257,20 @@ struct AIAssistViewSwiftUI_Previews: PreviewProvider {
             AIAssistViewSwiftUI()
                 .set(bot: getMockBot())
                 .set(title: "AI Assistant")
-                .previewDisplayName("Default")
+                .previewDisplayName("Default (Light)")
+            
+            AIAssistViewSwiftUI()
+                .set(bot: getMockBot())
+                .set(title: "AI Assistant")
+                .preferredColorScheme(.dark)
+                .previewDisplayName("Default (Dark)")
             
             AIAssistViewSwiftUI()
                 .set(bot: getMockBot())
                 .set(title: "AI Assistant")
                 .add(message: getMockUserMessage())
                 .add(message: getMockBotMessage())
-                .previewDisplayName("With Messages")
+                .previewDisplayName("With Messages (Light)")
             
             AIAssistViewSwiftUI()
                 .set(bot: getMockBot())
@@ -270,7 +278,7 @@ struct AIAssistViewSwiftUI_Previews: PreviewProvider {
                 .add(message: getMockUserMessage())
                 .add(message: getMockBotMessage())
                 .preferredColorScheme(.dark)
-                .previewDisplayName("Dark Mode")
+                .previewDisplayName("With Messages (Dark)")
         }
     }
     
