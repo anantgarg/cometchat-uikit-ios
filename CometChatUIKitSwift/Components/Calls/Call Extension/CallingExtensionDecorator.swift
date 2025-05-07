@@ -193,18 +193,20 @@ import UIKit
                     }
                 }
 
-                let callBubble = CometChatCallBubble()
-                callBubble.callType = ((((message as? CustomMessage)?.customData?["callType"] as? String) ?? "") == "audio") ? .audio : .video
-                callBubble.widthAnchor.constraint(equalToConstant: 240).isActive = true
-                callBubble.dateLabel.text = this.formatDate(from: Double(call.sentAt))
-
+                let callBubbleSwiftUI = CometChatCallBubbleSwiftUI()
+                    .set(callType: ((((message as? CustomMessage)?.customData?["callType"] as? String) ?? "") == "audio") ? .audio : .video)
+                    .set(dateText: this.formatDate(from: Double(call.sentAt)))
+                
+                let callBubbleView = callBubbleSwiftUI.toUIKit()
+                callBubbleView.widthAnchor.constraint(equalToConstant: 240).isActive = true
+                
                 if message?.sender?.uid == CometChat.getLoggedInUser()?.uid {
-                    callBubble.style = additionalConfiguration.messageBubbleStyle.outgoing.callBubbleStyle
+                    callBubbleSwiftUI.set(style: additionalConfiguration.messageBubbleStyle.outgoing.callBubbleStyle)
                 } else {
-                    callBubble.style = additionalConfiguration.messageBubbleStyle.incoming.callBubbleStyle
+                    callBubbleSwiftUI.set(style: additionalConfiguration.messageBubbleStyle.incoming.callBubbleStyle)
                 }
-
-                callBubble.setOnClick { [weak self, weak controller] callType in
+                
+                callBubbleSwiftUI.setOnClick { [weak self, weak controller] callType in
                     guard let this = self else { return }
 
                     if let customCallback = this.callingConfiguration?.callBubbleConfiguration?.onClick {
@@ -247,7 +249,7 @@ import UIKit
                         }
                     }
                 }
-                return callBubble
+                return callBubbleView
 
             }, bubbleView: nil, headerView: nil, footerView: nil) { message, alignment, controller in
                 guard let message else { return nil }

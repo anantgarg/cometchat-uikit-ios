@@ -23,7 +23,6 @@
 		11601D362D6CF4C400129BBA /* CometChatCardBubble.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601CC42D6CF4C400129BBA /* CometChatCardBubble.swift */; };
 		11601D372D6CF4C400129BBA /* UsersShimmerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601D262D6CF4C400129BBA /* UsersShimmerView.swift */; };
 		11601D392D6CF4C400129BBA /* PanModalPresentationAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601CEC2D6CF4C400129BBA /* PanModalPresentationAnimator.swift */; };
-		11601D3A2D6CF4C400129BBA /* CometChatCallBubble.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B092D6CF4C400129BBA /* CometChatCallBubble.swift */; };
 		11601D3B2D6CF4C400129BBA /* ButtonElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601C092D6CF4C400129BBA /* ButtonElement.swift */; };
 		11601D3C2D6CF4C400129BBA /* BaseStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601C5C2D6CF4C400129BBA /* BaseStyle.swift */; };
 		11601D3D2D6CF4C400129BBA /* Palette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601C352D6CF4C400129BBA /* Palette.swift */; };
@@ -5930,7 +5929,6 @@
 				11601D362D6CF4C400129BBA /* CometChatCardBubble.swift in Sources */,
 				11601D372D6CF4C400129BBA /* UsersShimmerView.swift in Sources */,
 				11601D392D6CF4C400129BBA /* PanModalPresentationAnimator.swift in Sources */,
-				11601D3A2D6CF4C400129BBA /* CometChatCallBubble.swift in Sources */,
 				11601D3B2D6CF4C400129BBA /* ButtonElement.swift in Sources */,
 				11601D3C2D6CF4C400129BBA /* BaseStyle.swift in Sources */,
 				11601D3D2D6CF4C400129BBA /* Palette.swift in Sources */,
