@@ -15,6 +15,7 @@ public enum LayoutMetrics {
     public static let spacingSmall: CGFloat = 4
     public static let spacingMedium: CGFloat = 12
     public static let spacingLarge: CGFloat = 16
+    public static let spacingExtraLarge: CGFloat = 24
     
     public static let cornerRadiusStandard: CGFloat = 8
     public static let cornerRadiusSmall: CGFloat = 4
@@ -39,4 +40,12 @@ public enum LayoutMetrics {
     public static let listItemVerticalPadding: CGFloat = 8
     
     public static let statusIndicatorOffset: CGFloat = 16
+    public static let messageIndicatorBottomOffset: CGFloat = 100
+    public static let messageIndicatorTrailingOffset: CGFloat = 80
+    
+    public static let loadingItemCount: Int = 8
+    public static let loadingTextHeight: CGFloat = 12
+    public static let loadingTextWidth: CGFloat = 120
+    public static let loadingContentHeight: CGFloat = 60
+    public static let loadingContentWidth: CGFloat = 200
 }
