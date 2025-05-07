@@ -159,7 +159,7 @@
                     let callSettingsBuilder = callSettingsBuilderCallBack(nil, group, false) as? CometChatCallsSDK.CallSettingsBuilder
                     ongoingCall.set(callSettingsBuilder: callSettingsBuilder)
                 } else {
-                    var callSettingsBuilder = CallingDefaultBuilder.callSettingsBuilder as? CometChatCallsSDK.CallSettingsBuilder
+                    var callSettingsBuilder = CallingDefaultBuilderSwiftUI.callSettingsBuilder as? CometChatCallsSDK.CallSettingsBuilder
                     callSettingsBuilder = callSettingsBuilder?.setIsAudioOnly(!isVideoCall)
                     callSettingsBuilder = callSettingsBuilder?.setDefaultAudioMode(isVideoCall ? "SPEAKER" : "EARPIECE")
                     if isVideoCall {
