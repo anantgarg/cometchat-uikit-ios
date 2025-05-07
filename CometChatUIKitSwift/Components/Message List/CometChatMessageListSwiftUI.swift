@@ -4,6 +4,7 @@
 
 import SwiftUI
 import CometChatSDK
+import CometChatUIKitSwift.Components.Shared.Constants
 
 public struct CometChatMessageListSwiftUI: View {
     @ObservedObject private var viewModel: MessageListViewModelSwiftUI
@@ -43,10 +44,10 @@ public struct CometChatMessageListSwiftUI: View {
                 Image(uiImage: backgroundImage)
                     .resizable()
                     .aspectRatio(contentMode: .fill)
-                    .edgesIgnoringSafeArea(.all)
+                    .ignoresSafeArea()
             } else {
                 Color(style.backgroundColor)
-                    .edgesIgnoringSafeArea(.all)
+                    .ignoresSafeArea()
             }
             
             VStack(spacing: 0) {
@@ -115,7 +116,7 @@ public struct CometChatMessageListSwiftUI: View {
                         }
                     }
                 }
-                .padding(.vertical, 8)
+                .padding(.vertical, LayoutMetrics.spacingStandard)
             }
             .onChange(of: viewModel.messages) { newMessages in
                 if scrollToBottomOnNewMessages && !newMessages.isEmpty {
@@ -164,8 +165,8 @@ public struct CometChatMessageListSwiftUI: View {
                 defaultMessageBubble(for: message)
             }
         }
-        .padding(.horizontal, 8)
-        .padding(.vertical, 2)
+        .padding(.horizontal, LayoutMetrics.spacingStandard)
+        .padding(.vertical, LayoutMetrics.spacingSmall)
     }
     
     private func messageBubbleWithTemplate(message: BaseMessage, template: CometChatMessageTemplate) -> some View {
@@ -257,34 +258,36 @@ public struct CometChatMessageListSwiftUI: View {
                 Image(systemName: "chevron.down")
                     .foregroundColor(.white)
             }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 8)
+            .padding(.horizontal, LayoutMetrics.spacingMedium)
+            .padding(.vertical, LayoutMetrics.spacingStandard)
             .background(Color.blue)
-            .cornerRadius(20)
+            .cornerRadius(LayoutMetrics.cornerRadiusRound)
         }
-        .position(x: UIScreen.main.bounds.width - 80, y: UIScreen.main.bounds.height - 100)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
+        .padding(.bottom, LayoutMetrics.messageIndicatorBottomOffset)
+        .padding(.trailing, LayoutMetrics.messageIndicatorTrailingOffset)
         .transition(.opacity)
         .animation(.easeInOut, value: showNewMessageIndicator)
     }
     
     private var loadingView: some View {
         VStack {
-            ForEach(0..<8, id: \.self) { _ in
+            ForEach(0..<LayoutMetrics.loadingItemCount, id: \.self) { _ in
                 HStack(alignment: .top) {
                     Circle()
                         .fill(Color(style.shimmerGradientColor1))
-                        .frame(width: 40, height: 40)
+                        .frame(width: LayoutMetrics.avatarMedium, height: LayoutMetrics.avatarMedium)
                     
                     VStack(alignment: .leading) {
                         Rectangle()
                             .fill(Color(style.shimmerGradientColor1))
-                            .frame(height: 12)
-                            .frame(width: 120)
+                            .frame(height: LayoutMetrics.loadingTextHeight)
+                            .frame(width: LayoutMetrics.loadingTextWidth)
                         
                         Rectangle()
                             .fill(Color(style.shimmerGradientColor1))
-                            .frame(height: 60)
-                            .frame(width: 200)
+                            .frame(height: LayoutMetrics.loadingContentHeight)
+                            .frame(width: LayoutMetrics.loadingContentWidth)
                     }
                     
                     Spacer()
@@ -302,16 +305,16 @@ public struct CometChatMessageListSwiftUI: View {
                 Image(uiImage: emptyImage)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(width: 100, height: 100)
+                    .frame(width: LayoutMetrics.largeIconSize * 4, height: LayoutMetrics.largeIconSize * 4)
             }
             
             Text("NO_CONVERSATIONS_YET".localize())
-                .font(Font(style.emptyStateTitleFont))
+                .font(.headline)
                 .foregroundColor(Color(style.emptyStateTitleColor))
                 .multilineTextAlignment(.center)
             
             Text("START_A_NEW_CHAT_OR_INVITE_OTHERS_TO_JOIN_THE_CONVERSATION.".localize())
-                .font(Font(style.emptyStateSubtitleFont))
+                .font(.subheadline)
                 .foregroundColor(Color(style.emptyStateSubtitleColor))
                 .multilineTextAlignment(.center)
         }
@@ -324,16 +327,16 @@ public struct CometChatMessageListSwiftUI: View {
                 Image(uiImage: errorImage)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(width: 100, height: 100)
+                    .frame(width: LayoutMetrics.largeIconSize * 4, height: LayoutMetrics.largeIconSize * 4)
             }
             
             Text("OOPS!".localize())
-                .font(Font(style.errorStateTitleFont))
+                .font(.headline)
                 .foregroundColor(Color(style.errorStateTitleColor))
                 .multilineTextAlignment(.center)
             
             Text("LOOKS_LIKE_SOMETHINGS_WENT_WORNG._PLEASE_TRY_AGAIN".localize())
-                .font(Font(style.errorStateSubtitleFont))
+                .font(.subheadline)
                 .foregroundColor(Color(style.errorStateSubtitleColor))
                 .multilineTextAlignment(.center)
             
@@ -342,10 +345,10 @@ public struct CometChatMessageListSwiftUI: View {
             }) {
                 Text("Try Again")
                     .foregroundColor(.white)
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 8)
+                    .padding(.horizontal, LayoutMetrics.spacingLarge)
+                    .padding(.vertical, LayoutMetrics.spacingStandard)
                     .background(Color.blue)
-                    .cornerRadius(8)
+                    .cornerRadius(LayoutMetrics.cornerRadiusStandard)
             }
         }
         .padding()
@@ -509,6 +512,18 @@ struct ShimmerModifier: ViewModifier {
 
 struct CometChatMessageListSwiftUI_Previews: PreviewProvider {
     static var previews: some View {
-        CometChatMessageListSwiftUI()
+        Group {
+            CometChatMessageListSwiftUI()
+                .previewDisplayName("Default (Light)")
+            
+            CometChatMessageListSwiftUI()
+                .hide(headerView: true)
+                .hide(footerView: true)
+                .previewDisplayName("No Header/Footer (Light)")
+            
+            CometChatMessageListSwiftUI()
+                .preferredColorScheme(.dark)
+                .previewDisplayName("Default (Dark)")
+        }
     }
 }
