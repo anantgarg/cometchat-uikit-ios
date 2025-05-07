@@ -686,21 +686,35 @@ struct CometChatGroupMembersSwiftUI_Previews: PreviewProvider {
     static var previews: some View {
         Group {
             CometChatGroupMembersSwiftUI()
-                .previewLayout(.sizeThatFits)
                 .padding()
-                .previewDisplayName("Default")
+                .previewDisplayName("Default (Light)")
+            
+            CometChatGroupMembersSwiftUI()
+                .padding()
+                .preferredColorScheme(.dark)
+                .previewDisplayName("Default (Dark)")
             
             CometChatGroupMembersSwiftUI()
                 .set(selectionMode: .single)
-                .previewLayout(.sizeThatFits)
                 .padding()
-                .previewDisplayName("Single Selection Mode")
+                .previewDisplayName("Single Selection Mode (Light)")
+            
+            CometChatGroupMembersSwiftUI()
+                .set(selectionMode: .single)
+                .padding()
+                .preferredColorScheme(.dark)
+                .previewDisplayName("Single Selection Mode (Dark)")
             
             CometChatGroupMembersSwiftUI()
                 .set(selectionMode: .multiple)
-                .previewLayout(.sizeThatFits)
                 .padding()
-                .previewDisplayName("Multiple Selection Mode")
+                .previewDisplayName("Multiple Selection Mode (Light)")
+            
+            CometChatGroupMembersSwiftUI()
+                .set(selectionMode: .multiple)
+                .padding()
+                .preferredColorScheme(.dark)
+                .previewDisplayName("Multiple Selection Mode (Dark)")
         }
     }
 }
