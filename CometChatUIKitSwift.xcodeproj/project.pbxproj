@@ -34,7 +34,6 @@
 		11601D462D6CF4C400129BBA /* CometChatEmojiKeyboardItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601CB22D6CF4C400129BBA /* CometChatEmojiKeyboardItem.swift */; };
 		11601D472D6CF4C400129BBA /* EmptyMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601C432D6CF4C400129BBA /* EmptyMessage.swift */; };
 		11601D482D6CF4C400129BBA /* AIConversationStarterDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601AE82D6CF4C400129BBA /* AIConversationStarterDecorator.swift */; };
-		11601D492D6CF4C400129BBA /* CometChatPollsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B602D6CF4C400129BBA /* CometChatPollsViewModel.swift */; };
 		11601D4A2D6CF4C400129BBA /* GroupMembersStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B872D6CF4C400129BBA /* GroupMembersStyle.swift */; };
 		11601D4B2D6CF4C400129BBA /* SoundManagerConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601C482D6CF4C400129BBA /* SoundManagerConfiguration.swift */; };
 		11601D4C2D6CF4C400129BBA /* GroupMembersUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601C8B2D6CF4C400129BBA /* GroupMembersUtils.swift */; };
@@ -5903,7 +5902,6 @@
 				11601D462D6CF4C400129BBA /* CometChatEmojiKeyboardItem.swift in Sources */,
 				11601D472D6CF4C400129BBA /* EmptyMessage.swift in Sources */,
 				11601D482D6CF4C400129BBA /* AIConversationStarterDecorator.swift in Sources */,
-				11601D492D6CF4C400129BBA /* CometChatPollsViewModel.swift in Sources */,
 				11601D4A2D6CF4C400129BBA /* GroupMembersStyle.swift in Sources */,
 				11601D4B2D6CF4C400129BBA /* SoundManagerConfiguration.swift in Sources */,
 				11601D4C2D6CF4C400129BBA /* GroupMembersUtils.swift in Sources */,
