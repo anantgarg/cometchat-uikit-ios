@@ -59,7 +59,6 @@
 		11601D642D6CF4C400129BBA /* CometChatSoundManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601C472D6CF4C400129BBA /* CometChatSoundManager.swift */; };
 		11601D662D6CF4C400129BBA /* InteractiveConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601C5A2D6CF4C400129BBA /* InteractiveConstants.swift */; };
 		11601D672D6CF4C400129BBA /* CometChatStickerShimmer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B732D6CF4C400129BBA /* CometChatStickerShimmer.swift */; };
-		11601D682D6CF4C400129BBA /* CometChatPollsBubble.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B572D6CF4C400129BBA /* CometChatPollsBubble.swift */; };
 		11601D692D6CF4C400129BBA /* DateStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601CA62D6CF4C400129BBA /* DateStyle.swift */; };
 		11601D6A2D6CF4C400129BBA /* DropdownElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601C0F2D6CF4C400129BBA /* DropdownElement.swift */; };
 		11601D6B2D6CF4C400129BBA /* PollsUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B5B2D6CF4C400129BBA /* PollsUtils.swift */; };
@@ -5927,7 +5926,6 @@
 				11601D642D6CF4C400129BBA /* CometChatSoundManager.swift in Sources */,
 				11601D662D6CF4C400129BBA /* InteractiveConstants.swift in Sources */,
 				11601D672D6CF4C400129BBA /* CometChatStickerShimmer.swift in Sources */,
-				11601D682D6CF4C400129BBA /* CometChatPollsBubble.swift in Sources */,
 				11601D692D6CF4C400129BBA /* DateStyle.swift in Sources */,
 				11601D6A2D6CF4C400129BBA /* DropdownElement.swift in Sources */,
 				11601D6B2D6CF4C400129BBA /* PollsUtils.swift in Sources */,
