@@ -110,7 +110,6 @@
 		11601D972D6CF4C400129BBA /* MediaRecorderStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601CDA2D6CF4C400129BBA /* MediaRecorderStyle.swift */; };
 		11601D982D6CF4C400129BBA /* ScopeChangeStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B822D6CF4C400129BBA /* ScopeChangeStyle.swift */; };
 		11601D9A2D6CF4C400129BBA /* TimeSlotSelectorStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601D0E2D6CF4C400129BBA /* TimeSlotSelectorStyle.swift */; };
-		11601D9B2D6CF4C400129BBA /* CometChatIncomingCall.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B1C2D6CF4C400129BBA /* CometChatIncomingCall.swift */; };
 		11601D9C2D6CF4C400129BBA /* PanModalPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601CEF2D6CF4C400129BBA /* PanModalPresenter.swift */; };
 		11601D9D2D6CF4C400129BBA /* ConversationViewModel + ConversationEventListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B372D6CF4C400129BBA /* ConversationViewModel + ConversationEventListener.swift */; };
 		11601D9E2D6CF4C400129BBA /* ProfanityDataMaskingExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B642D6CF4C400129BBA /* ProfanityDataMaskingExtension.swift */; };
@@ -6018,7 +6017,6 @@
 				11601D972D6CF4C400129BBA /* MediaRecorderStyle.swift in Sources */,
 				11601D982D6CF4C400129BBA /* ScopeChangeStyle.swift in Sources */,
 				11601D9A2D6CF4C400129BBA /* TimeSlotSelectorStyle.swift in Sources */,
-				11601D9B2D6CF4C400129BBA /* CometChatIncomingCall.swift in Sources */,
 				11601D9C2D6CF4C400129BBA /* PanModalPresenter.swift in Sources */,
 				11601D9D2D6CF4C400129BBA /* ConversationViewModel + ConversationEventListener.swift in Sources */,
 				11601D9E2D6CF4C400129BBA /* ProfanityDataMaskingExtension.swift in Sources */,
