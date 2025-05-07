@@ -46,7 +46,7 @@
             if let callSettingsBuilder {
                 viewModel.set(callSettingsBuilder: callSettingsBuilder)
             } else {
-                viewModel.set(callSettingsBuilder: CallingDefaultBuilder.callSettingsBuilder as! CallSettingsBuilder)
+                viewModel.set(callSettingsBuilder: CallingDefaultBuilderSwiftUI.callSettingsBuilder as! CallSettingsBuilder)
             }
 
             viewModel.set(callWorkFlow: callWorkFlow)

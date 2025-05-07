@@ -228,7 +228,7 @@ import UIKit
                             if let callSettingsBuilder = this.callingConfiguration?.groupCallSettingsBuilder?(user, group, false) {
                                 ongoingCall.set(callSettingsBuilder: callSettingsBuilder)
                             } else {
-                                var callSettingsBuilder = CallingDefaultBuilder.callSettingsBuilder as? CometChatCallsSDK.CallSettingsBuilder
+                                var callSettingsBuilder = CallingDefaultBuilderSwiftUI.callSettingsBuilder as? CometChatCallsSDK.CallSettingsBuilder
                                 callSettingsBuilder = callSettingsBuilder?.setIsAudioOnly(callType == .audio ? true : false)
                                 if callType == .video {
                                     callSettingsBuilder = callSettingsBuilder?.setDefaultAudioMode("SPEAKER")
