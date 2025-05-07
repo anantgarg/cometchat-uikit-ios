@@ -4,6 +4,7 @@
 
 import SwiftUI
 import CometChatSDK
+import CometChatUIKitSwift.Components.Shared.Constants
 
 public struct CometChatStickerBubbleSwiftUI: View {
     
@@ -11,18 +12,18 @@ public struct CometChatStickerBubbleSwiftUI: View {
     @State private var style: StickerBubbleStyle = StickerBubbleStyle()
     @State private var controller: UIViewController?
     @State private var onClick: (() -> Void)?
-    @State private var image: UIImage?
+    @State private var uiImage: UIImage?
     @State private var isLoading: Bool = false
     
     public init() {}
     
     public var body: some View {
-        VStack(spacing: 10) {
-            if let image = image {
+        VStack(spacing: LayoutMetrics.spacingStandard) {
+            if let image = uiImage {
                 Image(uiImage: image)
                     .resizable()
                     .aspectRatio(contentMode: .fill)
-                    .frame(width: 160, height: 160)
+                    .frame(width: LayoutMetrics.loadingContentWidth - LayoutMetrics.spacingExtraLarge, height: LayoutMetrics.loadingContentWidth - LayoutMetrics.spacingExtraLarge)
                     .onTapGesture {
                         onClick?()
                     }
@@ -30,7 +31,7 @@ public struct CometChatStickerBubbleSwiftUI: View {
                 ZStack {
                     Rectangle()
                         .fill(Color.clear)
-                        .frame(width: 160, height: 160)
+                        .frame(width: LayoutMetrics.loadingContentWidth - LayoutMetrics.spacingExtraLarge, height: LayoutMetrics.loadingContentWidth - LayoutMetrics.spacingExtraLarge)
                     
                     if isLoading {
                         ProgressView()
@@ -43,10 +44,10 @@ public struct CometChatStickerBubbleSwiftUI: View {
             }
         }
         .padding(EdgeInsets(
-            top: CometChatSpacing.Padding.p1,
-            leading: CometChatSpacing.Padding.p1,
-            bottom: CometChatSpacing.Padding.p2,
-            trailing: CometChatSpacing.Padding.p1
+            top: LayoutMetrics.spacingSmall,
+            leading: LayoutMetrics.spacingSmall,
+            bottom: LayoutMetrics.spacingStandard,
+            trailing: LayoutMetrics.spacingSmall
         ))
         .background(Color(style.backgroundColor ?? .clear))
     }
@@ -59,7 +60,7 @@ public struct CometChatStickerBubbleSwiftUI: View {
         ImageService().image(for: url, cacheType: .normal) { loadedImage in
             if let loadedImage = loadedImage {
                 DispatchQueue.main.async {
-                    self.image = loadedImage
+                    self.uiImage = loadedImage
                     self.isLoading = false
                 }
             } else {
@@ -73,7 +74,7 @@ public struct CometChatStickerBubbleSwiftUI: View {
     @discardableResult
     public func set(image: UIImage) -> Self {
         var view = self
-        view._image = State(initialValue: image)
+        view._uiImage = State(initialValue: image)
         return view
     }
     
@@ -109,8 +110,8 @@ public struct CometChatStickerBubbleSwiftUI: View {
         let hostingController = UIHostingController(rootView: self)
         let view = hostingController.view
         view?.translatesAutoresizingMaskIntoConstraints = false
-        view?.widthAnchor.constraint(equalToConstant: 160).isActive = true
-        view?.heightAnchor.constraint(equalToConstant: 160).isActive = true
+        view?.widthAnchor.constraint(equalToConstant: LayoutMetrics.loadingContentWidth - LayoutMetrics.spacingExtraLarge).isActive = true
+        view?.heightAnchor.constraint(equalToConstant: LayoutMetrics.loadingContentWidth - LayoutMetrics.spacingExtraLarge).isActive = true
         return view ?? UIView()
     }
 }
@@ -120,16 +121,27 @@ struct CometChatStickerBubbleSwiftUI_Previews: PreviewProvider {
         Group {
             CometChatStickerBubbleSwiftUI()
                 .set(imageUrl: "https://data-us.cometchat.io/assets/stickers/happy.png")
-                .previewLayout(.sizeThatFits)
                 .padding()
-                .previewDisplayName("Default Sticker Bubble")
+                .previewDisplayName("Default Sticker Bubble (Light)")
+            
+            CometChatStickerBubbleSwiftUI()
+                .set(imageUrl: "https://data-us.cometchat.io/assets/stickers/happy.png")
+                .padding()
+                .preferredColorScheme(.dark)
+                .previewDisplayName("Default Sticker Bubble (Dark)")
             
             CometChatStickerBubbleSwiftUI()
                 .set(imageUrl: "https://data-us.cometchat.io/assets/stickers/thumbsup.png")
                 .set(style: StickerBubbleStyle())
-                .previewLayout(.sizeThatFits)
                 .padding()
-                .previewDisplayName("Custom Style Sticker Bubble")
+                .previewDisplayName("Custom Style Sticker Bubble (Light)")
+                
+            CometChatStickerBubbleSwiftUI()
+                .set(imageUrl: "https://data-us.cometchat.io/assets/stickers/thumbsup.png")
+                .set(style: StickerBubbleStyle())
+                .padding()
+                .preferredColorScheme(.dark)
+                .previewDisplayName("Custom Style Sticker Bubble (Dark)")
         }
     }
 }
