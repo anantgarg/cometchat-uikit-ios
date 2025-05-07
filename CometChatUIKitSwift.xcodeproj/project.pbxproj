@@ -159,7 +159,6 @@
 		11601DE12D6CF4C400129BBA /* CometChatSticker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B6E2D6CF4C400129BBA /* CometChatSticker.swift */; };
 		11601DE22D6CF4C400129BBA /* AIOptionsStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601AF32D6CF4C400129BBA /* AIOptionsStyle.swift */; };
 		11601DE32D6CF4C400129BBA /* PanContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601CE42D6CF4C400129BBA /* PanContainerView.swift */; };
-		11601DE42D6CF4C400129BBA /* CometChatCreatePollQuestions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B552D6CF4C400129BBA /* CometChatCreatePollQuestions.swift */; };
 		11601DE52D6CF4C400129BBA /* AIAssistBotExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601AE22D6CF4C400129BBA /* AIAssistBotExtension.swift */; };
 		11601DE72D6CF4C400129BBA /* ImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601C2A2D6CF4C400129BBA /* ImageService.swift */; };
 		11601DE82D6CF4C400129BBA /* AdditionalConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601C192D6CF4C400129BBA /* AdditionalConfiguration.swift */; };
@@ -6024,7 +6023,6 @@
 				11601DE12D6CF4C400129BBA /* CometChatSticker.swift in Sources */,
 				11601DE22D6CF4C400129BBA /* AIOptionsStyle.swift in Sources */,
 				11601DE32D6CF4C400129BBA /* PanContainerView.swift in Sources */,
-				11601DE42D6CF4C400129BBA /* CometChatCreatePollQuestions.swift in Sources */,
 				11601DE52D6CF4C400129BBA /* AIAssistBotExtension.swift in Sources */,
 				11601DE72D6CF4C400129BBA /* ImageService.swift in Sources */,
 				11601DE82D6CF4C400129BBA /* AdditionalConfiguration.swift in Sources */,
