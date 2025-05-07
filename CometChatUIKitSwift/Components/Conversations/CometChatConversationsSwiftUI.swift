@@ -4,6 +4,7 @@
 
 import SwiftUI
 import CometChatSDK
+import CometChatUIKitSwift.Components.Shared.Constants
 
 public struct CometChatConversationsSwiftUI: View {
     public static var style = ConversationsStyle()
@@ -28,8 +29,8 @@ public struct CometChatConversationsSwiftUI: View {
     private var dateStyle: DateStyle
     private var typingIndicatorStyle: CometChatTypingIndicator.TypingIndicatorStyle
     
-    private var privateGroupIcon = UIImage(systemName: "shield.fill")?.withRenderingMode(.alwaysTemplate)
-    private var protectedGroupIcon = UIImage(systemName: "lock.fill")?.withRenderingMode(.alwaysTemplate)
+    private var privateGroupIcon: Image = Image(systemName: "shield.fill")
+    private var protectedGroupIcon: Image = Image(systemName: "lock.fill")
     
     private var disableTyping: Bool = false
     private var disableSoundForMessages: Bool = false
@@ -121,7 +122,7 @@ public struct CometChatConversationsSwiftUI: View {
                     }
             }
             .listRowBackground(Color(style.backgroundColor))
-            .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+            .listRowInsets(EdgeInsets(top: LayoutMetrics.spacingStandard, leading: LayoutMetrics.spacingLarge, bottom: LayoutMetrics.spacingStandard, trailing: LayoutMetrics.spacingLarge))
         }
         .listStyle(PlainListStyle())
         .refreshable {
@@ -152,14 +153,14 @@ public struct CometChatConversationsSwiftUI: View {
     }
     
     private func conversationDefaultView(for conversation: Conversation) -> some View {
-        HStack(spacing: 16) {
+        HStack(spacing: LayoutMetrics.spacingLarge) {
             if let leadingCustomView = leadingView?(conversation) {
                 leadingCustomView
             } else {
                 leadingDefaultView(for: conversation)
             }
             
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: LayoutMetrics.spacingSmall) {
                 if let titleCustomView = titleView?(conversation) {
                     titleCustomView
                 } else {
@@ -181,7 +182,7 @@ public struct CometChatConversationsSwiftUI: View {
                 tailDefaultView(for: conversation)
             }
         }
-        .padding(.vertical, 8)
+        .padding(.vertical, LayoutMetrics.spacingStandard)
         .background(
             viewModel.selectedConversations.contains(conversation) ?
             Color(style.selectedBackgroundColor) :
@@ -204,51 +205,51 @@ public struct CometChatConversationsSwiftUI: View {
     private func leadingDefaultView(for conversation: Conversation) -> some View {
         ZStack {
             CometChatAvatarSwiftUI(style: avatarStyle)
-                .set(width: 48)
-                .set(height: 48)
-                .set(cornerRadius: 24)
+                .set(width: LayoutMetrics.avatarLarge)
+                .set(height: LayoutMetrics.avatarLarge)
+                .set(cornerRadius: LayoutMetrics.cornerRadiusRound)
             
             switch conversation.conversationType {
             case .user:
                 if let user = conversation.conversationWith as? User {
                     CometChatAvatarSwiftUI(style: avatarStyle)
                         .set(user: user)
-                        .set(width: 48)
-                        .set(height: 48)
-                        .set(cornerRadius: 24)
+                        .set(width: LayoutMetrics.avatarLarge)
+                        .set(height: LayoutMetrics.avatarLarge)
+                        .set(cornerRadius: LayoutMetrics.cornerRadiusRound)
                     
                     if !hideUserStatus && user.status == .online {
                         CometChatStatusIndicatorSwiftUI(style: statusIndicatorStyle)
                             .set(status: .online)
-                            .offset(x: 16, y: 16)
+                            .offset(x: LayoutMetrics.statusIndicatorOffset, y: LayoutMetrics.statusIndicatorOffset)
                     }
                 }
             case .group:
                 if let group = conversation.conversationWith as? Group {
                     CometChatAvatarSwiftUI(style: avatarStyle)
                         .set(group: group)
-                        .set(width: 48)
-                        .set(height: 48)
-                        .set(cornerRadius: 24)
+                        .set(width: LayoutMetrics.avatarLarge)
+                        .set(height: LayoutMetrics.avatarLarge)
+                        .set(cornerRadius: LayoutMetrics.cornerRadiusRound)
                     
                     if !hideGroupType {
                         switch group.groupType {
                         case .private:
-                            Image(uiImage: privateGroupIcon ?? UIImage())
+                            privateGroupIcon
                                 .resizable()
-                                .frame(width: 16, height: 16)
+                                .frame(width: LayoutMetrics.iconSize, height: LayoutMetrics.iconSize)
                                 .foregroundColor(Color(style.privateGroupImageTintColor))
                                 .background(Color(style.privateGroupImageBackgroundColor))
                                 .clipShape(Circle())
-                                .offset(x: 16, y: 16)
+                                .offset(x: LayoutMetrics.statusIndicatorOffset, y: LayoutMetrics.statusIndicatorOffset)
                         case .password:
-                            Image(uiImage: protectedGroupIcon ?? UIImage())
+                            protectedGroupIcon
                                 .resizable()
-                                .frame(width: 16, height: 16)
+                                .frame(width: LayoutMetrics.iconSize, height: LayoutMetrics.iconSize)
                                 .foregroundColor(Color(style.privateGroupImageTintColor))
                                 .background(Color(style.passwordGroupImageBackgroundColor))
                                 .clipShape(Circle())
-                                .offset(x: 16, y: 16)
+                                .offset(x: LayoutMetrics.statusIndicatorOffset, y: LayoutMetrics.statusIndicatorOffset)
                         default:
                             EmptyView()
                         }
@@ -258,7 +259,7 @@ public struct CometChatConversationsSwiftUI: View {
                 EmptyView()
             }
         }
-        .frame(width: 48, height: 48)
+        .frame(width: LayoutMetrics.avatarLarge, height: LayoutMetrics.avatarLarge)
     }
     
     private func titleDefaultView(for conversation: Conversation) -> some View {
@@ -266,7 +267,7 @@ public struct CometChatConversationsSwiftUI: View {
         case .user:
             if let user = conversation.conversationWith as? User {
                 return Text(user.name ?? "")
-                    .font(Font(style.titleFont))
+                    .font(.headline)
                     .foregroundColor(Color(style.titleColor))
                     .lineLimit(1)
                     .eraseToAnyView()
@@ -274,7 +275,7 @@ public struct CometChatConversationsSwiftUI: View {
         case .group:
             if let group = conversation.conversationWith as? Group {
                 return Text(group.name ?? "")
-                    .font(Font(style.titleFont))
+                    .font(.headline)
                     .foregroundColor(Color(style.titleColor))
                     .lineLimit(1)
                     .eraseToAnyView()
@@ -288,7 +289,7 @@ public struct CometChatConversationsSwiftUI: View {
     private func subtitleDefaultView(for conversation: Conversation) -> some View {
         if let lastMessage = conversation.lastMessage {
             return Text(MessageUtils.getLastMessageText(lastMessage: lastMessage))
-                .font(Font(style.subtitleFont))
+                .font(.subheadline)
                 .foregroundColor(Color(style.subtitleColor))
                 .lineLimit(1)
                 .eraseToAnyView()
@@ -297,21 +298,21 @@ public struct CometChatConversationsSwiftUI: View {
     }
     
     private func tailDefaultView(for conversation: Conversation) -> some View {
-        VStack(alignment: .trailing, spacing: 4) {
+        VStack(alignment: .trailing, spacing: LayoutMetrics.spacingSmall) {
             if let lastMessage = conversation.lastMessage {
                 Text(getFormattedDate(for: conversation))
-                    .font(Font(dateStyle.textFont))
+                    .font(.caption)
                     .foregroundColor(Color(dateStyle.textColor))
             }
             
             if conversation.unreadMessageCount > 0 {
                 Text("\(conversation.unreadMessageCount)")
-                    .font(Font(badgeStyle.textFont))
+                    .font(.caption)
                     .foregroundColor(Color(badgeStyle.textColor))
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 4)
+                    .padding(.horizontal, LayoutMetrics.spacingStandard)
+                    .padding(.vertical, LayoutMetrics.spacingSmall)
                     .background(Color(badgeStyle.backgroundColor))
-                    .cornerRadius(badgeStyle.cornerRadius)
+                    .cornerRadius(LayoutMetrics.cornerRadiusRound)
             }
         }
     }
@@ -324,7 +325,7 @@ public struct CometChatConversationsSwiftUI: View {
                 ProgressView()
                     .progressViewStyle(CircularProgressViewStyle())
                 Text("LOADING".localize())
-                    .font(Font(style.emptyStateTextFont))
+                    .font(.headline)
                     .foregroundColor(Color(style.emptyStateTextColor))
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -337,18 +338,18 @@ public struct CometChatConversationsSwiftUI: View {
         if let customErrorView = errorStateView?() {
             return customErrorView
         } else {
-            return VStack(spacing: 16) {
-                Image(uiImage: UIImage(named: "error-icon", in: CometChatUIKit.bundle, compatibleWith: nil) ?? UIImage())
+            return VStack(spacing: LayoutMetrics.spacingLarge) {
+                Image("error-icon", bundle: CometChatUIKit.bundle)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(width: 80, height: 80)
+                    .frame(width: LayoutMetrics.largeIconSize * 3.5, height: LayoutMetrics.largeIconSize * 3.5)
                 
                 Text("OOPS!".localize())
-                    .font(Font(style.errorStateTextFont))
+                    .font(.headline)
                     .foregroundColor(Color(style.errorStateTextColor))
                 
                 Text("LOOKS_LIKE_SOMETHINGS_WENT_WORNG._PLEASE_TRY_AGAIN".localize())
-                    .font(Font(style.errorStateTextFont))
+                    .font(.headline)
                     .foregroundColor(Color(style.errorStateTextColor))
                     .multilineTextAlignment(.center)
                 
@@ -356,12 +357,12 @@ public struct CometChatConversationsSwiftUI: View {
                     viewModel.isRefresh = true
                 }) {
                     Text("TRY_AGAIN".localize())
-                        .font(Font(style.errorStateButtonFont))
+                        .font(.headline)
                         .foregroundColor(Color(style.errorStateButtonTextColor))
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 8)
+                        .padding(.horizontal, LayoutMetrics.spacingLarge)
+                        .padding(.vertical, LayoutMetrics.spacingStandard)
                         .background(Color(style.errorStateButtonBackgroundColor))
-                        .cornerRadius(8)
+                        .cornerRadius(LayoutMetrics.cornerRadiusStandard)
                 }
             }
             .padding()
@@ -375,18 +376,18 @@ public struct CometChatConversationsSwiftUI: View {
         if let customEmptyView = emptyStateView?() {
             return customEmptyView
         } else {
-            return VStack(spacing: 16) {
-                Image(uiImage: UIImage(named: "empty-icon", in: CometChatUIKit.bundle, compatibleWith: nil) ?? UIImage())
+            return VStack(spacing: LayoutMetrics.spacingLarge) {
+                Image("empty-icon", bundle: CometChatUIKit.bundle)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(width: 80, height: 80)
+                    .frame(width: LayoutMetrics.largeIconSize * 3.5, height: LayoutMetrics.largeIconSize * 3.5)
                 
                 Text("NO_CONVERSATIONS_YET".localize())
-                    .font(Font(style.emptyStateTextFont))
+                    .font(.headline)
                     .foregroundColor(Color(style.emptyStateTextColor))
                 
                 Text("START_A_NEW_CHAT_OR_INVITE_OTHERS_TO_JOIN_THE_CONVERSATION.".localize())
-                    .font(Font(style.emptyStateTextFont))
+                    .font(.headline)
                     .foregroundColor(Color(style.emptyStateTextColor))
                     .multilineTextAlignment(.center)
             }
@@ -479,15 +480,15 @@ public struct CometChatConversationsSwiftUI: View {
         return view
     }
     
-    public func set(privateGroupIcon: UIImage?) -> CometChatConversationsSwiftUI {
+    public func set(privateGroupIcon: Image) -> CometChatConversationsSwiftUI {
         var view = self
-        view.privateGroupIcon = privateGroupIcon?.withRenderingMode(.alwaysTemplate)
+        view.privateGroupIcon = privateGroupIcon
         return view
     }
     
-    public func set(protectedGroupIcon: UIImage?) -> CometChatConversationsSwiftUI {
+    public func set(protectedGroupIcon: Image) -> CometChatConversationsSwiftUI {
         var view = self
-        view.protectedGroupIcon = protectedGroupIcon?.withRenderingMode(.alwaysTemplate)
+        view.protectedGroupIcon = protectedGroupIcon
         return view
     }
     
@@ -657,21 +658,24 @@ struct CometChatConversationsSwiftUI_Previews: PreviewProvider {
     static var previews: some View {
         Group {
             CometChatConversationsSwiftUI()
-                .previewLayout(.sizeThatFits)
-                .padding()
-                .previewDisplayName("Default")
+                .previewDisplayName("Default (Light)")
             
             CometChatConversationsSwiftUI()
                 .set(selectionMode: .single)
-                .previewLayout(.sizeThatFits)
-                .padding()
-                .previewDisplayName("Single Selection Mode")
+                .previewDisplayName("Single Selection Mode (Light)")
             
             CometChatConversationsSwiftUI()
                 .set(selectionMode: .multiple)
-                .previewLayout(.sizeThatFits)
-                .padding()
-                .previewDisplayName("Multiple Selection Mode")
+                .previewDisplayName("Multiple Selection Mode (Light)")
+            
+            CometChatConversationsSwiftUI()
+                .preferredColorScheme(.dark)
+                .previewDisplayName("Default (Dark)")
+            
+            CometChatConversationsSwiftUI()
+                .set(selectionMode: .single)
+                .preferredColorScheme(.dark)
+                .previewDisplayName("Single Selection Mode (Dark)")
         }
     }
 }
