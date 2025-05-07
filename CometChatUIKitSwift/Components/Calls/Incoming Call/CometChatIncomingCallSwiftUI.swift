@@ -6,6 +6,7 @@
 
 import SwiftUI
 import CometChatSDK
+import CometChatUIKitSwift.Components.Shared.Constants
 
 public struct CometChatIncomingCallSwiftUI: View {
     @StateObject private var viewModel = IncomingCallViewModelSwiftUI()
@@ -88,23 +89,23 @@ public struct CometChatIncomingCallSwiftUI: View {
         } else {
             return AnyView(
                 VStack(spacing: 0) {
-                    HStack(spacing: 12) {
+                    HStack(spacing: LayoutMetrics.spacingMedium) {
                         if let leadingView = leadingView, let call = viewModel.call {
                             leadingView(call)
                         } else {
                             if let callByUser = (call.sender as? User) {
                                 CometChatAvatarSwiftUI(style: avatarStyle)
                                     .set(user: callByUser)
-                                    .set(width: 48)
-                                    .set(height: 48)
+                                    .set(width: LayoutMetrics.avatarLarge)
+                                    .set(height: LayoutMetrics.avatarLarge)
                             } else {
                                 CometChatAvatarSwiftUI(style: avatarStyle)
-                                    .set(width: 48)
-                                    .set(height: 48)
+                                    .set(width: LayoutMetrics.avatarLarge)
+                                    .set(height: LayoutMetrics.avatarLarge)
                             }
                         }
                         
-                        VStack(alignment: .leading, spacing: 4) {
+                        VStack(alignment: .leading, spacing: LayoutMetrics.spacingSmall) {
                             if let titleView = titleView, let call = viewModel.call {
                                 titleView(call)
                             } else {
@@ -129,56 +130,56 @@ public struct CometChatIncomingCallSwiftUI: View {
                         if let trailView = trailView, let call = viewModel.call {
                             trailView(call)
                         } else {
-                            HStack(spacing: 12) {
+                            HStack(spacing: LayoutMetrics.spacingMedium) {
                                 Button(action: {
                                     onRejectButtonTapped()
                                 }) {
-                                    Image(uiImage: style.rejectButtonImage ?? UIImage())
+                                    Image(systemName: "phone.down.fill")
                                         .resizable()
                                         .scaledToFit()
-                                        .frame(width: 24, height: 24)
+                                        .frame(width: LayoutMetrics.largeIconSize, height: LayoutMetrics.largeIconSize)
                                         .foregroundColor(Color(style.rejectButtonTintColor))
-                                        .padding(12)
+                                        .padding(LayoutMetrics.spacingMedium)
                                 }
-                                .frame(width: 48, height: 48)
+                                .frame(width: LayoutMetrics.avatarLarge, height: LayoutMetrics.avatarLarge)
                                 .background(Color(style.rejectButtonBackgroundColor))
-                                .cornerRadius(style.rejectButtonCornerRadius?.cornerRadius ?? 24)
+                                .cornerRadius(style.rejectButtonCornerRadius?.cornerRadius ?? LayoutMetrics.cornerRadiusRound)
                                 .overlay(
-                                    RoundedRectangle(cornerRadius: style.rejectButtonCornerRadius?.cornerRadius ?? 24)
+                                    RoundedRectangle(cornerRadius: style.rejectButtonCornerRadius?.cornerRadius ?? LayoutMetrics.cornerRadiusRound)
                                         .stroke(Color(style.rejectButtonBorderColor), lineWidth: style.rejectButtonBorderWidth)
                                 )
                                 
                                 Button(action: {
                                     onAcceptButtonTapped()
                                 }) {
-                                    Image(uiImage: style.acceptButtonImage ?? UIImage())
+                                    Image(systemName: "phone.fill")
                                         .resizable()
                                         .scaledToFit()
-                                        .frame(width: 24, height: 24)
+                                        .frame(width: LayoutMetrics.largeIconSize, height: LayoutMetrics.largeIconSize)
                                         .foregroundColor(Color(style.acceptButtonTintColor))
-                                        .padding(12)
+                                        .padding(LayoutMetrics.spacingMedium)
                                 }
-                                .frame(width: 48, height: 48)
+                                .frame(width: LayoutMetrics.avatarLarge, height: LayoutMetrics.avatarLarge)
                                 .background(Color(style.acceptButtonBackgroundColor))
-                                .cornerRadius(style.acceptButtonCornerRadius?.cornerRadius ?? 24)
+                                .cornerRadius(style.acceptButtonCornerRadius?.cornerRadius ?? LayoutMetrics.cornerRadiusRound)
                                 .overlay(
-                                    RoundedRectangle(cornerRadius: style.acceptButtonCornerRadius?.cornerRadius ?? 24)
+                                    RoundedRectangle(cornerRadius: style.acceptButtonCornerRadius?.cornerRadius ?? LayoutMetrics.cornerRadiusRound)
                                         .stroke(Color(style.acceptButtonBorderColor), lineWidth: style.acceptButtonBorderWidth)
                                 )
                             }
                         }
                     }
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 20)
+                    .padding(.horizontal, LayoutMetrics.spacingLarge)
+                    .padding(.vertical, LayoutMetrics.spacingExtraLarge - LayoutMetrics.spacingSmall)
                 }
                 .background(Color(style.backgroundColor))
-                .cornerRadius(style.cornerRadius?.cornerRadius ?? 45)
+                .cornerRadius(style.cornerRadius?.cornerRadius ?? LayoutMetrics.cornerRadiusLarge * 3)
                 .overlay(
-                    RoundedRectangle(cornerRadius: style.cornerRadius?.cornerRadius ?? 45)
+                    RoundedRectangle(cornerRadius: style.cornerRadius?.cornerRadius ?? LayoutMetrics.cornerRadiusLarge * 3)
                         .stroke(Color(style.borderColor), lineWidth: style.borderWidth)
                 )
-                .padding(.horizontal, 8)
-                .padding(.top, 8)
+                .padding(.horizontal, LayoutMetrics.spacingStandard)
+                .padding(.top, LayoutMetrics.spacingStandard)
             )
         }
     }
@@ -377,16 +378,21 @@ struct CometChatIncomingCallSwiftUI_Previews: PreviewProvider {
         Group {
             CometChatIncomingCallSwiftUI()
                 .set(call: createMockCall(type: .audio))
-                .previewDisplayName("Audio Call")
+                .previewDisplayName("Audio Call (Light)")
+            
+            CometChatIncomingCallSwiftUI()
+                .set(call: createMockCall(type: .audio))
+                .preferredColorScheme(.dark)
+                .previewDisplayName("Audio Call (Dark)")
             
             CometChatIncomingCallSwiftUI()
                 .set(call: createMockCall(type: .video))
-                .previewDisplayName("Video Call")
+                .previewDisplayName("Video Call (Light)")
             
             CometChatIncomingCallSwiftUI()
                 .set(call: createMockCall(type: .video))
                 .preferredColorScheme(.dark)
-                .previewDisplayName("Dark Mode")
+                .previewDisplayName("Video Call (Dark)")
         }
     }
     
