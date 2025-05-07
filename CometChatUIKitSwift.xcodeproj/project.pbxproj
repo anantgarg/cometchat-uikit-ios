@@ -287,7 +287,6 @@
 		11601E6B2D6CF4C400129BBA /* MessageHeaderConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601BAA2D6CF4C400129BBA /* MessageHeaderConstants.swift */; };
 		11601E6C2D6CF4C400129BBA /* AssetConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601BEF2D6CF4C400129BBA /* AssetConstants.swift */; };
 		11601E6E2D6CF4C400129BBA /* CameraHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601C262D6CF4C400129BBA /* CameraHandler.swift */; };
-		11601E6F2D6CF4C400129BBA /* CometChatLinkPreviewBubble.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B482D6CF4C400129BBA /* CometChatLinkPreviewBubble.swift */; };
 		11601E702D6CF4C400129BBA /* Chronometer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601CD32D6CF4C400129BBA /* Chronometer.swift */; };
 		11601E712D6CF4C400129BBA /* TextInputElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601C172D6CF4C400129BBA /* TextInputElement.swift */; };
 		11601E722D6CF4C400129BBA /* CometChatUsers + Properties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601D242D6CF4C400129BBA /* CometChatUsers + Properties.swift */; };
@@ -6166,7 +6165,6 @@
 				11601E6B2D6CF4C400129BBA /* MessageHeaderConstants.swift in Sources */,
 				11601E6C2D6CF4C400129BBA /* AssetConstants.swift in Sources */,
 				11601E6E2D6CF4C400129BBA /* CameraHandler.swift in Sources */,
-				11601E6F2D6CF4C400129BBA /* CometChatLinkPreviewBubble.swift in Sources */,
 				11601E702D6CF4C400129BBA /* Chronometer.swift in Sources */,
 				11601E712D6CF4C400129BBA /* TextInputElement.swift in Sources */,
 				11601E722D6CF4C400129BBA /* CometChatUsers + Properties.swift in Sources */,
