@@ -6,6 +6,7 @@
 
 import SwiftUI
 import CometChatSDK
+import CometChatUIKitSwift.Components.Shared.Constants
 
 public struct CometChatCallLogsSwiftUI: View {
     @StateObject private var viewModel = CallLogsViewModelSwiftUI()
@@ -49,8 +50,8 @@ public struct CometChatCallLogsSwiftUI: View {
     
     private var errorStateTitleText = "OOPS!".localize()
     private var errorStateSubTitleText = "LOOKS_LIKE_SOMETHINGS_WENT_WORNG._PLEASE_TRY_AGAIN".localize()
-    private var errorStateImage = UIImage(named: "error-icon", in: CometChatUIKit.bundle, compatibleWith: nil)?.withRenderingMode(.alwaysOriginal) ?? UIImage()
-    private var emptyStateImage = UIImage(systemName: "phone.fill")?.withRenderingMode(.alwaysTemplate) ?? UIImage()
+    private var errorStateImageName = "error-icon"
+    private var emptyStateImageName = "phone.fill"
     private var emptyStateTitleText = "CALL_LOGS_EMPTY_MESSAGE".localize()
     private var emptyStateSubTitleText = "CALL_LOGS_EMPTY_SUBTITLE_MESSAGE".localize()
     
@@ -83,18 +84,26 @@ public struct CometChatCallLogsSwiftUI: View {
     }
     
     private var errorView: some View {
-        VStack(spacing: 16) {
-            Image(uiImage: errorStateImage)
-                .resizable()
-                .scaledToFit()
-                .frame(width: 80, height: 80)
+        VStack(spacing: LayoutMetrics.spacingLarge) {
+            if let bundleImage = UIImage(named: errorStateImageName, in: CometChatUIKit.bundle, compatibleWith: nil) {
+                Image(uiImage: bundleImage)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: LayoutMetrics.largeIconSize * 3, height: LayoutMetrics.largeIconSize * 3)
+            } else {
+                Image(systemName: "exclamationmark.triangle")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: LayoutMetrics.largeIconSize * 3, height: LayoutMetrics.largeIconSize * 3)
+                    .foregroundColor(Color(style.errorStateIconTint))
+            }
             
             Text(errorStateTitleText)
-                .font(.title2)
+                .font(Font(style.errorStateTitleFont))
                 .foregroundColor(Color(style.errorStateTextColor))
             
             Text(errorStateSubTitleText)
-                .font(.body)
+                .font(Font(style.errorStateTextFont))
                 .foregroundColor(Color(style.errorStateTextColor))
                 .multilineTextAlignment(.center)
                 .padding(.horizontal)
@@ -103,30 +112,30 @@ public struct CometChatCallLogsSwiftUI: View {
                 viewModel.fetchCallLogs()
             }) {
                 Text("RETRY".localize())
-                    .font(.headline)
-                    .foregroundColor(.white)
-                    .padding(.horizontal, 24)
-                    .padding(.vertical, 12)
-                    .background(Color.blue)
-                    .cornerRadius(8)
+                    .font(Font(style.errorStateButtonFont))
+                    .foregroundColor(Color(style.errorStateButtonTextColor))
+                    .padding(.horizontal, LayoutMetrics.spacingLarge)
+                    .padding(.vertical, LayoutMetrics.spacingMedium)
+                    .background(Color(style.errorStateButtonBackgroundColor))
+                    .cornerRadius(LayoutMetrics.cornerRadiusStandard)
             }
         }
     }
     
     private var emptyView: some View {
-        VStack(spacing: 16) {
-            Image(uiImage: emptyStateImage)
+        VStack(spacing: LayoutMetrics.spacingLarge) {
+            Image(systemName: emptyStateImageName)
                 .resizable()
                 .scaledToFit()
-                .frame(width: 80, height: 80)
+                .frame(width: LayoutMetrics.largeIconSize * 3, height: LayoutMetrics.largeIconSize * 3)
                 .foregroundColor(Color(style.emptyStateIconTint))
             
             Text(emptyStateTitleText)
-                .font(.title2)
+                .font(Font(style.emptyStateTitleFont))
                 .foregroundColor(Color(style.emptyStateTextColor))
             
             Text(emptyStateSubTitleText)
-                .font(.body)
+                .font(Font(style.emptyStateTextFont))
                 .foregroundColor(Color(style.emptyStateTextColor))
                 .multilineTextAlignment(.center)
                 .padding(.horizontal)
@@ -179,18 +188,18 @@ public struct CometChatCallLogsSwiftUI: View {
         return Button(action: {
             handleItemClick(callLog: callLog, callUser: callUser, callGroup: callGroup)
         }) {
-            HStack(spacing: 12) {
+            HStack(spacing: LayoutMetrics.spacingMedium) {
                 if let leadingView = leadingView?(callLog) {
                     leadingView
                 } else {
                     CometChatAvatarSwiftUI(style: avatarStyle)
                         .set(avatarURL: callUser?.avatar ?? callGroup?.icon ?? "")
                         .set(name: callUser?.name ?? callGroup?.name ?? "")
-                        .set(width: 48)
-                        .set(height: 48)
+                        .set(width: LayoutMetrics.avatarLarge)
+                        .set(height: LayoutMetrics.avatarLarge)
                 }
                 
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: LayoutMetrics.spacingSmall) {
                     if let titleView = titleView?(callLog) {
                         titleView
                     } else {
@@ -215,16 +224,24 @@ public struct CometChatCallLogsSwiftUI: View {
                     Button(action: {
                         handleCallButtonClick(callLog: callLog)
                     }) {
-                        Image(uiImage: callLog.type == .audio ? style.audioCallIcon ?? UIImage() : style.videoCallIcon ?? UIImage())
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 24, height: 24)
-                            .foregroundColor(Color(callLog.type == .audio ? style.audioCallIconTint : style.videoCallIconTint))
+                        if callLog.type == .audio {
+                            Image(systemName: "phone.fill")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: LayoutMetrics.largeIconSize, height: LayoutMetrics.largeIconSize)
+                                .foregroundColor(Color(style.audioCallIconTint))
+                        } else {
+                            Image(systemName: "video.fill")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: LayoutMetrics.largeIconSize, height: LayoutMetrics.largeIconSize)
+                                .foregroundColor(Color(style.videoCallIconTint))
+                        }
                     }
                 }
             }
-            .padding(.vertical, 12)
-            .padding(.horizontal, 16)
+            .padding(.vertical, LayoutMetrics.spacingMedium)
+            .padding(.horizontal, LayoutMetrics.spacingLarge)
             .contentShape(Rectangle())
             .contextMenu {
                 contextMenuItems(for: callLog)
@@ -237,12 +254,12 @@ public struct CometChatCallLogsSwiftUI: View {
     }
     
     private func defaultSubtitleView(for callLog: CometChatCallsSDK.CallLog) -> some View {
-        HStack(spacing: 4) {
-            Image(uiImage: getCallStatusIcon(for: callLog))
+        HStack(spacing: LayoutMetrics.spacingSmall) {
+            getCallStatusImage(for: callLog)
                 .resizable()
                 .scaledToFit()
-                .frame(width: 16, height: 16)
-                .foregroundColor(Color(getCallStatusIconTint(for: callLog)))
+                .frame(width: LayoutMetrics.iconSize, height: LayoutMetrics.iconSize)
+                .foregroundColor(getCallStatusIconTint(for: callLog))
             
             Text(getCallStatusText(for: callLog))
                 .font(Font(style.subtitleTextFont))
@@ -258,6 +275,18 @@ public struct CometChatCallLogsSwiftUI: View {
         }
     }
     
+    private func getCallStatusImage(for callLog: CometChatCallsSDK.CallLog) -> Image {
+        let isOutgoing = (callLog.initiator as? CallUser)?.uid == CometChat.getLoggedInUser()?.uid
+        
+        if isOutgoing {
+            return Image(systemName: "arrow.up.right")
+        } else if callLog.status == .unanswered || callLog.status == .cancelled {
+            return Image(systemName: "phone.down.fill")
+        } else {
+            return Image(systemName: "arrow.down.left")
+        }
+    }
+    
     private func contextMenuItems(for callLog: CometChatCallsSDK.CallLog) -> some View {
         Group {
             if let options = options?(callLog) {
@@ -265,10 +294,14 @@ public struct CometChatCallLogsSwiftUI: View {
                     Button(action: {
                         option.onClick?(nil, 0, option, nil)
                     }) {
-                        Label(
-                            title: { Text(option.title ?? "") },
-                            icon: { Image(uiImage: option.icon ?? UIImage()) }
-                        )
+                        if let icon = option.icon {
+                            Label(
+                                title: { Text(option.title ?? "") },
+                                icon: { Image(uiImage: icon) }
+                            )
+                        } else {
+                            Text(option.title ?? "")
+                        }
                     }
                 }
             }
@@ -278,10 +311,14 @@ public struct CometChatCallLogsSwiftUI: View {
                     Button(action: {
                         option.onClick?(nil, 0, option, nil)
                     }) {
-                        Label(
-                            title: { Text(option.title ?? "") },
-                            icon: { Image(uiImage: option.icon ?? UIImage()) }
-                        )
+                        if let icon = option.icon {
+                            Label(
+                                title: { Text(option.title ?? "") },
+                                icon: { Image(uiImage: icon) }
+                            )
+                        } else {
+                            Text(option.title ?? "")
+                        }
                     }
                 }
             }
@@ -311,27 +348,19 @@ public struct CometChatCallLogsSwiftUI: View {
                (callLog.status == .cancelled && (callLog.initiator as? CallUser)?.uid != CometChat.getLoggedInUser()?.uid)
     }
     
-    private func getCallStatusIcon(for callLog: CometChatCallsSDK.CallLog) -> UIImage {
-        let isOutgoing = (callLog.initiator as? CallUser)?.uid == CometChat.getLoggedInUser()?.uid
-        
-        if isOutgoing {
-            return style.outgoingCallIcon ?? UIImage()
-        } else if callLog.status == .unanswered || callLog.status == .cancelled {
-            return style.missedCallIcon ?? UIImage()
-        } else {
-            return style.incomingCallIcon ?? UIImage()
-        }
+    private func getCallStatusIcon(for callLog: CometChatCallsSDK.CallLog) -> Image {
+        getCallStatusImage(for: callLog)
     }
     
-    private func getCallStatusIconTint(for callLog: CometChatCallsSDK.CallLog) -> UIColor {
+    private func getCallStatusIconTint(for callLog: CometChatCallsSDK.CallLog) -> Color {
         let isOutgoing = (callLog.initiator as? CallUser)?.uid == CometChat.getLoggedInUser()?.uid
         
         if isOutgoing {
-            return style.outgoingCallIconTint
+            return Color(style.outgoingCallIconTint)
         } else if callLog.status == .unanswered || callLog.status == .cancelled {
-            return style.missedCallIconTint
+            return Color(style.missedCallIconTint)
         } else {
-            return style.incomingCallIconTint
+            return Color(style.incomingCallIconTint)
         }
     }
     
@@ -749,11 +778,11 @@ struct CometChatCallLogsSwiftUI_Previews: PreviewProvider {
     static var previews: some View {
         Group {
             CometChatCallLogsSwiftUI()
-                .previewDisplayName("Default")
+                .previewDisplayName("Call Logs (Light)")
             
             CometChatCallLogsSwiftUI()
                 .preferredColorScheme(.dark)
-                .previewDisplayName("Dark Mode")
+                .previewDisplayName("Call Logs (Dark)")
         }
     }
 }
