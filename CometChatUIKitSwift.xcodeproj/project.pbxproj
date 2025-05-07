@@ -197,7 +197,6 @@
 		11601DF42D6CF4C400129BBA /* MessageList + Reactions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601BCD2D6CF4C400129BBA /* MessageList + Reactions.swift */; };
 		11601DF52D6CF4C400129BBA /* AudioBubbleStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601C992D6CF4C400129BBA /* AudioBubbleStyle.swift */; };
 		11601DF62D6CF4C400129BBA /* CometChatOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601C622D6CF4C400129BBA /* CometChatOption.swift */; };
-		11601DF72D6CF4C400129BBA /* OutgoingCallViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B292D6CF4C400129BBA /* OutgoingCallViewModel.swift */; };
 		11601DF82D6CF4C400129BBA /* StickerKeyboardStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B7A2D6CF4C400129BBA /* StickerKeyboardStyle.swift */; };
 		11601DF92D6CF4C400129BBA /* HyperlinkBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601CF72D6CF4C400129BBA /* HyperlinkBuilder.swift */; };
 		11601DFA2D6CF4C400129BBA /* ActionElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601C072D6CF4C400129BBA /* ActionElement.swift */; };
@@ -6101,7 +6100,6 @@
 				11601DF42D6CF4C400129BBA /* MessageList + Reactions.swift in Sources */,
 				11601DF52D6CF4C400129BBA /* AudioBubbleStyle.swift in Sources */,
 				11601DF62D6CF4C400129BBA /* CometChatOption.swift in Sources */,
-				11601DF72D6CF4C400129BBA /* OutgoingCallViewModel.swift in Sources */,
 				11601DF82D6CF4C400129BBA /* StickerKeyboardStyle.swift in Sources */,
 				11601DF92D6CF4C400129BBA /* HyperlinkBuilder.swift in Sources */,
 				11601DFA2D6CF4C400129BBA /* ActionElement.swift in Sources */,
