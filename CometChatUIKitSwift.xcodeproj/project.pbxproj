@@ -13,7 +13,6 @@
 		11601D2C2D6CF4C400129BBA /* CallBubbleStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B082D6CF4C400129BBA /* CallBubbleStyle.swift */; };
 		11601D2D2D6CF4C400129BBA /* OptionElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601C132D6CF4C400129BBA /* OptionElement.swift */; };
 		11601D2E2D6CF4C400129BBA /* CometChatMessageHeader + Properties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601BA92D6CF4C400129BBA /* CometChatMessageHeader + Properties.swift */; };
-		11601D2F2D6CF4C400129BBA /* CometChatAIConversationSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B022D6CF4C400129BBA /* CometChatAIConversationSummary.swift */; };
 		11601D302D6CF4C400129BBA /* QuickReactionsConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601BBB2D6CF4C400129BBA /* QuickReactionsConfiguration.swift */; };
 		11601D312D6CF4C400129BBA /* PanModalAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601CE62D6CF4C400129BBA /* PanModalAnimator.swift */; };
 		11601D322D6CF4C400129BBA /* MessagePopupAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601BB72D6CF4C400129BBA /* MessagePopupAnimator.swift */; };
@@ -5904,7 +5903,6 @@
 				11601D2C2D6CF4C400129BBA /* CallBubbleStyle.swift in Sources */,
 				11601D2D2D6CF4C400129BBA /* OptionElement.swift in Sources */,
 				11601D2E2D6CF4C400129BBA /* CometChatMessageHeader + Properties.swift in Sources */,
-				11601D2F2D6CF4C400129BBA /* CometChatAIConversationSummary.swift in Sources */,
 				11601D302D6CF4C400129BBA /* QuickReactionsConfiguration.swift in Sources */,
 				11601D312D6CF4C400129BBA /* PanModalAnimator.swift in Sources */,
 				11601D322D6CF4C400129BBA /* MessagePopupAnimator.swift in Sources */,
