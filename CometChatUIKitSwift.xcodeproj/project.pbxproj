@@ -263,7 +263,6 @@
 		11601E512D6CF4C400129BBA /* CometChatUIEventListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601BFF2D6CF4C400129BBA /* CometChatUIEventListener.swift */; };
 		11601E532D6CF4C400129BBA /* DeviceDetection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601C3A2D6CF4C400129BBA /* DeviceDetection.swift */; };
 		11601E542D6CF4C400129BBA /* UISearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601C502D6CF4C400129BBA /* UISearchBar.swift */; };
-		11601E552D6CF4C400129BBA /* MessageTranslationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B502D6CF4C400129BBA /* MessageTranslationExtension.swift */; };
 		11601E562D6CF4C400129BBA /* ListItemStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601CCB2D6CF4C400129BBA /* ListItemStyle.swift */; };
 		11601E572D6CF4C400129BBA /* CollaborativeWhiteboardBubbleConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B422D6CF4C400129BBA /* CollaborativeWhiteboardBubbleConfiguration.swift */; };
 		11601E582D6CF4C400129BBA /* CometChatReactions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601BC42D6CF4C400129BBA /* CometChatReactions.swift */; };
@@ -6137,7 +6136,6 @@
 				11601E512D6CF4C400129BBA /* CometChatUIEventListener.swift in Sources */,
 				11601E532D6CF4C400129BBA /* DeviceDetection.swift in Sources */,
 				11601E542D6CF4C400129BBA /* UISearchBar.swift in Sources */,
-				11601E552D6CF4C400129BBA /* MessageTranslationExtension.swift in Sources */,
 				11601E562D6CF4C400129BBA /* ListItemStyle.swift in Sources */,
 				11601E572D6CF4C400129BBA /* CollaborativeWhiteboardBubbleConfiguration.swift in Sources */,
 				11601E582D6CF4C400129BBA /* CometChatReactions.swift in Sources */,
