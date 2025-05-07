@@ -4,6 +4,7 @@
 
 import SwiftUI
 import CometChatSDK
+import CometChatUIKitSwift.Components.Shared.Constants
 
 public struct CometChatCollaborativeBubbleSwiftUI: View {
     
@@ -26,27 +27,27 @@ public struct CometChatCollaborativeBubbleSwiftUI: View {
     }
     
     public var body: some View {
-        VStack(spacing: CometChatSpacing.Padding.p2) {
+        VStack(spacing: LayoutMetrics.spacingStandard) {
             if let topImage = topImage {
                 Image(uiImage: topImage)
                     .resizable()
                     .aspectRatio(contentMode: .fill)
-                    .frame(height: 140)
-                    .cornerRadius(CometChatSpacing.Radius.r2)
-                    .padding(.horizontal, CometChatSpacing.Padding.p1)
+                    .frame(height: LayoutMetrics.whiteboardTopImageHeight)
+                    .cornerRadius(LayoutMetrics.cornerRadiusStandard)
+                    .padding(.horizontal, LayoutMetrics.spacingSmall)
             }
             
-            HStack(spacing: CometChatSpacing.Padding.p1) {
+            HStack(spacing: LayoutMetrics.spacingSmall) {
                 if let collaborativeIconImage = collaborativeIconImage {
                     Image(uiImage: collaborativeIconImage)
                         .renderingMode(.template)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .frame(width: 32, height: 32)
+                        .frame(width: LayoutMetrics.whiteboardIconSize, height: LayoutMetrics.whiteboardIconSize)
                         .foregroundColor(Color(style.iconTint))
                 }
                 
-                VStack(alignment: .leading, spacing: CometChatSpacing.Padding.p) {
+                VStack(alignment: .leading, spacing: LayoutMetrics.spacingSmall) {
                     Text(title)
                         .font(Font(style.titleFont))
                         .foregroundColor(Color(style.titleColor))
@@ -58,12 +59,12 @@ public struct CometChatCollaborativeBubbleSwiftUI: View {
                 
                 Spacer()
             }
-            .padding(.horizontal, CometChatSpacing.Padding.p1)
+            .padding(.horizontal, LayoutMetrics.spacingSmall)
             
             Rectangle()
                 .fill(Color.black.opacity(0.4))
-                .frame(height: 0.3)
-                .padding(.horizontal, CometChatSpacing.Padding.p1)
+                .frame(height: LayoutMetrics.thinDividerHeight)
+                .padding(.horizontal, LayoutMetrics.spacingSmall)
             
             Button(action: {
                 handleOpenButtonClick()
@@ -71,18 +72,18 @@ public struct CometChatCollaborativeBubbleSwiftUI: View {
                 Text(buttonText)
                     .font(Font(style.buttonTextFont))
                     .foregroundColor(Color(style.buttonTextColor))
-                    .frame(height: 25)
+                    .frame(height: LayoutMetrics.whiteboardButtonHeight)
             }
-            .padding(.horizontal, CometChatSpacing.Padding.p1)
-            .padding(.bottom, CometChatSpacing.Padding.p1)
+            .padding(.horizontal, LayoutMetrics.spacingSmall)
+            .padding(.bottom, LayoutMetrics.spacingSmall)
         }
         .background(Color(style.backgroundColor ?? .clear))
-        .cornerRadius(style.cornerRadius?.cornerRadius ?? 12)
+        .cornerRadius(style.cornerRadius?.cornerRadius ?? LayoutMetrics.cornerRadiusMedium)
         .overlay(
-            RoundedRectangle(cornerRadius: style.cornerRadius?.cornerRadius ?? 12)
+            RoundedRectangle(cornerRadius: style.cornerRadius?.cornerRadius ?? LayoutMetrics.cornerRadiusMedium)
                 .stroke(Color(style.borderColor ?? .clear), lineWidth: style.borderWidth ?? 0)
         )
-        .frame(width: 228, height: 145)
+        .frame(width: LayoutMetrics.whiteboardBubbleWidth, height: LayoutMetrics.whiteboardBubbleHeight)
     }
     
     private func handleOpenButtonClick() {
@@ -192,8 +193,8 @@ public struct CometChatCollaborativeBubbleSwiftUI: View {
         let hostingController = UIHostingController(rootView: self)
         let view = hostingController.view
         view?.translatesAutoresizingMaskIntoConstraints = false
-        view?.widthAnchor.constraint(equalToConstant: 228).isActive = true
-        view?.heightAnchor.constraint(equalToConstant: 145).isActive = true
+        view?.widthAnchor.constraint(equalToConstant: LayoutMetrics.whiteboardBubbleWidth).isActive = true
+        view?.heightAnchor.constraint(equalToConstant: LayoutMetrics.whiteboardBubbleHeight).isActive = true
         return view ?? UIView()
     }
 }
@@ -223,18 +224,34 @@ struct CometChatCollaborativeBubbleSwiftUI_Previews: PreviewProvider {
                 .set(subTitle: "OPEN_DOCUMENT_TO_EDIT_CONTENT_TOGETHER".localize())
                 .set(buttonText: "OPEN_DOCUMENT".localize())
                 .set(style: CollaborativeBubbleStyle(styleType: .incoming))
-                .previewLayout(.sizeThatFits)
                 .padding()
-                .previewDisplayName("Incoming Document Bubble")
+                .previewDisplayName("Incoming Document Bubble (Light)")
+                
+            CometChatCollaborativeBubbleSwiftUI(message: customMessage)
+                .set(title: "COLLABORATIVE_DOCUMENT".localize())
+                .set(subTitle: "OPEN_DOCUMENT_TO_EDIT_CONTENT_TOGETHER".localize())
+                .set(buttonText: "OPEN_DOCUMENT".localize())
+                .set(style: CollaborativeBubbleStyle(styleType: .incoming))
+                .padding()
+                .preferredColorScheme(.dark)
+                .previewDisplayName("Incoming Document Bubble (Dark)")
             
             CometChatCollaborativeBubbleSwiftUI(message: customMessage)
                 .set(title: "COLLABORATIVE_DOCUMENT".localize())
                 .set(subTitle: "OPEN_DOCUMENT_TO_EDIT_CONTENT_TOGETHER".localize())
                 .set(buttonText: "OPEN_DOCUMENT".localize())
                 .set(style: CollaborativeBubbleStyle(styleType: .outgoing))
-                .previewLayout(.sizeThatFits)
                 .padding()
-                .previewDisplayName("Outgoing Document Bubble")
+                .previewDisplayName("Outgoing Document Bubble (Light)")
+                
+            CometChatCollaborativeBubbleSwiftUI(message: customMessage)
+                .set(title: "COLLABORATIVE_DOCUMENT".localize())
+                .set(subTitle: "OPEN_DOCUMENT_TO_EDIT_CONTENT_TOGETHER".localize())
+                .set(buttonText: "OPEN_DOCUMENT".localize())
+                .set(style: CollaborativeBubbleStyle(styleType: .outgoing))
+                .padding()
+                .preferredColorScheme(.dark)
+                .previewDisplayName("Outgoing Document Bubble (Dark)")
         }
     }
 }
