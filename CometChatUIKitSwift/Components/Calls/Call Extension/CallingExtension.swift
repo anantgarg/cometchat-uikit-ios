@@ -18,7 +18,7 @@ import UIKit
 
         override public func enable() {
             ChatConfigurator.enable { dataSource in
-                CallingExtensionDecorator(dataSource: dataSource, configuration: configuration)
+                CallingExtensionDecoratorSwiftUI(dataSource: dataSource, configuration: configuration)
             }
         }
 

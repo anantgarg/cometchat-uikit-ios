@@ -365,7 +365,6 @@
 		11601E9D2D6CF4C400129BBA /* SchedulerMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601C152D6CF4C400129BBA /* SchedulerMessage.swift */; };
 		11601E9E2D6CF4C400129BBA /* ExtensionModerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601C1F2D6CF4C400129BBA /* ExtensionModerator.swift */; };
 		11601E9F2D6CF4C400129BBA /* GroupsStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B8F2D6CF4C400129BBA /* GroupsStyle.swift */; };
-		11601EA02D6CF4C400129BBA /* CallingExtensionDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B132D6CF4C400129BBA /* CallingExtensionDecorator.swift */; };
 		11601EA12D6CF4C400129BBA /* ActivityIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601C972D6CF4C400129BBA /* ActivityIndicatorView.swift */; };
 		11601EA22D6CF4C400129BBA /* CometChatOngoingCall.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B222D6CF4C400129BBA /* CometChatOngoingCall.swift */; };
 		11601EA32D6CF4C400129BBA /* UserGroupMemberPresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601CF22D6CF4C400129BBA /* UserGroupMemberPresentable.swift */; };
@@ -6278,7 +6277,6 @@
 				11601E9D2D6CF4C400129BBA /* SchedulerMessage.swift in Sources */,
 				11601E9E2D6CF4C400129BBA /* ExtensionModerator.swift in Sources */,
 				11601E9F2D6CF4C400129BBA /* GroupsStyle.swift in Sources */,
-				11601EA02D6CF4C400129BBA /* CallingExtensionDecorator.swift in Sources */,
 				11601EA12D6CF4C400129BBA /* ActivityIndicatorView.swift in Sources */,
 				11601EA22D6CF4C400129BBA /* CometChatOngoingCall.swift in Sources */,
 				11601EA32D6CF4C400129BBA /* UserGroupMemberPresentable.swift in Sources */,
