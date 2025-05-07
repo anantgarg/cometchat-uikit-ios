@@ -268,19 +268,23 @@ public extension CometChatMessageList {
 
     @discardableResult
     func didMessageInformationClicked(message: BaseMessage) -> Self {
-        let messageInformationController = CometChatMessageInformation()
-        let navigationController = UINavigationController(rootViewController: messageInformationController)
-
-        if let messageInformationConfiguration {
-            configureMessageInformation(configuration: messageInformationConfiguration, messageInformation: messageInformationController)
+        var messageInformationSwiftUI = CometChatMessageInformationSwiftUI()
+        
+        messageInformationSwiftUI = messageInformationSwiftUI.set(message: message)
+        
+        if let dateTimeFormatter = dateTimeFormatter {
+            messageInformationSwiftUI = messageInformationSwiftUI.set(dateTimeFormatter: dateTimeFormatter)
         }
-        messageInformationController.dateTimeFormatter = dateTimeFormatter
-        messageInformationController.set(message: message)
-
+        
         if let indexPath = viewModel.getIndexPath(for: message), let cell = tableView.cellForRow(at: indexPath) as? CometChatMessageBubble {
-            messageInformationController.bubbleSnapshotView = cell.bubbleStackView.snapshotView(afterScreenUpdates: true)
+            if let bubbleSnapshot = cell.bubbleStackView.snapshotView(afterScreenUpdates: true) {
+                messageInformationSwiftUI = messageInformationSwiftUI.set(bubbleSnapshotView: bubbleSnapshot)
+            }
         }
-
+        
+        let hostingController = messageInformationSwiftUI.toUIKit()
+        let navigationController = UINavigationController(rootViewController: hostingController)
+        
         if #available(iOS 15.0, *) {
             if let presentationController = navigationController.presentationController as? UISheetPresentationController {
                 presentationController.detents = [.medium(), .large()]
