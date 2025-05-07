@@ -4,6 +4,7 @@
 
 import SwiftUI
 import CometChatSDK
+import CometChatUIKitSwift.Components.Shared.Constants
 
 protocol StickerViewDelegateSwiftUI {
     func didStickerSelected(sticker: CometChatSticker)
@@ -36,7 +37,7 @@ struct StickerCellSwiftUI: View {
                         EmptyView()
                     }
                 }
-                .frame(width: 60, height: 60)
+                .frame(width: LayoutMetrics.avatarLarge + LayoutMetrics.spacingMedium, height: LayoutMetrics.avatarLarge + LayoutMetrics.spacingMedium)
             } else if let stickerSet = stickerSet, let stickers = stickerSet.stickers, let firstSticker = stickers.first, let url = URL(string: firstSticker.url) {
                 AsyncImage(url: url) { phase in
                     switch phase {
@@ -53,11 +54,11 @@ struct StickerCellSwiftUI: View {
                         EmptyView()
                     }
                 }
-                .frame(width: 32, height: 32)
+                .frame(width: LayoutMetrics.mediumIconSize + LayoutMetrics.spacingMedium, height: LayoutMetrics.mediumIconSize + LayoutMetrics.spacingMedium)
             } else {
                 Image(systemName: "photo")
                     .foregroundColor(.gray)
-                    .frame(width: 32, height: 32)
+                    .frame(width: LayoutMetrics.mediumIconSize + LayoutMetrics.spacingMedium, height: LayoutMetrics.mediumIconSize + LayoutMetrics.spacingMedium)
             }
         }
     }
@@ -98,14 +99,14 @@ public struct CometChatStickerKeyboardSwiftUI: View {
                 contentView
             }
         }
-        .frame(height: 250)
+        .frame(height: LayoutMetrics.loadingContentHeight * 4)
         .background(Color(CometChatTheme.palatte.background))
     }
     
     private var contentView: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: LayoutMetrics.spacingStandard) {
             ScrollView {
-                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: CometChatSpacing.Spacing.s4), count: 4), spacing: CometChatSpacing.Spacing.s5) {
+                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: LayoutMetrics.spacingMedium), count: 4), spacing: LayoutMetrics.spacingLarge) {
                     ForEach(stickersForPreview.indices, id: \.self) { index in
                         StickerCellSwiftUI(sticker: stickersForPreview[index])
                             .onTapGesture {
@@ -116,8 +117,8 @@ public struct CometChatStickerKeyboardSwiftUI: View {
                             }
                     }
                 }
-                .padding(.horizontal, 8)
-                .padding(.vertical, 8)
+                .padding(.horizontal, LayoutMetrics.spacingStandard)
+                .padding(.vertical, LayoutMetrics.spacingStandard)
             }
             
             Rectangle()
@@ -137,12 +138,12 @@ public struct CometChatStickerKeyboardSwiftUI: View {
                                 }
                             }
                             .background(selectedStickerSetIndex == index ? Color(CometChatTheme.palatte.accent100).opacity(0.3) : Color.clear)
-                            .cornerRadius(16)
+                            .cornerRadius(LayoutMetrics.cornerRadiusLarge)
                     }
                 }
-                .padding(.horizontal, 8)
-                .padding(.vertical, 8)
-                .frame(height: 48)
+                .padding(.horizontal, LayoutMetrics.spacingStandard)
+                .padding(.vertical, LayoutMetrics.spacingStandard)
+                .frame(height: LayoutMetrics.avatarLarge)
             }
         }
     }
@@ -153,22 +154,22 @@ public struct CometChatStickerKeyboardSwiftUI: View {
             ProgressView()
                 .progressViewStyle(CircularProgressViewStyle())
             Text("Loading...")
-                .font(.system(size: 14))
+                .font(.caption)
                 .foregroundColor(Color(CometChatTheme.palatte.accent600))
-                .padding(.top, 8)
+                .padding(.top, LayoutMetrics.spacingStandard)
             Spacer()
         }
     }
     
     private var errorView: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: LayoutMetrics.spacingLarge) {
             Spacer()
             Image(systemName: "exclamationmark.triangle")
-                .font(.system(size: 32))
+                .font(.largeTitle)
                 .foregroundColor(Color(CometChatTheme.palatte.error))
             
             Text(errorMessage)
-                .font(.system(size: 16))
+                .font(.body)
                 .foregroundColor(Color(CometChatTheme.palatte.accent600))
                 .multilineTextAlignment(.center)
             
@@ -176,12 +177,12 @@ public struct CometChatStickerKeyboardSwiftUI: View {
                 retry()
             }) {
                 Text("Retry")
-                    .font(.system(size: 14, weight: .medium))
+                    .font(.footnote.bold())
                     .foregroundColor(.white)
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 8)
+                    .padding(.horizontal, LayoutMetrics.spacingLarge)
+                    .padding(.vertical, LayoutMetrics.spacingStandard)
                     .background(Color(CometChatTheme.palatte.primary))
-                    .cornerRadius(8)
+                    .cornerRadius(LayoutMetrics.cornerRadiusStandard)
             }
             Spacer()
         }
@@ -189,18 +190,18 @@ public struct CometChatStickerKeyboardSwiftUI: View {
     }
     
     private var emptyView: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: LayoutMetrics.spacingLarge) {
             Spacer()
             Image(systemName: "photo.on.rectangle.angled")
-                .font(.system(size: 32))
+                .font(.largeTitle)
                 .foregroundColor(Color(CometChatTheme.palatte.accent400))
             
             Text("No Stickers Found")
-                .font(.system(size: 16, weight: .medium))
+                .font(.headline)
                 .foregroundColor(Color(CometChatTheme.palatte.accent600))
             
             Text("There are no stickers available at the moment.")
-                .font(.system(size: 14))
+                .font(.caption)
                 .foregroundColor(Color(CometChatTheme.palatte.accent500))
                 .multilineTextAlignment(.center)
             Spacer()
@@ -297,7 +298,15 @@ extension Array {
 
 struct CometChatStickerKeyboardSwiftUI_Previews: PreviewProvider {
     static var previews: some View {
-        CometChatStickerKeyboardSwiftUI()
-            .previewLayout(.fixed(width: 375, height: 250))
+        Group {
+            CometChatStickerKeyboardSwiftUI()
+                .frame(width: 375, height: 250)
+                .previewDisplayName("Sticker Keyboard (Light)")
+            
+            CometChatStickerKeyboardSwiftUI()
+                .frame(width: 375, height: 250)
+                .preferredColorScheme(.dark)
+                .previewDisplayName("Sticker Keyboard (Dark)")
+        }
     }
 }
