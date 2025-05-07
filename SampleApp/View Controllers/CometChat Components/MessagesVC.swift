@@ -16,18 +16,23 @@ class MessagesVC: UIViewController {
     lazy var randamID = Date().timeIntervalSince1970
 
     //Setting Up header
-    lazy var headerView: CometChatMessageHeader = {
-        let headerView = CometChatMessageHeader()
+    lazy var headerView: UIView = {
+        var headerSwiftUI = CometChatMessageHeaderSwiftUI()
+        if let user = user { headerSwiftUI = headerSwiftUI.set(user: user) }
+        if let group = group { headerSwiftUI = headerSwiftUI.set(group: group) }
+        
+        headerSwiftUI = headerSwiftUI.set(trailView: { [weak self] user, group in
+            guard let this = self else { return AnyView(EmptyView()) }
+            return AnyView(this.getInfoButtonSwiftUI())
+        })
+        
+        if user?.blockedByMe == true { 
+            headerSwiftUI = headerSwiftUI.set(hideUserStatus: true)
+        }
+        
+        let headerView = headerSwiftUI.toUIKit()
         headerView.translatesAutoresizingMaskIntoConstraints = false
         headerView.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        if let user = user { headerView.set(user: user) }
-        if let group = group { headerView.set(group: group) }
-        headerView.set(controller: self) //passing controller needs to be mandatory
-        headerView.set(trailView: { [weak self] user, group in
-            guard let this = self else { return UIView() }
-            return this.getInfoButton()
-        })
-        if user?.blockedByMe == true { headerView.hideUserStatus = true }
         return headerView
     }()
         
@@ -149,6 +154,32 @@ class MessagesVC: UIViewController {
         }
     }
     
+    func getInfoButtonSwiftUI() -> some View {
+        Button(action: {
+            DispatchQueue.main.async { [weak self] in
+                guard let this = self else { return }
+                if let group = this.group {
+                    let detailsView = GroupDetailsViewController()
+                    detailsView.group = this.group
+                    detailsView.onExitGroup = { group in
+                        self?.group = group
+                        if !(group.hasJoined){
+                            //Handle bann members real time update here
+                        }
+                    }
+                    this.navigationController?.pushViewController(detailsView, animated: true)
+                } else {
+                    let detailsView = UserDetailsViewController()
+                    detailsView.user = this.user
+                    this.navigationController?.pushViewController(detailsView, animated: true)
+                }
+            }
+        }) {
+            Image(systemName: "info.circle")
+                .foregroundColor(Color(CometChatTheme.iconColorPrimary))
+        }
+    }
+    
     func getInfoButton() -> UIView {
         let detailButton = CometChatButton()
         let infoIcon: UIImage = UIImage(systemName: "info.circle")?.withRenderingMode(.alwaysTemplate) ?? UIImage()
@@ -162,7 +193,7 @@ class MessagesVC: UIViewController {
                 guard let this = self else { return }
                 if let group = this.group{
                     let detailsView = GroupDetailsViewController()
-                    detailsView.group = self?.headerView.viewModel.group
+                    detailsView.group = self?.group
                     detailsView.onExitGroup = { group in
                         self?.group = group
                         if !(group.hasJoined){
@@ -172,7 +203,7 @@ class MessagesVC: UIViewController {
                     this.navigationController?.pushViewController(detailsView, animated: true)
                 }else{
                     let detailsView = UserDetailsViewController()
-                    detailsView.user = self?.headerView.viewModel.user
+                    detailsView.user = self?.user
                     this.navigationController?.pushViewController(detailsView, animated: true)
                 }
             }
@@ -209,7 +240,30 @@ extension MessagesVC: CometChatGroupDelegate, CometChatGroupEventListener {
     func ccGroupLeft(action: ActionMessage, leftUser: User, leftGroup: Group) {
         if leftGroup.guid == group?.guid && CometChat.getLoggedInUser()?.uid == leftUser.uid {
             disableMessageSending()
-            headerView.set(group: leftGroup)
+            self.group = leftGroup
+            let headerContainer = self.view.viewWithTag(1001)
+            headerContainer?.removeFromSuperview()
+            
+            let newHeaderView = CometChatMessageHeaderSwiftUI()
+                .set(group: leftGroup)
+                .set(trailView: { [weak self] user, group in
+                    guard let this = self else { return AnyView(EmptyView()) }
+                    return AnyView(this.getInfoButtonSwiftUI())
+                })
+                .toUIKit()
+            
+            newHeaderView.translatesAutoresizingMaskIntoConstraints = false
+            newHeaderView.tag = 1001
+            newHeaderView.heightAnchor.constraint(equalToConstant: 50).isActive = true
+            
+            self.view.addSubview(newHeaderView)
+            NSLayoutConstraint.activate([
+                newHeaderView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+                newHeaderView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                newHeaderView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            ])
+            
+            self.headerView = newHeaderView
         }
     }
     

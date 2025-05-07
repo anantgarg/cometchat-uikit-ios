@@ -11,45 +11,80 @@ import Foundation
 import CometChatSDK
 import CometChatUIKitSwift
 import CometChatCallsSDK
+import SwiftUI
+
+struct UserMenuView: View {
+    var user: User
+    var group: Group?
+    var controller: UIViewController
+    
+    var body: some View {
+        HStack(spacing: 8) {
+            Button(action: {}) {
+                Image(systemName: "phone")
+                    .foregroundColor(Color(CometChatTheme.iconColorPrimary))
+            }
+            Button(action: {}) {
+                Image(systemName: "video")
+                    .foregroundColor(Color(CometChatTheme.iconColorPrimary))
+            }
+        }
+        .frame(width: 100)
+    }
+}
+
+struct CallButtonsView: View {
+    var group: Group?
+    var controller: UIViewController
+    
+    var body: some View {
+        HStack(spacing: 8) {
+            Button(action: {}) {
+                Image(systemName: "phone")
+                    .foregroundColor(Color(CometChatTheme.iconColorPrimary))
+            }
+            Button(action: {}) {
+                Image(systemName: "video")
+                    .foregroundColor(Color(CometChatTheme.iconColorPrimary))
+            }
+        }
+        .frame(width: 60)
+    }
+}
 
 public class CallLogDetailsVC: UIViewController {
     
-    public lazy var userInfoView: CometChatMessageHeader = {
-        let view = CometChatMessageHeader()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.heightAnchor.constraint(equalToConstant: 65).isActive = true
-        view.backgroundColor = .yellow
-        view.titleLabel.font = CometChatTypography.Heading4.medium
-        view.subtitleLabel.font = CometChatTypography.Body.regular
-        view.titleContainerStackView.spacing = 4
-        view.set(controller: self)
-        view.set(trailView: { user, group in
+    public lazy var userInfoView: UIView = {
+        var headerSwiftUI = CometChatMessageHeaderSwiftUI()
+        
+        let headerStyle = MessageHeaderStyle()
+        headerStyle.titleFont = CometChatTypography.Heading4.medium
+        headerStyle.subtitleFont = CometChatTypography.Body.regular
+        headerStyle.titleContainerSpacing = 4
+        headerStyle.background = .yellow
+        
+        headerSwiftUI = headerSwiftUI.set(style: headerStyle)
+        
+        headerSwiftUI = headerSwiftUI.set(trailView: { [weak self] user, group in
+            guard let this = self else { return AnyView(EmptyView()) }
+            
             if let user = user {
-                
-                let menu = CometChatUIKit.getDataSource().getAuxiliaryHeaderMenu(user: user, group: group, controller: self, id: nil, additionalConfiguration: AdditionalConfiguration())
-                menu?.distribution = .fillEqually
-                menu?.alignment = .center
-                menu?.spacing = 8
-                menu?.widthAnchor.constraint(equalToConstant: 100).isActive = true
-                return menu ?? UIView()
-                
+                return AnyView(
+                    UserMenuView(user: user, group: group, controller: this)
+                )
             } else {
-                let callButton = CometChatCallButtons(width: 24, height: 24)
-                callButton.set(controller: self)
-                
-                if let group = group { callButton.set(group: group) }
-                callButton.set(callSettingsBuilder: { user, group, isAudioOnly in
-                    var callSettingsBuilder = CallSettingsBuilder()
-                        .setIsAudioOnly(isAudioOnly)
-                    callSettingsBuilder = callSettingsBuilder.setDefaultAudioMode(isAudioOnly ? "EARPIECE" : "SPEAKER")
-                    return callSettingsBuilder
-                })
-                callButton.distribution = .fillEqually
-                callButton.widthAnchor.constraint(equalToConstant: 60).isActive = true
-                return callButton
+                return AnyView(
+                    CallButtonsView(group: group, controller: this)
+                )
             }
         })
-        return view
+        
+        let headerView = headerSwiftUI.toUIKit()
+        headerView.translatesAutoresizingMaskIntoConstraints = false
+        headerView.heightAnchor.constraint(equalToConstant: 65).isActive = true
+        headerView.tag = 1001 // Tag for identification
+        
+        return headerView
     }()
     
     public lazy var currentCallDetailView: UIView = {
@@ -171,11 +206,43 @@ public class CallLogDetailsVC: UIViewController {
 
     override public func viewDidLoad() {
         super.viewDidLoad()
-        if let user = currentUser{
-            userInfoView.set(user: user)
-        }else if let group = currentGroup{
-            userInfoView.set(group: group)
+        
+        if let user = currentUser {
+            let headerContainer = self.view.viewWithTag(1001)
+            headerContainer?.removeFromSuperview()
+            
+            let newHeaderView = CometChatMessageHeaderSwiftUI()
+                .set(user: user)
+                .set(trailView: { [weak self] user, group in
+                    guard let this = self else { return AnyView(EmptyView()) }
+                    return AnyView(UserMenuView(user: user!, group: group, controller: this))
+                })
+                .toUIKit()
+            
+            newHeaderView.translatesAutoresizingMaskIntoConstraints = false
+            newHeaderView.tag = 1001
+            newHeaderView.heightAnchor.constraint(equalToConstant: 65).isActive = true
+            
+            userInfoView = newHeaderView
+        } else if let group = currentGroup {
+            let headerContainer = self.view.viewWithTag(1001)
+            headerContainer?.removeFromSuperview()
+            
+            let newHeaderView = CometChatMessageHeaderSwiftUI()
+                .set(group: group)
+                .set(trailView: { [weak self] user, group in
+                    guard let this = self else { return AnyView(EmptyView()) }
+                    return AnyView(CallButtonsView(group: group, controller: this))
+                })
+                .toUIKit()
+            
+            newHeaderView.translatesAutoresizingMaskIntoConstraints = false
+            newHeaderView.tag = 1001
+            newHeaderView.heightAnchor.constraint(equalToConstant: 65).isActive = true
+            
+            userInfoView = newHeaderView
         }
+        
         setupPageViewController()
         getCallHistory()
         buildUI()
@@ -198,12 +265,8 @@ public class CallLogDetailsVC: UIViewController {
         view.addSubview(currentCallDetailView)
         view.addSubview(tabsCollectionView)
         view.addSubview(separatorView)
-        userInfoView.backButton.removeFromSuperview()
+        
         NSLayoutConstraint.activate([
-            userInfoView.tailView.centerYAnchor.constraint(equalTo: userInfoView.avatar.centerYAnchor),
-            userInfoView.avatar.leadingAnchor.constraint(equalTo: userInfoView.leadingAnchor, constant: 16),
-            userInfoView.avatar.heightAnchor.constraint(equalToConstant: 60),
-            userInfoView.avatar.widthAnchor.constraint(equalToConstant: 60),
             userInfoView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 7),
             userInfoView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             userInfoView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
