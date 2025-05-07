@@ -153,25 +153,33 @@
 
         private func startGroupCall(sessionID: String, group: Group, isVideoCall: Bool) {
             DispatchQueue.main.async {
-                let ongoingCall = CometChatOngoingCall()
-                ongoingCall.set(sessionId: sessionID)
-                if let callSettingsBuilderCallBack {
-                    let callSettingsBuilder = callSettingsBuilderCallBack(nil, group, false) as? CometChatCallsSDK.CallSettingsBuilder
-                    ongoingCall.set(callSettingsBuilder: callSettingsBuilder)
-                } else {
-                    var callSettingsBuilder = CallingDefaultBuilderSwiftUI.callSettingsBuilder as? CometChatCallsSDK.CallSettingsBuilder
-                    callSettingsBuilder = callSettingsBuilder?.setIsAudioOnly(!isVideoCall)
-                    callSettingsBuilder = callSettingsBuilder?.setDefaultAudioMode(isVideoCall ? "SPEAKER" : "EARPIECE")
-                    if isVideoCall {
-                        callSettingsBuilder = callSettingsBuilder?.setStartVideoMuted(false)
+                if let controller = self.controller {
+                    let ongoingCallView = CometChatOngoingCallSwiftUI()
+                        .set(sessionId: sessionID)
+                    
+                    if let callSettingsBuilderCallBack {
+                        let callSettingsBuilder = callSettingsBuilderCallBack(nil, group, false) as? CometChatCallsSDK.CallSettingsBuilder
+                        ongoingCallView.set(callSettingsBuilder: callSettingsBuilder)
+                    } else {
+                        var callSettingsBuilder = CallingDefaultBuilderSwiftUI.callSettingsBuilder as? CometChatCallsSDK.CallSettingsBuilder
+                        callSettingsBuilder = callSettingsBuilder?.setIsAudioOnly(!isVideoCall)
+                        callSettingsBuilder = callSettingsBuilder?.setDefaultAudioMode(isVideoCall ? "SPEAKER" : "EARPIECE")
+                        if isVideoCall {
+                            callSettingsBuilder = callSettingsBuilder?.setStartVideoMuted(false)
+                        }
+                        ongoingCallView.set(callSettingsBuilder: callSettingsBuilder)
                     }
-                    ongoingCall.set(callSettingsBuilder: callSettingsBuilder)
-                }
-                ongoingCall.set(callWorkFlow: .directCalling)
-                ongoingCall.modalPresentationStyle = .fullScreen
-                controller?.present(ongoingCall, animated: true, completion: {
+                    ongoingCallView.set(callWorkFlow: .directCalling)
+                    
+                    CometChatOngoingCallSwiftUI.present(
+                        on: controller,
+                        sessionId: sessionID,
+                        callSettingsBuilder: callSettingsBuilderCallBack?(nil, group, false) as? CometChatCallsSDK.CallSettingsBuilder,
+                        callWorkFlow: .directCalling
+                    )
+                    
                     viewModel.setDisabled(false)
-                })
+                }
             }
         }
 

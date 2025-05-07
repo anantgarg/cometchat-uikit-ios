@@ -122,20 +122,22 @@
             viewModel.onCallAccepted = { [weak self] call in
                 DispatchQueue.main.async {
                     guard let this = self else { return }
-                    let ongoingCall = CometChatOngoingCall()
-                    ongoingCall.modalPresentationStyle = .fullScreen
-                    ongoingCall.set(sessionId: call.sessionID ?? "")
-
+                    
                     let callSettingsBuilder = this.callSettingsBuilder ?? CometChatCallsSDK.CallSettingsBuilder()
                         .setIsAudioOnly(call.callType == .audio)
                         .setDefaultAudioMode(call.callType == .audio ? "EARPIECE" : "SPEAKER")
-
-                    ongoingCall.set(callSettingsBuilder: callSettingsBuilder)
-                    ongoingCall.set(callWorkFlow: .defaultCalling)
+                    
                     CometChatSoundManager().pause()
                     weak var pvc = this.presentingViewController
                     this.dismiss(animated: false, completion: {
-                        pvc?.present(ongoingCall, animated: false, completion: nil)
+                        if let controller = pvc {
+                            CometChatOngoingCallSwiftUI.present(
+                                on: controller,
+                                sessionId: call.sessionID ?? "",
+                                callSettingsBuilder: callSettingsBuilder,
+                                callWorkFlow: .defaultCalling
+                            )
+                        }
                     })
                 }
             }

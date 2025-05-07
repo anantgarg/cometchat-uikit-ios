@@ -334,8 +334,6 @@ extension CometChatAPNsHelper {
     }
     
     private func startCall() {
-        let cometChatOngoingCall = CometChatOngoingCall()
-        
         // Attempt to accept the call using the session ID from the active call
         CometChat.acceptCall(sessionID: activeCall?.sessionID ?? "") { call in
             DispatchQueue.main.async {
@@ -343,10 +341,7 @@ extension CometChatAPNsHelper {
                 let appDelegate = AppDelegate()
                 var callSettingsBuilder = CometChatCallsSDK.CallSettingsBuilder()
                 callSettingsBuilder = callSettingsBuilder.setIsAudioOnly(isAudioCall)
-                cometChatOngoingCall.set(callSettingsBuilder: callSettingsBuilder)
-                cometChatOngoingCall.set(callWorkFlow: .defaultCalling)
-                cometChatOngoingCall.set(sessionId: call?.sessionID ?? "")
-                cometChatOngoingCall.modalPresentationStyle = .fullScreen
+                
                 if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate,
                    let window = sceneDelegate.window,
                    let rootViewController = window.rootViewController {
@@ -354,19 +349,28 @@ extension CometChatAPNsHelper {
                     while let presentedController = currentController.presentedViewController {
                         currentController = presentedController
                     }
-                    currentController.present(cometChatOngoingCall, animated: true)
+                    
+                    CometChatOngoingCallSwiftUI.present(
+                        on: currentController,
+                        sessionId: call?.sessionID ?? "",
+                        callSettingsBuilder: callSettingsBuilder,
+                        callWorkFlow: .defaultCalling
+                    )
                 }
             }
-            cometChatOngoingCall.setOnCallEnded { [weak self] call in
-                DispatchQueue.main.async {
-                    if let scene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene {
-                        if let rootViewController = scene.windows.first?.rootViewController {
-                            self?.dismissCometChatIncomingCall(from: rootViewController)
-                            self?.reloadViewController(rootViewController)
+            
+            NotificationCenter.default.addObserver(forName: NSNotification.Name("CometChatCallEnded"), object: nil, queue: .main) { [weak self] notification in
+                if let call = notification.object as? Call {
+                    DispatchQueue.main.async {
+                        if let scene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene {
+                            if let rootViewController = scene.windows.first?.rootViewController {
+                                self?.dismissCometChatIncomingCall(from: rootViewController)
+                                self?.reloadViewController(rootViewController)
+                            }
                         }
                     }
+                    self?.provider?.reportCall(with: self?.uuid ?? UUID(), endedAt: Date(), reason: .remoteEnded)
                 }
-                self?.provider?.reportCall(with: self?.uuid ?? UUID(), endedAt: Date(), reason: .remoteEnded)
             }
         } onError: { error in
             print("Error while accepting the call: \(String(describing: error?.errorDescription))")

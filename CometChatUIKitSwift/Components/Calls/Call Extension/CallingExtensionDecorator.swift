@@ -214,30 +214,36 @@ import UIKit
 
                     if let customData = call.customData, let sessionID = customData["sessionID"] as? String {
                         DispatchQueue.main.async {
-                            let ongoingCall = CometChatOngoingCall()
-                            ongoingCall.set(sessionId: sessionID)
-                            let group = message?.receiver as? Group
-                            var user: User?
-                            if group == nil {
-                                if (message?.receiver as? User)?.uid == CometChat.getLoggedInUser()?.uid {
-                                    user = message?.sender as? User
+                            if let controller = controller {
+                                let group = message?.receiver as? Group
+                                var user: User?
+                                if group == nil {
+                                    if (message?.receiver as? User)?.uid == CometChat.getLoggedInUser()?.uid {
+                                        user = message?.sender as? User
+                                    } else {
+                                        user = message?.receiver as? User
+                                    }
+                                }
+                                
+                                let callSettingsBuilder: CometChatCallsSDK.CallSettingsBuilder?
+                                if let builder = this.callingConfiguration?.groupCallSettingsBuilder?(user, group, false) {
+                                    callSettingsBuilder = builder
                                 } else {
-                                    user = message?.receiver as? User
+                                    var builder = CallingDefaultBuilderSwiftUI.callSettingsBuilder as? CometChatCallsSDK.CallSettingsBuilder
+                                    builder = builder?.setIsAudioOnly(callType == .audio ? true : false)
+                                    if callType == .video {
+                                        builder = builder?.setDefaultAudioMode("SPEAKER")
+                                    }
+                                    callSettingsBuilder = builder
                                 }
+                                
+                                CometChatOngoingCallSwiftUI.present(
+                                    on: controller,
+                                    sessionId: sessionID,
+                                    callSettingsBuilder: callSettingsBuilder,
+                                    callWorkFlow: .directCalling
+                                )
                             }
-                            if let callSettingsBuilder = this.callingConfiguration?.groupCallSettingsBuilder?(user, group, false) {
-                                ongoingCall.set(callSettingsBuilder: callSettingsBuilder)
-                            } else {
-                                var callSettingsBuilder = CallingDefaultBuilderSwiftUI.callSettingsBuilder as? CometChatCallsSDK.CallSettingsBuilder
-                                callSettingsBuilder = callSettingsBuilder?.setIsAudioOnly(callType == .audio ? true : false)
-                                if callType == .video {
-                                    callSettingsBuilder = callSettingsBuilder?.setDefaultAudioMode("SPEAKER")
-                                }
-                                ongoingCall.set(callSettingsBuilder: callSettingsBuilder)
-                            }
-                            ongoingCall.set(callWorkFlow: .directCalling)
-                            ongoingCall.modalPresentationStyle = .fullScreen
-                            controller?.present(ongoingCall, animated: true)
                         }
                     }
                 }

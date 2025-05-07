@@ -103,21 +103,23 @@ import UIKit
                 CometChatSoundManager().play(sound: .outgoingCall, customSound: customSoundForCalls)
             }
 
-            let ongoingCall = CometChatOngoingCall()
             let callSettingsBuilder = callSettingsBuilder ?? CometChatCallsSDK.CallSettingsBuilder()
                 .setDefaultAudioMode(call?.callType == .audio ? "EARPIECE" : "SPEAKER")
                 .setIsAudioOnly(call?.callType == .audio)
-            ongoingCall.set(callSettingsBuilder: callSettingsBuilder)
-            ongoingCall.modalPresentationStyle = .fullScreen
 
             viewModel.onOutgoingCallAccepted = { call in
                 DispatchQueue.main.async {
-                    ongoingCall.set(sessionId: call.sessionID ?? "")
-                    ongoingCall.set(callWorkFlow: .defaultCalling)
                     CometChatSoundManager().pause()
                     weak var pvc = self.presentingViewController
                     self.dismiss(animated: false, completion: {
-                        pvc?.present(ongoingCall, animated: false, completion: nil)
+                        if let controller = pvc {
+                            CometChatOngoingCallSwiftUI.present(
+                                on: controller,
+                                sessionId: call.sessionID ?? "",
+                                callSettingsBuilder: callSettingsBuilder,
+                                callWorkFlow: .defaultCalling
+                            )
+                        }
                     })
                 }
             }

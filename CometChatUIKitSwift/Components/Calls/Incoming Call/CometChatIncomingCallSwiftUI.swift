@@ -215,21 +215,19 @@
             } else {
                 CometChatSoundManager().pause()
 
-                let ongoingCall = CometChatOngoingCall()
-                ongoingCall.modalPresentationStyle = .fullScreen
-                ongoingCall.set(sessionId: call.sessionID ?? "")
-
                 let callSettingsBuilder = callSettingsBuilder ?? CometChatCallsSDK.CallSettingsBuilder()
                     .setIsAudioOnly(call.callType == .audio)
                     .setDefaultAudioMode(call.callType == .audio ? "EARPIECE" : "SPEAKER")
 
-                ongoingCall.set(callSettingsBuilder: callSettingsBuilder)
-                ongoingCall.set(callWorkFlow: .defaultCalling)
-
                 if let controller {
                     DispatchQueue.main.async {
                         controller.dismiss(animated: false) {
-                            controller.present(ongoingCall, animated: false)
+                            CometChatOngoingCallSwiftUI.present(
+                                on: controller,
+                                sessionId: call.sessionID ?? "",
+                                callSettingsBuilder: callSettingsBuilder,
+                                callWorkFlow: .defaultCalling
+                            )
                         }
                     }
                 }
