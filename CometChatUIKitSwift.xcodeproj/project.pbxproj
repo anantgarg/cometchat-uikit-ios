@@ -80,7 +80,6 @@
 		11601D7C2D6CF4C400129BBA /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601D042D6CF4C400129BBA /* CalendarView.swift */; };
 		11601D7D2D6CF4C400129BBA /* CometChatButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601CA32D6CF4C400129BBA /* CometChatButton.swift */; };
 		11601D7F2D6CF4C400129BBA /* CometChatMessageComposer + ActionSheetDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B9F2D6CF4C400129BBA /* CometChatMessageComposer + ActionSheetDelegate.swift */; };
-		11601D802D6CF4C400129BBA /* StickerAuxiliaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B742D6CF4C400129BBA /* StickerAuxiliaryButton.swift */; };
 		11601D812D6CF4C400129BBA /* AIAssistBotStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601AE32D6CF4C400129BBA /* AIAssistBotStyle.swift */; };
 		11601D822D6CF4C400129BBA /* PollBubbleStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B592D6CF4C400129BBA /* PollBubbleStyle.swift */; };
 		11601D832D6CF4C400129BBA /* SuggestionItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B9C2D6CF4C400129BBA /* SuggestionItem.swift */; };
@@ -5966,7 +5965,6 @@
 				11601D7C2D6CF4C400129BBA /* CalendarView.swift in Sources */,
 				11601D7D2D6CF4C400129BBA /* CometChatButton.swift in Sources */,
 				11601D7F2D6CF4C400129BBA /* CometChatMessageComposer + ActionSheetDelegate.swift in Sources */,
-				11601D802D6CF4C400129BBA /* StickerAuxiliaryButton.swift in Sources */,
 				11601D812D6CF4C400129BBA /* AIAssistBotStyle.swift in Sources */,
 				11601D822D6CF4C400129BBA /* PollBubbleStyle.swift in Sources */,
 				11601D832D6CF4C400129BBA /* SuggestionItem.swift in Sources */,
