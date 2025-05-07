@@ -45,7 +45,6 @@
 		11601D4C2D6CF4C400129BBA /* GroupMembersUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601C8B2D6CF4C400129BBA /* GroupMembersUtils.swift */; };
 		11601D4D2D6CF4C400129BBA /* CometChatCreatePollOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B532D6CF4C400129BBA /* CometChatCreatePollOptions.swift */; };
 		11601D4E2D6CF4C400129BBA /* CallingExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B122D6CF4C400129BBA /* CallingExtension.swift */; };
-		11601D4F2D6CF4C400129BBA /* CometChatStatusIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601D102D6CF4C400129BBA /* CometChatStatusIndicator.swift */; };
 		11601D502D6CF4C400129BBA /* MessageHeaderViewModel + UsersEventListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601BAF2D6CF4C400129BBA /* MessageHeaderViewModel + UsersEventListener.swift */; };
 		11601D512D6CF4C400129BBA /* MessgaePreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601BA62D6CF4C400129BBA /* MessgaePreviewView.swift */; };
 		11601D532D6CF4C400129BBA /* TextBubbleStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601D142D6CF4C400129BBA /* TextBubbleStyle.swift */; };
@@ -474,6 +473,7 @@
 		ADEB5786DC0C69955CFF919F /* GroupsViewModelSwiftUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 945D85821EC63D8BEDC6363B /* GroupsViewModelSwiftUI.swift */; };
 		CF2D6122E4658467321105A2 /* Pods_SampleAppPushNotificationAPNs.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3992540EA2DE94DB523495DC /* Pods_SampleAppPushNotificationAPNs.framework */; };
 		DF89074D876181F91E7E3076 /* CometChatDateSwiftUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = A573ED60A580A7D1270D61C8 /* CometChatDateSwiftUI.swift */; };
+		EAE8FBFDF484D6D6C171DC73 /* CometChatStatusIndicatorSwiftUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF7F3E17EA667DB6C1A8D5B7 /* CometChatStatusIndicatorSwiftUI.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -2320,6 +2320,7 @@
 		EF02612C3F2F192AF2719759 /* GroupMembersViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = GroupMembersViewModel.swift; path = "CometChatUIKitSwift/Components/Group Members/GroupMembersViewModel.swift"; sourceTree = "<group>"; };
 		EF244993EA1D27E7FE587DC0 /* Contents.json */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.json; name = Contents.json; path = "CometChatUIKitSwift/Components/Shared/Resources/shared-assets.xcassets/sticker.imageset/Contents.json"; sourceTree = "<group>"; };
 		EF5431C492BD4E601FF784EE /* CometChatConversationEventListener.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CometChatConversationEventListener.swift; path = CometChatUIKitSwift/Components/Shared/Events/ConversationEvents/CometChatConversationEventListener.swift; sourceTree = "<group>"; };
+		EF7F3E17EA667DB6C1A8D5B7 /* CometChatStatusIndicatorSwiftUI.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CometChatStatusIndicatorSwiftUI.swift; sourceTree = "<group>"; };
 		EF9EC7EF97FBBFD090C88DE2 /* message-composer-send.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; name = "message-composer-send.png"; path = "CometChatUIKitSwift/Components/Resources/messages-assets.xcassets/message-composer-send.imageset/message-composer-send.png"; sourceTree = "<group>"; };
 		EFD4E42BA63C323D1521E784 /* CometChat horizontal logo 5.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; name = "CometChat horizontal logo 5.png"; path = "SampleApp/Assets.xcassets/cometchat-logo-with-name.imageset/CometChat horizontal logo 5.png"; sourceTree = "<group>"; };
 		F0167CAD7C3419F047F54CE9 /* Contents.json */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.json; name = Contents.json; path = "CometChatUIKitSwift/Components/Calls/Resources/calls-assets.xcassets/video-call.imageset/Contents.json"; sourceTree = "<group>"; };
@@ -3821,6 +3822,7 @@
 			children = (
 				11601D102D6CF4C400129BBA /* CometChatStatusIndicator.swift */,
 				11601D112D6CF4C400129BBA /* StatusIndicatorStyle.swift */,
+				EF7F3E17EA667DB6C1A8D5B7 /* CometChatStatusIndicatorSwiftUI.swift */,
 			);
 			path = "Status Indicator";
 			sourceTree = "<group>";
@@ -5941,7 +5943,6 @@
 				11601D4C2D6CF4C400129BBA /* GroupMembersUtils.swift in Sources */,
 				11601D4D2D6CF4C400129BBA /* CometChatCreatePollOptions.swift in Sources */,
 				11601D4E2D6CF4C400129BBA /* CallingExtension.swift in Sources */,
-				11601D4F2D6CF4C400129BBA /* CometChatStatusIndicator.swift in Sources */,
 				11601D502D6CF4C400129BBA /* MessageHeaderViewModel + UsersEventListener.swift in Sources */,
 				11601D512D6CF4C400129BBA /* MessgaePreviewView.swift in Sources */,
 				11601D532D6CF4C400129BBA /* TextBubbleStyle.swift in Sources */,
@@ -6313,6 +6314,7 @@
 				939AC89E800A76852A9B250B /* MessageComposerViewModelSwiftUI.swift in Sources */,
 				1287A0ED13C4C9A044F9354B /* CometChatTextBubbleSwiftUI.swift in Sources */,
 				DF89074D876181F91E7E3076 /* CometChatDateSwiftUI.swift in Sources */,
+				EAE8FBFDF484D6D6C171DC73 /* CometChatStatusIndicatorSwiftUI.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
