@@ -4,6 +4,7 @@
 
 import SwiftUI
 import CometChatSDK
+import CometChatUIKitSwift.Components.Shared.Constants
 
 public struct CometChatAIConversationStarterSwiftUI: View {
     @StateObject private var viewModel = AIConversationStarterViewModelSwiftUI()
@@ -28,7 +29,7 @@ public struct CometChatAIConversationStarterSwiftUI: View {
             }
         }
         .background(Color.clear)
-        .padding(.vertical, CometChatSpacing.Padding.p2)
+        .padding(.vertical, LayoutMetrics.spacingStandard)
     }
     
     private var errorView: some View {
@@ -37,20 +38,20 @@ public struct CometChatAIConversationStarterSwiftUI: View {
                 .font(Font(style.errorViewTextFont))
                 .foregroundColor(Color(style.errorViewTextColor))
                 .multilineTextAlignment(.center)
-                .padding(.horizontal, CometChatSpacing.Padding.p6)
-                .padding(.vertical, CometChatSpacing.Padding.p2)
-                .frame(height: 120)
+                .padding(.horizontal, LayoutMetrics.spacingExtraLarge)
+                .padding(.vertical, LayoutMetrics.spacingStandard)
+                .frame(height: LayoutMetrics.avatarLarge * 2.5)
         }
     }
     
     private var loadingView: some View {
         CometChatAIConversationStarterShimmerSwiftUI()
-            .frame(height: 120)
-            .cornerRadius(16)
+            .frame(height: LayoutMetrics.avatarLarge * 2.5)
+            .cornerRadius(LayoutMetrics.cornerRadiusLarge)
     }
     
     private var messageListView: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: LayoutMetrics.spacingStandard) {
             ForEach(viewModel.aiMessagesList, id: \.self) { message in
                 AIConversationStarterCellSwiftUI(
                     message: message,
@@ -129,18 +130,18 @@ struct AIConversationStarterCellSwiftUI: View {
                     .font(Font(style.textFont))
                     .foregroundColor(Color(style.textColor))
                     .multilineTextAlignment(.leading)
-                    .padding(.horizontal, CometChatSpacing.Padding.p5)
-                    .padding(.vertical, CometChatSpacing.Padding.p2)
+                    .padding(.horizontal, LayoutMetrics.spacingLarge)
+                    .padding(.vertical, LayoutMetrics.spacingStandard)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .background(Color(style.backgroundColor))
-                    .cornerRadius(style.cornerRadius?.cornerRadius ?? 15)
+                    .cornerRadius(style.cornerRadius?.cornerRadius ?? LayoutMetrics.cornerRadiusMedium)
                     .overlay(
-                        RoundedRectangle(cornerRadius: style.cornerRadius?.cornerRadius ?? 15)
+                        RoundedRectangle(cornerRadius: style.cornerRadius?.cornerRadius ?? LayoutMetrics.cornerRadiusMedium)
                             .stroke(Color(style.borderColor), lineWidth: style.borderWidth)
                     )
             }
-            .padding(.horizontal, CometChatSpacing.Padding.p)
-            .padding(.vertical, CometChatSpacing.Padding.p1)
+            .padding(.horizontal, LayoutMetrics.spacingSmall)
+            .padding(.vertical, LayoutMetrics.spacingSmall)
             .background(Color.clear)
         }
         .buttonStyle(PlainButtonStyle())
@@ -151,7 +152,7 @@ struct CometChatAIConversationStarterShimmerSwiftUI: View {
     @State private var isAnimating = false
     
     var body: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: LayoutMetrics.spacingStandard) {
             ForEach(0..<3, id: \.self) { _ in
                 shimmerCell
             }
@@ -164,18 +165,18 @@ struct CometChatAIConversationStarterShimmerSwiftUI: View {
     }
     
     private var shimmerCell: some View {
-        RoundedRectangle(cornerRadius: 15)
+        RoundedRectangle(cornerRadius: LayoutMetrics.cornerRadiusMedium)
             .fill(LinearGradient(
                 gradient: Gradient(colors: [
-                    Color(UIColor.systemGray5),
-                    Color(UIColor.systemGray6),
-                    Color(UIColor.systemGray5)
+                    Color.gray.opacity(0.3),
+                    Color.gray.opacity(0.1),
+                    Color.gray.opacity(0.3)
                 ]),
                 startPoint: .leading,
                 endPoint: isAnimating ? .trailing : .leading
             ))
-            .frame(height: 32)
-            .padding(.horizontal, CometChatSpacing.Padding.p)
+            .frame(height: LayoutMetrics.avatarSmall + LayoutMetrics.spacingStandard)
+            .padding(.horizontal, LayoutMetrics.spacingSmall)
     }
 }
 
@@ -195,21 +196,8 @@ struct CometChatAIConversationStarterSwiftUI_Previews: PreviewProvider {
                     "Tell me about your product",
                     "What are your business hours?"
                 ])
-                .previewLayout(.sizeThatFits)
                 .padding()
-                .previewDisplayName("Default")
-            
-            CometChatAIConversationStarterSwiftUI()
-                .showLoadingView()
-                .previewLayout(.sizeThatFits)
-                .padding()
-                .previewDisplayName("Loading")
-            
-            CometChatAIConversationStarterSwiftUI()
-                .show(error: true)
-                .previewLayout(.sizeThatFits)
-                .padding()
-                .previewDisplayName("Error")
+                .previewDisplayName("Default (Light)")
             
             CometChatAIConversationStarterSwiftUI()
                 .set(aiMessageOptions: [
@@ -218,9 +206,30 @@ struct CometChatAIConversationStarterSwiftUI_Previews: PreviewProvider {
                     "What are your business hours?"
                 ])
                 .preferredColorScheme(.dark)
-                .previewLayout(.sizeThatFits)
                 .padding()
-                .previewDisplayName("Dark Mode")
+                .previewDisplayName("Default (Dark)")
+            
+            CometChatAIConversationStarterSwiftUI()
+                .showLoadingView()
+                .padding()
+                .previewDisplayName("Loading (Light)")
+            
+            CometChatAIConversationStarterSwiftUI()
+                .showLoadingView()
+                .preferredColorScheme(.dark)
+                .padding()
+                .previewDisplayName("Loading (Dark)")
+            
+            CometChatAIConversationStarterSwiftUI()
+                .show(error: true)
+                .padding()
+                .previewDisplayName("Error (Light)")
+            
+            CometChatAIConversationStarterSwiftUI()
+                .show(error: true)
+                .preferredColorScheme(.dark)
+                .padding()
+                .previewDisplayName("Error (Dark)")
         }
     }
 }
