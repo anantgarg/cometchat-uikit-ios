@@ -118,7 +118,6 @@
 		11601DA22D6CF4C400129BBA /* ChatConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601C1A2D6CF4C400129BBA /* ChatConfigurator.swift */; };
 		11601DA32D6CF4C400129BBA /* ConversationConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B332D6CF4C400129BBA /* ConversationConstants.swift */; };
 		11601DA52D6CF4C400129BBA /* CometChatMessageOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601C602D6CF4C400129BBA /* CometChatMessageOption.swift */; };
-		11601DA62D6CF4C400129BBA /* ConversationsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B362D6CF4C400129BBA /* ConversationsViewModel.swift */; };
 		11601DA72D6CF4C400129BBA /* Array + Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601C542D6CF4C400129BBA /* Array + Extensions.swift */; };
 		11601DA82D6CF4C400129BBA /* TypingIndicatorStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601D172D6CF4C400129BBA /* TypingIndicatorStyle.swift */; };
 		11601DA92D6CF4C400129BBA /* CometChatConversationEventListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601BF62D6CF4C400129BBA /* CometChatConversationEventListener.swift */; };
@@ -6019,7 +6018,6 @@
 				11601DA22D6CF4C400129BBA /* ChatConfigurator.swift in Sources */,
 				11601DA32D6CF4C400129BBA /* ConversationConstants.swift in Sources */,
 				11601DA52D6CF4C400129BBA /* CometChatMessageOption.swift in Sources */,
-				11601DA62D6CF4C400129BBA /* ConversationsViewModel.swift in Sources */,
 				11601DA72D6CF4C400129BBA /* Array + Extensions.swift in Sources */,
 				11601DA82D6CF4C400129BBA /* TypingIndicatorStyle.swift in Sources */,
 				11601DA92D6CF4C400129BBA /* CometChatConversationEventListener.swift in Sources */,
