@@ -472,6 +472,7 @@
 		939AC89E800A76852A9B250B /* MessageComposerViewModelSwiftUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2702B969970AADE3C9F4499 /* MessageComposerViewModelSwiftUI.swift */; };
 		ADC5FC581817394D40BE17E5 /* CometChatMessageComposerSwiftUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFE1CF79BD5CA06DE3F853EA /* CometChatMessageComposerSwiftUI.swift */; };
 		ADEB5786DC0C69955CFF919F /* GroupsViewModelSwiftUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 945D85821EC63D8BEDC6363B /* GroupsViewModelSwiftUI.swift */; };
+		B018AA76588B8E515CFF9B09 /* UsersViewModelSwiftUI + UsersEventListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15E5E38E85854DAF0509CFD9 /* UsersViewModelSwiftUI + UsersEventListener.swift */; };
 		CF2D6122E4658467321105A2 /* Pods_SampleAppPushNotificationAPNs.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3992540EA2DE94DB523495DC /* Pods_SampleAppPushNotificationAPNs.framework */; };
 		DF89074D876181F91E7E3076 /* CometChatDateSwiftUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = A573ED60A580A7D1270D61C8 /* CometChatDateSwiftUI.swift */; };
 		EAE8FBFDF484D6D6C171DC73 /* CometChatStatusIndicatorSwiftUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF7F3E17EA667DB6C1A8D5B7 /* CometChatStatusIndicatorSwiftUI.swift */; };
@@ -1114,6 +1115,7 @@
 		15BF4F7A206BA6F708E503D1 /* messages-incoming-video-call@2x.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; name = "messages-incoming-video-call@2x.png"; path = "CometChatUIKitSwift/Components/Resources/messages-assets.xcassets/messages-incoming-video-call.imageset/messages-incoming-video-call@2x.png"; sourceTree = "<group>"; };
 		15CF7A59AE7B2B82C90C8792 /* Base_Icon@2x.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; name = "Base_Icon@2x.png"; path = "CometChatUIKitSwift/Components/Resources/messages-assets.xcassets/messages-stickers.imageset/Base_Icon@2x.png"; sourceTree = "<group>"; };
 		15DE3F4284A13939A79BA827 /* Yes@2x.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; name = "Yes@2x.png"; path = "CometChatUIKitSwift/Components/Calls/Resources/calls-assets.xcassets/incoming-audio-call.imageset/Yes@2x.png"; sourceTree = "<group>"; };
+		15E5E38E85854DAF0509CFD9 /* UsersViewModelSwiftUI + UsersEventListener.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = "UsersViewModelSwiftUI + UsersEventListener.swift"; sourceTree = "<group>"; };
 		161236B4A7C932EA07947E82 /* CometChatReceipt.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CometChatReceipt.swift; path = CometChatUIKitSwift/Components/Shared/Views/Receipt/CometChatReceipt.swift; sourceTree = "<group>"; };
 		161352196575AA748C03FE88 /* URLSessionTask+Cancellable.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "URLSessionTask+Cancellable.swift"; path = "CometChatUIKitSwift/Components/Shared/Helpers/CometChatImageService/URLSessionTaskHelper/URLSessionTask+Cancellable.swift"; sourceTree = "<group>"; };
 		16211351071C9CA9392E7304 /* message-translate@4x.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; name = "message-translate@4x.png"; path = "CometChatUIKitSwift/Components/Resources/messages-assets.xcassets/message-translate.imageset/message-translate@4x.png"; sourceTree = "<group>"; };
@@ -3943,6 +3945,7 @@
 				11601D292D6CF4C400129BBA /* UsersViewModel + UsersEventListener.swift */,
 				A7FE96E238B9614022FB18A0 /* CometChatUsersSwiftUI.swift */,
 				E2E1690CDA1FF1F2B5AFA18A /* UsersViewModelSwiftUI.swift */,
+				15E5E38E85854DAF0509CFD9 /* UsersViewModelSwiftUI + UsersEventListener.swift */,
 			);
 			path = Users;
 			sourceTree = "<group>";
@@ -6329,6 +6332,7 @@
 				8CCFE141D214A1C56D41C417 /* ThreadedMessageHeaderViewModelSwiftUI.swift in Sources */,
 				583BB8DCEB8EBB58301917B3 /* CometChatUsersSwiftUI.swift in Sources */,
 				3417A13A43C04BECFC6A1CCB /* UsersViewModelSwiftUI.swift in Sources */,
+				B018AA76588B8E515CFF9B09 /* UsersViewModelSwiftUI + UsersEventListener.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
