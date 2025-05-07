@@ -6,6 +6,7 @@
 
 import SwiftUI
 import CometChatSDK
+import CometChatUIKitSwift.Components.Shared.Constants
 
 public struct CometChatCallButtonsSwiftUI: View {
     @StateObject private var viewModel = CallButtonsViewModelSwiftUI()
@@ -24,7 +25,7 @@ public struct CometChatCallButtonsSwiftUI: View {
     public init(width: CGFloat, height: CGFloat) {}
     
     public var body: some View {
-        HStack(spacing: CometChatSpacing.Spacing.s2) {
+        HStack(spacing: LayoutMetrics.spacingMedium) {
             if let user = viewModel.user {
                 if !viewModel.hideVoiceCallButton {
                     Button(action: {
@@ -69,7 +70,7 @@ public struct CometChatCallButtonsSwiftUI: View {
             Image(uiImage: isVoiceCall ? style.audioCallIcon : style.videoCallIcon)
                 .resizable()
                 .scaledToFit()
-                .frame(width: 20, height: 20)
+                .frame(width: LayoutMetrics.mediumIconSize, height: LayoutMetrics.mediumIconSize)
                 .foregroundColor(Color(isVoiceCall ? style.audioCallIconTint : style.videoCallIconTint))
             
             if let text = isVoiceCall ? viewModel.voiceCallIconText : viewModel.videoCallIconText {
@@ -78,12 +79,12 @@ public struct CometChatCallButtonsSwiftUI: View {
                     .foregroundColor(Color(isVoiceCall ? style.audioCallTextColor : style.videoCallTextColor))
             }
         }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 8)
+        .padding(.horizontal, LayoutMetrics.spacingMedium)
+        .padding(.vertical, LayoutMetrics.spacingStandard)
         .background(Color(isVoiceCall ? style.audioCallButtonBackground : style.videoCallButtonBackground))
-        .cornerRadius((isVoiceCall ? style.audioCallButtonCornerRadius : style.videoCallButtonCornerRadius)?.cornerRadius ?? 8)
+        .cornerRadius((isVoiceCall ? style.audioCallButtonCornerRadius : style.videoCallButtonCornerRadius)?.cornerRadius ?? LayoutMetrics.cornerRadiusStandard)
         .overlay(
-            RoundedRectangle(cornerRadius: (isVoiceCall ? style.audioCallButtonCornerRadius : style.videoCallButtonCornerRadius)?.cornerRadius ?? 8)
+            RoundedRectangle(cornerRadius: (isVoiceCall ? style.audioCallButtonCornerRadius : style.videoCallButtonCornerRadius)?.cornerRadius ?? LayoutMetrics.cornerRadiusStandard)
                 .stroke(Color(isVoiceCall ? style.audioCallButtonBorderColor ?? .clear : style.videoCallButtonBorderColor ?? .clear), 
                         lineWidth: isVoiceCall ? style.audioCallButtonBorder ?? 0 : style.videoCallButtonBorder ?? 0)
         )
@@ -387,22 +388,27 @@ struct CometChatCallButtonsSwiftUI_Previews: PreviewProvider {
                 .set(user: User(uid: "user1", name: "John Doe"))
                 .set(voiceCallIconText: "Audio")
                 .set(videoCallIconText: "Video")
-                .previewLayout(.sizeThatFits)
                 .padding()
-                .previewDisplayName("User Call Buttons")
-            
-            CometChatCallButtonsSwiftUI(width: 200, height: 40)
-                .set(group: Group(guid: "group1", name: "Team Meeting", groupType: .public))
-                .previewLayout(.sizeThatFits)
-                .padding()
-                .previewDisplayName("Group Call Buttons")
+                .previewDisplayName("User Call Buttons (Light)")
             
             CometChatCallButtonsSwiftUI(width: 200, height: 40)
                 .set(user: User(uid: "user1", name: "John Doe"))
-                .preferredColorScheme(.dark)
-                .previewLayout(.sizeThatFits)
+                .set(voiceCallIconText: "Audio")
+                .set(videoCallIconText: "Video")
                 .padding()
-                .previewDisplayName("Dark Mode")
+                .preferredColorScheme(.dark)
+                .previewDisplayName("User Call Buttons (Dark)")
+            
+            CometChatCallButtonsSwiftUI(width: 200, height: 40)
+                .set(group: Group(guid: "group1", name: "Team Meeting", groupType: .public))
+                .padding()
+                .previewDisplayName("Group Call Buttons (Light)")
+                
+            CometChatCallButtonsSwiftUI(width: 200, height: 40)
+                .set(group: Group(guid: "group1", name: "Team Meeting", groupType: .public))
+                .padding()
+                .preferredColorScheme(.dark)
+                .previewDisplayName("Group Call Buttons (Dark)")
         }
     }
 }
