@@ -52,3 +52,44 @@ public struct CometChatDateTimeFormatterSwiftUI {
         return formatter
     }
 }
+
+struct CometChatDateTimeFormatterSwiftUI_Previews: PreviewProvider {
+    static var previews: some View {
+        Group {
+            VStack(spacing: 10) {
+                Text("Date Time Formatter Preview")
+                    .font(.headline)
+                
+                let currentTimestamp = Int(Date().timeIntervalSince1970)
+                
+                Group {
+                    Text("Default formatting:")
+                    Text("Current time: \(DateFormatter.localizedString(from: Date(), dateStyle: .medium, timeStyle: .short))")
+                        .font(.body)
+                }
+                
+                Spacer()
+            }
+            .padding()
+            .previewDisplayName("Date Time Formatter (Light)")
+            
+            VStack(spacing: 10) {
+                Text("Date Time Formatter Preview")
+                    .font(.headline)
+                
+                let currentTimestamp = Int(Date().timeIntervalSince1970)
+                
+                Group {
+                    Text("Default formatting:")
+                    Text("Current time: \(DateFormatter.localizedString(from: Date(), dateStyle: .medium, timeStyle: .short))")
+                        .font(.body)
+                }
+                
+                Spacer()
+            }
+            .padding()
+            .preferredColorScheme(.dark)
+            .previewDisplayName("Date Time Formatter (Dark)")
+        }
+    }
+}
