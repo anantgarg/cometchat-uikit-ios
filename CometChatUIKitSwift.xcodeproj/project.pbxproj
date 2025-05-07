@@ -225,7 +225,6 @@
 		11601E172D6CF4C400129BBA /* MessageListShimmerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601BCE2D6CF4C400129BBA /* MessageListShimmerView.swift */; };
 		11601E192D6CF4C400129BBA /* CometChatReactionList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601BBE2D6CF4C400129BBA /* CometChatReactionList.swift */; };
 		11601E1A2D6CF4C400129BBA /* CometChatOutgoingCall + Properties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B262D6CF4C400129BBA /* CometChatOutgoingCall + Properties.swift */; };
-		11601E1B2D6CF4C400129BBA /* MessageListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601BD02D6CF4C400129BBA /* MessageListViewModel.swift */; };
 		11601E1C2D6CF4C400129BBA /* MentionTextStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B9B2D6CF4C400129BBA /* MentionTextStyle.swift */; };
 		11601E1D2D6CF4C400129BBA /* LimitedFormatterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B962D6CF4C400129BBA /* LimitedFormatterView.swift */; };
 		11601E1E2D6CF4C400129BBA /* CollaborativeDocumentBubbleConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B3C2D6CF4C400129BBA /* CollaborativeDocumentBubbleConfiguration.swift */; };
@@ -6123,7 +6122,6 @@
 				11601E172D6CF4C400129BBA /* MessageListShimmerView.swift in Sources */,
 				11601E192D6CF4C400129BBA /* CometChatReactionList.swift in Sources */,
 				11601E1A2D6CF4C400129BBA /* CometChatOutgoingCall + Properties.swift in Sources */,
-				11601E1B2D6CF4C400129BBA /* MessageListViewModel.swift in Sources */,
 				11601E1C2D6CF4C400129BBA /* MentionTextStyle.swift in Sources */,
 				11601E1D2D6CF4C400129BBA /* LimitedFormatterView.swift in Sources */,
 				11601E1E2D6CF4C400129BBA /* CollaborativeDocumentBubbleConfiguration.swift in Sources */,
