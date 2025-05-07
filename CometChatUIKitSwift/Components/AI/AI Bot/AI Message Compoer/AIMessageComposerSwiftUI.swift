@@ -4,15 +4,16 @@
 
 import SwiftUI
 import CometChatSDK
+import CometChatUIKitSwift.Components.Shared.Constants
 
 public struct AIMessageComposerSwiftUI: View {
     @State private var messageText: String = ""
-    @State private var textFieldHeight: CGFloat = 40
+    @State private var textFieldHeight: CGFloat = LayoutMetrics.avatarMedium
     
     private var placeholderText: String = "TYPE_A_MESSAGE".localize()
     private var user: User?
     private var style: MessageInputStyle?
-    private var sendIcon = UIImage(named: "message-composer-send.png", in: CometChatUIKit.bundle, compatibleWith: nil)?.withRenderingMode(.alwaysTemplate) ?? UIImage()
+    private var sendIconName = "paperplane.fill"
     private var onSendButtonClicked: ((BaseMessage) -> Void)?
     
     public init() {}
@@ -24,41 +25,41 @@ public struct AIMessageComposerSwiftUI: View {
                     Text(placeholderText)
                         .font(Font(style?.placeHolderTextFont ?? CometChatTheme_v4.typography.text1))
                         .foregroundColor(Color(style?.placeHolderTextColor ?? CometChatTheme_v4.palatte.accent500))
-                        .padding(.horizontal, 12)
+                        .padding(.horizontal, LayoutMetrics.spacingMedium)
                 }
                 
                 TextEditor(text: $messageText)
                     .font(Font(style?.textFont ?? CometChatTheme_v4.typography.text1))
                     .foregroundColor(Color(style?.textColor ?? CometChatTheme_v4.palatte.accent))
-                    .frame(minHeight: 40, maxHeight: 120)
-                    .padding(.horizontal, 8)
+                    .frame(minHeight: LayoutMetrics.avatarMedium, maxHeight: LayoutMetrics.avatarLarge * 2.5)
+                    .padding(.horizontal, LayoutMetrics.spacingStandard)
                     .background(Color(style?.inputBackground ?? CometChatTheme_v4.palatte.background))
                     .onChange(of: messageText) { newValue in
                         let estimatedHeight = newValue.height(withConstrainedWidth: UIScreen.main.bounds.width - 100, font: style?.textFont ?? CometChatTheme_v4.typography.text1)
-                        textFieldHeight = min(max(40, estimatedHeight + 20), 120)
+                        textFieldHeight = min(max(LayoutMetrics.avatarMedium, estimatedHeight + LayoutMetrics.spacingLarge), LayoutMetrics.avatarLarge * 2.5)
                     }
             }
             .frame(height: textFieldHeight)
-            .padding(.vertical, 4)
+            .padding(.vertical, LayoutMetrics.spacingSmall)
             .background(Color(style?.inputBackground ?? CometChatTheme_v4.palatte.background))
-            .cornerRadius((style?.cornerRadius?.cornerRadius ?? 20))
+            .cornerRadius((style?.cornerRadius?.cornerRadius ?? LayoutMetrics.cornerRadiusRound))
             .overlay(
-                RoundedRectangle(cornerRadius: (style?.cornerRadius?.cornerRadius ?? 20))
-                    .stroke(Color(style?.borderColor ?? CometChatTheme_v4.palatte.accent700), lineWidth: style?.borderWidth ?? 1)
+                RoundedRectangle(cornerRadius: (style?.cornerRadius?.cornerRadius ?? LayoutMetrics.cornerRadiusRound))
+                    .stroke(Color(style?.borderColor ?? CometChatTheme_v4.palatte.accent700), lineWidth: style?.borderWidth ?? LayoutMetrics.dividerHeight)
             )
             
             Button(action: sendMessage) {
-                Image(uiImage: sendIcon)
+                Image(systemName: sendIconName)
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 24, height: 24)
+                    .frame(width: LayoutMetrics.largeIconSize, height: LayoutMetrics.largeIconSize)
                     .foregroundColor(Color(style?.sendIconTint ?? CometChatTheme_v4.palatte.accent700))
             }
-            .frame(width: 40, height: 40)
+            .frame(width: LayoutMetrics.avatarMedium, height: LayoutMetrics.avatarMedium)
             .disabled(messageText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
         }
-        .padding(.horizontal, 8)
-        .padding(.vertical, 4)
+        .padding(.horizontal, LayoutMetrics.spacingStandard)
+        .padding(.vertical, LayoutMetrics.spacingSmall)
     }
     
     private func sendMessage() {
@@ -82,17 +83,12 @@ public struct AIMessageComposerSwiftUI: View {
         return view
     }
     
-    public func set(sendIcon: UIImage) -> AIMessageComposerSwiftUI {
+    public func set(sendIconName: String) -> AIMessageComposerSwiftUI {
         var view = self
-        view.sendIcon = sendIcon
+        view.sendIconName = sendIconName
         return view
     }
     
-    public func set(sendIconTint: UIColor) -> AIMessageComposerSwiftUI {
-        var view = self
-        view.sendIcon = view.sendIcon.withTintColor(sendIconTint)
-        return view
-    }
     
     public func set(messageInputStyle: MessageInputStyle) -> AIMessageComposerSwiftUI {
         var view = self
@@ -126,22 +122,26 @@ struct AIMessageComposerSwiftUI_Previews: PreviewProvider {
     static var previews: some View {
         Group {
             AIMessageComposerSwiftUI()
-                .previewLayout(.sizeThatFits)
                 .padding()
-                .previewDisplayName("Default")
+                .previewDisplayName("Default (Light)")
+            
+            AIMessageComposerSwiftUI()
+                .preferredColorScheme(.dark)
+                .padding()
+                .previewDisplayName("Default (Dark)")
             
             AIMessageComposerSwiftUI()
                 .set(placeholderText: "Ask the AI assistant...")
                 .set(messageInputStyle: getCustomStyle())
-                .previewLayout(.sizeThatFits)
                 .padding()
-                .previewDisplayName("Custom Style")
+                .previewDisplayName("Custom Style (Light)")
             
             AIMessageComposerSwiftUI()
+                .set(placeholderText: "Ask the AI assistant...")
+                .set(messageInputStyle: getCustomStyle())
                 .preferredColorScheme(.dark)
-                .previewLayout(.sizeThatFits)
                 .padding()
-                .previewDisplayName("Dark Mode")
+                .previewDisplayName("Custom Style (Dark)")
         }
     }
     
