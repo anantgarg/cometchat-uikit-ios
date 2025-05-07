@@ -17,7 +17,6 @@
 		11601D312D6CF4C400129BBA /* PanModalAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601CE62D6CF4C400129BBA /* PanModalAnimator.swift */; };
 		11601D322D6CF4C400129BBA /* MessagePopupAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601BB72D6CF4C400129BBA /* MessagePopupAnimator.swift */; };
 		11601D332D6CF4C400129BBA /* AIConversationSummaryStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B012D6CF4C400129BBA /* AIConversationSummaryStyle.swift */; };
-		11601D342D6CF4C400129BBA /* LinkPreviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B4C2D6CF4C400129BBA /* LinkPreviewViewModel.swift */; };
 		11601D352D6CF4C400129BBA /* CometChatCallLogShimmer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B192D6CF4C400129BBA /* CometChatCallLogShimmer.swift */; };
 		11601D362D6CF4C400129BBA /* CometChatCardBubble.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601CC42D6CF4C400129BBA /* CometChatCardBubble.swift */; };
 		11601D372D6CF4C400129BBA /* UsersShimmerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601D262D6CF4C400129BBA /* UsersShimmerView.swift */; };
@@ -5895,7 +5894,6 @@
 				11601D312D6CF4C400129BBA /* PanModalAnimator.swift in Sources */,
 				11601D322D6CF4C400129BBA /* MessagePopupAnimator.swift in Sources */,
 				11601D332D6CF4C400129BBA /* AIConversationSummaryStyle.swift in Sources */,
-				11601D342D6CF4C400129BBA /* LinkPreviewViewModel.swift in Sources */,
 				11601D352D6CF4C400129BBA /* CometChatCallLogShimmer.swift in Sources */,
 				11601D362D6CF4C400129BBA /* CometChatCardBubble.swift in Sources */,
 				11601D372D6CF4C400129BBA /* UsersShimmerView.swift in Sources */,
