@@ -15,7 +15,7 @@ import UIKit
         var audioCallTypeConstant = "audio"
         var videoCallTypeConstant = "video"
         var conferenceCallTypeConstant = "meeting"
-        var callingConfiguration: CallingConfiguration?
+        var callingConfiguration: CallingConfigurationSwiftUI?
         var anInterface: DataSource?
         var spacer: String = "       "
         private var call: Call?
@@ -25,7 +25,7 @@ import UIKit
             anInterface = dataSource
         }
 
-        public convenience init(dataSource: DataSource, configuration: CallingConfiguration?) {
+        public convenience init(dataSource: DataSource, configuration: CallingConfigurationSwiftUI?) {
             self.init(dataSource: dataSource)
             if let uiKitSettings = CometChatUIKit.uiKitSettings {
                 let callAppSettings = CallAppSettingsBuilder()
