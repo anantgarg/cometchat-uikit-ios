@@ -136,7 +136,6 @@
 		11601DB42D6CF4C400129BBA /* AIConversationStarterExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601AE92D6CF4C400129BBA /* AIConversationStarterExtension.swift */; };
 		11601DB52D6CF4C400129BBA /* SchedulerHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601D072D6CF4C400129BBA /* SchedulerHeaderView.swift */; };
 		11601DB62D6CF4C400129BBA /* GroupsShimmerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B8E2D6CF4C400129BBA /* GroupsShimmerView.swift */; };
-		11601DB72D6CF4C400129BBA /* CometChatCallLogs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B172D6CF4C400129BBA /* CometChatCallLogs.swift */; };
 		11601DB82D6CF4C400129BBA /* CometChatTimeSlotSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601D0C2D6CF4C400129BBA /* CometChatTimeSlotSelector.swift */; };
 		11601DB92D6CF4C400129BBA /* StickerBubbleConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B752D6CF4C400129BBA /* StickerBubbleConfiguration.swift */; };
 		11601DBA2D6CF4C400129BBA /* MessageHeaderStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601BAB2D6CF4C400129BBA /* MessageHeaderStyle.swift */; };
@@ -6042,7 +6041,6 @@
 				11601DB42D6CF4C400129BBA /* AIConversationStarterExtension.swift in Sources */,
 				11601DB52D6CF4C400129BBA /* SchedulerHeaderView.swift in Sources */,
 				11601DB62D6CF4C400129BBA /* GroupsShimmerView.swift in Sources */,
-				11601DB72D6CF4C400129BBA /* CometChatCallLogs.swift in Sources */,
 				11601DB82D6CF4C400129BBA /* CometChatTimeSlotSelector.swift in Sources */,
 				11601DB92D6CF4C400129BBA /* StickerBubbleConfiguration.swift in Sources */,
 				11601DBA2D6CF4C400129BBA /* MessageHeaderStyle.swift in Sources */,
