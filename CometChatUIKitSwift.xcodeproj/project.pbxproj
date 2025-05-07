@@ -383,7 +383,6 @@
 		11601EE82D6CF4C400129BBA /* CometChatFormBubble.xib in Resources */ = {isa = PBXBuildFile; fileRef = 11601BDA2D6CF4C400129BBA /* CometChatFormBubble.xib */; };
 		11601EEA2D6CF4C400129BBA /* PanModal.h in Headers */ = {isa = PBXBuildFile; fileRef = 11601CE52D6CF4C400129BBA /* PanModal.h */; };
 		11C322942DCA1BC200DDA39C /* DateTimeFormatterUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C322922DCA1BC200DDA39C /* DateTimeFormatterUtils.swift */; };
-		11C322952DCA1BC200DDA39C /* CometChatDateTimeFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C322912DCA1BC200DDA39C /* CometChatDateTimeFormatter.swift */; };
 		11C322BF2DCA1BF000DDA39C /* IncomingMessage.wav in Resources */ = {isa = PBXBuildFile; fileRef = 11C322A22DCA1BF000DDA39C /* IncomingMessage.wav */; };
 		11C322C02DCA1BF000DDA39C /* CometChatSectionList.xib in Resources */ = {isa = PBXBuildFile; fileRef = 11C3229C2DCA1BF000DDA39C /* CometChatSectionList.xib */; };
 		11C322C12DCA1BF000DDA39C /* OutgoingCall.wav in Resources */ = {isa = PBXBuildFile; fileRef = 11C322BA2DCA1BF000DDA39C /* OutgoingCall.wav */; };
@@ -5919,7 +5918,6 @@
 				11601D542D6CF4C400129BBA /* ExtensionConstants.swift in Sources */,
 				11601D552D6CF4C400129BBA /* CometChatTypingIndicator.swift in Sources */,
 				11C322942DCA1BC200DDA39C /* DateTimeFormatterUtils.swift in Sources */,
-				11C322952DCA1BC200DDA39C /* CometChatDateTimeFormatter.swift in Sources */,
 				11601D562D6CF4C400129BBA /* CometChatConversations + Properties.swift in Sources */,
 				11601D572D6CF4C400129BBA /* Helper Extensions.swift in Sources */,
 				11601D582D6CF4C400129BBA /* AIConversationStarterConfiguration.swift in Sources */,
