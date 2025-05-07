@@ -4,6 +4,7 @@
 
 import SwiftUI
 import CometChatSDK
+import CometChatUIKitSwift.Components.Shared.Constants
 
 public struct CometChatGroupsSwiftUI: View {
     @ObservedObject private var viewModel: GroupsViewModelSwiftUI
@@ -108,7 +109,7 @@ public struct CometChatGroupsSwiftUI: View {
         .background(Color(style.searchBackgroundColor))
         .cornerRadius(style.searchBorderRadius)
         .padding(.horizontal)
-        .padding(.vertical, 8)
+        .padding(.vertical, LayoutMetrics.spacingStandard)
     }
     
     private var groupsList: some View {
@@ -155,18 +156,18 @@ public struct CometChatGroupsSwiftUI: View {
     }
     
     private func defaultGroupListItem(for group: Group) -> some View {
-        HStack(spacing: 12) {
+        HStack(spacing: LayoutMetrics.spacingMedium) {
             if let leadingView = leadingView?(group) {
                 leadingView
             } else {
                 CometChatAvatarSwiftUI(style: style.avatarStyle)
                     .set(avatarURL: group.icon)
                     .set(name: group.name)
-                    .set(width: 40)
-                    .set(height: 40)
+                    .set(width: LayoutMetrics.avatarMedium)
+                    .set(height: LayoutMetrics.avatarMedium)
             }
             
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: LayoutMetrics.spacingSmall) {
                 if let titleView = titleView?(group) {
                     titleView
                 } else {
@@ -204,21 +205,21 @@ public struct CometChatGroupsSwiftUI: View {
             case .public:
                 EmptyView()
             case .private:
-                Image(uiImage: style.privateGroupIcon)
+                Image(systemName: "shield.fill")
                     .resizable()
                     .renderingMode(.template)
                     .foregroundColor(Color(style.privateGroupImageTintColor))
-                    .frame(width: 20, height: 20)
-                    .padding(4)
+                    .frame(width: LayoutMetrics.mediumIconSize, height: LayoutMetrics.mediumIconSize)
+                    .padding(LayoutMetrics.spacingSmall)
                     .background(Color(style.privateGroupImageBackgroundColor))
                     .clipShape(Circle())
             case .password:
-                Image(uiImage: style.protectedGroupIcon)
+                Image(systemName: "lock.fill")
                     .resizable()
                     .renderingMode(.template)
                     .foregroundColor(.white)
-                    .frame(width: 20, height: 20)
-                    .padding(4)
+                    .frame(width: LayoutMetrics.mediumIconSize, height: LayoutMetrics.mediumIconSize)
+                    .padding(LayoutMetrics.spacingSmall)
                     .background(Color(style.passwordGroupImageBackgroundColor))
                     .clipShape(Circle())
             @unknown default:
@@ -251,11 +252,11 @@ public struct CometChatGroupsSwiftUI: View {
             if let errorStateView = errorStateView {
                 errorStateView
             } else {
-                VStack(spacing: 16) {
+                VStack(spacing: LayoutMetrics.spacingMedium) {
                     Image(systemName: "exclamationmark.triangle")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .frame(width: 60, height: 60)
+                        .frame(width: LayoutMetrics.largeIconSize * 2.5, height: LayoutMetrics.largeIconSize * 2.5)
                         .foregroundColor(Color(style.errorStateIconTint))
                     
                     Text("OOPS!".localize())
@@ -274,10 +275,10 @@ public struct CometChatGroupsSwiftUI: View {
                         Text("RETRY".localize())
                             .font(.headline)
                             .foregroundColor(.white)
-                            .padding(.horizontal, 24)
-                            .padding(.vertical, 12)
+                            .padding(.horizontal, LayoutMetrics.spacingLarge)
+                            .padding(.vertical, LayoutMetrics.spacingMedium)
                             .background(Color.blue)
-                            .cornerRadius(8)
+                            .cornerRadius(LayoutMetrics.cornerRadiusStandard)
                     }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -291,11 +292,11 @@ public struct CometChatGroupsSwiftUI: View {
             if let emptyStateView = emptyStateView {
                 emptyStateView
             } else {
-                VStack(spacing: 16) {
+                VStack(spacing: LayoutMetrics.spacingMedium) {
                     Image(systemName: "person.2.fill")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .frame(width: 60, height: 60)
+                        .frame(width: LayoutMetrics.largeIconSize * 2.5, height: LayoutMetrics.largeIconSize * 2.5)
                         .foregroundColor(Color(style.emptyStateIconTint))
                     
                     Text("GROUPS_EMPTY_MESSAGE".localize())
@@ -314,10 +315,10 @@ public struct CometChatGroupsSwiftUI: View {
                         Text("CREATE".localize())
                             .font(.headline)
                             .foregroundColor(.white)
-                            .padding(.horizontal, 24)
-                            .padding(.vertical, 12)
+                            .padding(.horizontal, LayoutMetrics.spacingLarge)
+                            .padding(.vertical, LayoutMetrics.spacingMedium)
                             .background(Color.blue)
-                            .cornerRadius(8)
+                            .cornerRadius(LayoutMetrics.cornerRadiusStandard)
                     }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -342,10 +343,10 @@ public struct CometChatGroupsSwiftUI: View {
                     .font(.headline)
                     .foregroundColor(.primary)
             }
-            .padding(24)
-            .background(Color(UIColor.systemBackground))
-            .cornerRadius(12)
-            .shadow(radius: 10)
+            .padding(LayoutMetrics.spacingLarge)
+            .background(Color(.systemBackground))
+            .cornerRadius(LayoutMetrics.cornerRadiusMedium)
+            .shadow(radius: LayoutMetrics.cornerRadiusMedium - 2)
         }
     }
     
@@ -552,16 +553,18 @@ extension CometChatGroupsSwiftUI {
 
 struct CometChatGroupsSwiftUI_Previews: PreviewProvider {
     static var previews: some View {
-        CometChatGroupsSwiftUI()
-            .previewLayout(.sizeThatFits)
-            .padding()
-            .previewDisplayName("Default")
-        
-        CometChatGroupsSwiftUI()
-            .hide(search: true)
-            .set(selectionMode: .multiple)
-            .previewLayout(.sizeThatFits)
-            .padding()
-            .previewDisplayName("Multiple Selection")
+        Group {
+            CometChatGroupsSwiftUI()
+                .previewDisplayName("Default (Light)")
+            
+            CometChatGroupsSwiftUI()
+                .hide(search: true)
+                .set(selectionMode: .multiple)
+                .previewDisplayName("Multiple Selection (Light)")
+            
+            CometChatGroupsSwiftUI()
+                .preferredColorScheme(.dark)
+                .previewDisplayName("Default (Dark)")
+        }
     }
 }

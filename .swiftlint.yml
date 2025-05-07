@@ -1,0 +1,32 @@
+disabled_rules:
+  - trailing_whitespace
+  - line_length
+
+opt_in_rules:
+  - empty_count
+  - empty_string
+  - redundant_nil_coalescing
+  - switch_case_on_newline
+  - force_unwrapping
+  - prohibited_super_call
+  - fatal_error_message
+  - overridden_super_call
+
+excluded:
+  - Pods
+  - SampleApp
+  - SampleAppPushNotificationAPNs
+  - NotificationExtension
+
+custom_rules:
+  prohibited_imports:
+    name: "Prohibited UIKit import in SwiftUI files"
+    regex: "import UIKit"
+    included: ".*SwiftUI\\.swift"
+    message: "Do not import UIKit in SwiftUI files. Use SwiftUI equivalents."
+
+magic_numbers:
+  included:
+    - "CometChatUIKitSwift/Components"
+  excluded:
+    - "CometChatUIKitSwift/Components/Shared/Constants/LayoutMetrics.swift"
