@@ -264,7 +264,6 @@
 		11601E482D6CF4C400129BBA /* ConversationViewModel + MessageEventListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B392D6CF4C400129BBA /* ConversationViewModel + MessageEventListener.swift */; };
 		11601E492D6CF4C400129BBA /* TableViewTransformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601C4A2D6CF4C400129BBA /* TableViewTransformation.swift */; };
 		11601E4A2D6CF4C400129BBA /* Typography.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601C362D6CF4C400129BBA /* Typography.swift */; };
-		11601E4B2D6CF4C400129BBA /* CollaborativeWhiteboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B462D6CF4C400129BBA /* CollaborativeWhiteboardViewModel.swift */; };
 		11601E4C2D6CF4C400129BBA /* ConversationsStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B352D6CF4C400129BBA /* ConversationsStyle.swift */; };
 		11601E4D2D6CF4C400129BBA /* CometChatStickerKeyboardItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B712D6CF4C400129BBA /* CometChatStickerKeyboardItem.swift */; };
 		11601E4E2D6CF4C400129BBA /* CollaborativeBubbleStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B412D6CF4C400129BBA /* CollaborativeBubbleStyle.swift */; };
@@ -6152,7 +6151,6 @@
 				11601E482D6CF4C400129BBA /* ConversationViewModel + MessageEventListener.swift in Sources */,
 				11601E492D6CF4C400129BBA /* TableViewTransformation.swift in Sources */,
 				11601E4A2D6CF4C400129BBA /* Typography.swift in Sources */,
-				11601E4B2D6CF4C400129BBA /* CollaborativeWhiteboardViewModel.swift in Sources */,
 				11601E4C2D6CF4C400129BBA /* ConversationsStyle.swift in Sources */,
 				11601E4D2D6CF4C400129BBA /* CometChatStickerKeyboardItem.swift in Sources */,
 				11601E4E2D6CF4C400129BBA /* CollaborativeBubbleStyle.swift in Sources */,
