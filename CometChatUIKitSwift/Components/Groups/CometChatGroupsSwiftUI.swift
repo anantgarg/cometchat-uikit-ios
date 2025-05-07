@@ -237,9 +237,9 @@ public struct CometChatGroupsSwiftUI: View {
                     ProgressView()
                         .progressViewStyle(CircularProgressViewStyle())
                     Text("LOADING".localize())
-                        .font(.caption)
+                        .font(Font(style.loadingStateTextFont))
                         .foregroundColor(Color(style.loadingStateTextColor))
-                        .padding(.top, 8)
+                        .padding(.top, LayoutMetrics.spacingStandard)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(Color(style.backgroundColor))
@@ -260,11 +260,11 @@ public struct CometChatGroupsSwiftUI: View {
                         .foregroundColor(Color(style.errorStateIconTint))
                     
                     Text("OOPS!".localize())
-                        .font(.title2)
+                        .font(Font(style.errorStateTitleFont))
                         .foregroundColor(Color(style.errorStateTitleTextColor))
                     
                     Text("LOOKS_LIKE_SOMETHINGS_WENT_WORNG._PLEASE_TRY_AGAIN".localize())
-                        .font(.body)
+                        .font(Font(style.errorStateTextFont))
                         .foregroundColor(Color(style.errorStateTextColor))
                         .multilineTextAlignment(.center)
                         .padding(.horizontal)
@@ -300,11 +300,11 @@ public struct CometChatGroupsSwiftUI: View {
                         .foregroundColor(Color(style.emptyStateIconTint))
                     
                     Text("GROUPS_EMPTY_MESSAGE".localize())
-                        .font(.title2)
+                        .font(Font(style.emptyStateTitleFont))
                         .foregroundColor(Color(style.emptyStateTitleTextColor))
                     
                     Text("CREATE_GROUP_MESSAGE".localize())
-                        .font(.body)
+                        .font(Font(style.emptyStateTextFont))
                         .foregroundColor(Color(style.emptyStateTextColor))
                         .multilineTextAlignment(.center)
                         .padding(.horizontal)
@@ -313,11 +313,11 @@ public struct CometChatGroupsSwiftUI: View {
                         onEmpty?()
                     }) {
                         Text("CREATE".localize())
-                            .font(.headline)
-                            .foregroundColor(.white)
+                            .font(Font(style.emptyStateButtonFont))
+                            .foregroundColor(Color(style.emptyStateButtonTextColor))
                             .padding(.horizontal, LayoutMetrics.spacingLarge)
                             .padding(.vertical, LayoutMetrics.spacingMedium)
-                            .background(Color.blue)
+                            .background(Color(style.emptyStateButtonBackgroundColor))
                             .cornerRadius(LayoutMetrics.cornerRadiusStandard)
                     }
                 }
@@ -332,7 +332,7 @@ public struct CometChatGroupsSwiftUI: View {
     
     private var joiningGroupAlert: some View {
         ZStack {
-            Color.black.opacity(0.4)
+            Color(style.overlayColor).opacity(LayoutMetrics.standardOpacity)
                 .edgesIgnoringSafeArea(.all)
             
             VStack(spacing: 16) {
@@ -340,11 +340,11 @@ public struct CometChatGroupsSwiftUI: View {
                     .progressViewStyle(CircularProgressViewStyle())
                 
                 Text("JOINING_GROUP".localize())
-                    .font(.headline)
-                    .foregroundColor(.primary)
+                    .font(Font(style.alertTitleFont))
+                    .foregroundColor(Color(style.alertTitleColor))
             }
             .padding(LayoutMetrics.spacingLarge)
-            .background(Color(.systemBackground))
+            .background(Color(style.alertBackgroundColor))
             .cornerRadius(LayoutMetrics.cornerRadiusMedium)
             .shadow(radius: LayoutMetrics.cornerRadiusMedium - 2)
         }
