@@ -109,7 +109,6 @@
 		11601DA82D6CF4C400129BBA /* TypingIndicatorStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601D172D6CF4C400129BBA /* TypingIndicatorStyle.swift */; };
 		11601DA92D6CF4C400129BBA /* CometChatConversationEventListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601BF62D6CF4C400129BBA /* CometChatConversationEventListener.swift */; };
 		11601DAA2D6CF4C400129BBA /* DimmedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601CE32D6CF4C400129BBA /* DimmedView.swift */; };
-		11601DAC2D6CF4C400129BBA /* CometChatCreatePoll.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B5D2D6CF4C400129BBA /* CometChatCreatePoll.swift */; };
 		11601DAD2D6CF4C400129BBA /* DateTimeElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601C0D2D6CF4C400129BBA /* DateTimeElement.swift */; };
 		11601DAF2D6CF4C400129BBA /* CometChatNewMessageIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601CFE2D6CF4C400129BBA /* CometChatNewMessageIndicator.swift */; };
 		11601DB02D6CF4C400129BBA /* AvatarStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601C9C2D6CF4C400129BBA /* AvatarStyle.swift */; };
@@ -5975,7 +5974,6 @@
 				11601DA82D6CF4C400129BBA /* TypingIndicatorStyle.swift in Sources */,
 				11601DA92D6CF4C400129BBA /* CometChatConversationEventListener.swift in Sources */,
 				11601DAA2D6CF4C400129BBA /* DimmedView.swift in Sources */,
-				11601DAC2D6CF4C400129BBA /* CometChatCreatePoll.swift in Sources */,
 				11601DAD2D6CF4C400129BBA /* DateTimeElement.swift in Sources */,
 				11601DAF2D6CF4C400129BBA /* CometChatNewMessageIndicator.swift in Sources */,
 				11601DB02D6CF4C400129BBA /* AvatarStyle.swift in Sources */,
