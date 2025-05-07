@@ -1,39 +1,39 @@
 //
 //  AISmartRepliesDecorator.swift
-//  
+//
 //
 //  Created by SuryanshBisen on 12/09/23.
 //
 
-import Foundation
 import CometChatSDK
+import Foundation
 
-//class AISmartRepliesDecorator: DataSourceDecorator {
-//    
+// class AISmartRepliesDecorator: DataSourceDecorator {
+//
 //    private var aiConfiguration: AISmartRepliesConfiguration?
 //    private var currentUser: User?
 //    private var currentGroup: Group?
 //    private var isErrorViewPresented = false
 //    private var uiEventId: [String: Any]?
 //    private let eventID = "conversation-summary-decorator"
-//    
+//
 //    var aiOptionsStyle = AIOptionsStyle()
-//    
+//
 //    init(dataSource: DataSource, configuration: AISmartRepliesConfiguration? = nil) {
 //        self.aiConfiguration = configuration
 //        super.init(dataSource: dataSource)
 //    }
-//    
+//
 //    override func getId() -> String {
 //        return ExtensionConstants.aiSmartReply
 //    }
-//    
+//
 //    override func getAIOptions(controller: UIViewController, user: User?, group: Group?, id: [String: Any]?, aiOptionsStyle: AIOptionsStyle?) -> [CometChatMessageComposerAction]? {
-//        
+//
 //        let receiverType: CometChat.ReceiverType = user != nil ? .user : .group
 //        let receiverID = user?.uid ?? group?.guid
 //        self.uiEventId = id
-//        
+//
 //        let smartRepliesComposerAction = CometChatMessageComposerAction(
 //            id: getId(),
 //            text: AIConstants.smartRepliesText,
@@ -48,27 +48,27 @@ import CometChatSDK
 //        ) {
 //            self.getSmartReplies(id: id, receiverType: receiverType, receiverId: receiverID)
 //        }
-//        
+//
 //        var composerActions = super.getAIOptions(controller: controller, user: user, group: group, id: id, aiOptionsStyle: aiOptionsStyle) ?? []
 //        composerActions.append(smartRepliesComposerAction)
 //        return composerActions
 //    }
-//    
+//
 //    func getSmartReplies(id: [String: Any]?, receiverType: CometChat.ReceiverType, receiverId: String?, configuration: [String: Any]? = nil) {
 //        guard let receiverId = receiverId else { return }
-//        
+//
 //        let aiReplyView = CometChatAISmartReply()
 //            .onMessageClicked { selectedReply in
 //                self.onMessageTapped(message: selectedReply, receiverType: receiverType, receiverId: receiverId, id: id)
 //            }
 //        aiReplyView.id = id
-//        
+//
 //        if let loadingView = aiConfiguration?.loadingView {
 //            CometChatUIEvents.showPanel(id: id, alignment: .composerTop, view: loadingView)
 //        } else {
 //            aiReplyView.showLoadingView()
 //        }
-//        
+//
 //        CometChat.getSmartReplies(receiverId: receiverId, receiverType: receiverType, configuration: configuration) { smartRepliesMap in
 //            DispatchQueue.main.async {
 //                if smartRepliesMap.isEmpty{
@@ -94,7 +94,7 @@ import CometChatSDK
 //                self.showErrorView(id: id, aiReplyView: aiReplyView)
 //            }
 //        }
-//        
+//
 //        CometChatUIEvents.showPanel(id: id, alignment: .composerTop, view: aiReplyView)
 //    }
 //
@@ -115,27 +115,26 @@ import CometChatSDK
 //            aiReplyView.show(error: true)
 //        }
 //    }
-//    
+//
 //    func onMessageTapped(message: String, receiverType: CometChat.ReceiverType, receiverId: String?, id: [String: Any]?) {
 //        guard let receiverId = receiverId else { return }
 //        let textMessage = TextMessage(receiverUid: receiverId, text: message, receiverType: receiverType)
 //        CometChatUIEvents.hidePanel(id: id, alignment: .composerTop)
 //        CometChatUIEvents.ccComposeMessage(id: id, message: textMessage)
 //    }
-//}
+// }
 
-
-//extension AISmartRepliesDecorator: CometChatUIEventListener {
-//    
-//    func onActiveChatChanged(id: [String : Any]?, lastMessage: CometChatSDK.BaseMessage?, user: CometChatSDK.User?, group: CometChatSDK.Group?) { 
+// extension AISmartRepliesDecorator: CometChatUIEventListener {
+//
+//    func onActiveChatChanged(id: [String : Any]?, lastMessage: CometChatSDK.BaseMessage?, user: CometChatSDK.User?, group: CometChatSDK.Group?) {
 //        self.currentUser = user
 //        self.currentGroup = group
 //    }
-//    
-//}
 //
-//extension AISmartRepliesDecorator: CometChatMessageEventListener {
-//    
+// }
+//
+// extension AISmartRepliesDecorator: CometChatMessageEventListener {
+//
 //    func onTextMessageReceived(textMessage: TextMessage) {
 //        if isErrorViewPresented {
 //            isErrorViewPresented = false
@@ -143,7 +142,7 @@ import CometChatSDK
 //            CometChatMessageEvents.removeListener(eventID)
 //        }
 //    }
-//    
+//
 //    func onMediaMessageReceived(mediaMessage: MediaMessage) {
 //        if isErrorViewPresented {
 //            isErrorViewPresented = false
@@ -151,7 +150,7 @@ import CometChatSDK
 //            CometChatMessageEvents.removeListener(eventID)
 //        }
 //    }
-//    
+//
 //    func onCustomMessageReceived(customMessage: CustomMessage) {
 //        if isErrorViewPresented {
 //            isErrorViewPresented = false
@@ -159,23 +158,23 @@ import CometChatSDK
 //            CometChatMessageEvents.removeListener(eventID)
 //        }
 //    }
-//    
-//    func onFormMessageReceived(message: FormMessage) { 
+//
+//    func onFormMessageReceived(message: FormMessage) {
 //        if isErrorViewPresented {
 //            isErrorViewPresented = false
 //            CometChatUIEvents.hidePanel(id: uiEventId, alignment: .composerTop)
 //            CometChatMessageEvents.removeListener(eventID)
 //        }
 //    }
-//    
-//    func onCardMessageReceived(message: CardMessage) { 
+//
+//    func onCardMessageReceived(message: CardMessage) {
 //        if isErrorViewPresented {
 //            isErrorViewPresented = false
 //            CometChatUIEvents.hidePanel(id: uiEventId, alignment: .composerTop)
 //            CometChatMessageEvents.removeListener(eventID)
 //        }
 //    }
-//    
+//
 //    func onSchedulerMessageReceived(message: SchedulerMessage) {
 //        if isErrorViewPresented {
 //            isErrorViewPresented = false
@@ -183,7 +182,7 @@ import CometChatSDK
 //            CometChatMessageEvents.removeListener(eventID)
 //        }
 //    }
-//    
+//
 //    func onCustomInteractiveMessageReceived(message: CustomInteractiveMessage) {
 //        if isErrorViewPresented {
 //            isErrorViewPresented = false
@@ -191,7 +190,7 @@ import CometChatSDK
 //            CometChatMessageEvents.removeListener(eventID)
 //        }
 //    }
-//    
+//
 //    func ccMessageSent(message: CometChatSDK.BaseMessage, status: MessageStatus) {
 //        if isErrorViewPresented {
 //            isErrorViewPresented = false
@@ -199,5 +198,5 @@ import CometChatSDK
 //            CometChatMessageEvents.removeListener(eventID)
 //        }
 //    }
-//        
-//}
+//
+// }

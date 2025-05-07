@@ -5,17 +5,15 @@
 //  Created by Suryansh on 19/09/24.
 //
 
-import Foundation
 import CometChatSDK
+import Foundation
 
 class PollUtils {
-    
-    //Getting polls data from the messages metaData. Refer to this doc: https://www.cometchat.com/docs/extensions/polls#4-getting-results
+    // Getting polls data from the messages metaData. Refer to this doc: https://www.cometchat.com/docs/extensions/polls#4-getting-results
     public func parsePolls(forMessage: BaseMessage) -> PollsData {
-        
         let pollsData = PollsData()
-        
-        if let metaData = forMessage.metaData , let injected = metaData["@injected"] as? [String : Any], let cometChatExtension =  injected["extensions"] as? [String : Any], let pollsDictionary = cometChatExtension["polls"] as? [String : Any] {
+
+        if let metaData = forMessage.metaData, let injected = metaData["@injected"] as? [String: Any], let cometChatExtension = injected["extensions"] as? [String: Any], let pollsDictionary = cometChatExtension["polls"] as? [String: Any] {
             if let pollID = pollsDictionary["id"] as? String {
                 pollsData.id = pollID
             }
@@ -33,7 +31,7 @@ class PollUtils {
                             for voter in voters {
                                 optionsInfo.user.append((
                                     uid: voter.key,
-                                    avatar: (voter.value["avatar"]  as? String) ?? "",
+                                    avatar: (voter.value["avatar"] as? String) ?? "",
                                     name: voter.value["name"] as? String ?? ""
                                 ))
                             }
@@ -44,12 +42,10 @@ class PollUtils {
                 }
             }
         }
-        
-        
+
         return pollsData
     }
 }
-
 
 public class PollsData {
     public var id = ""

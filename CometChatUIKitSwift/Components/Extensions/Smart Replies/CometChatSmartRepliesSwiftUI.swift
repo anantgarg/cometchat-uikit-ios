@@ -2,24 +2,23 @@
 //
 //
 
-import SwiftUI
 import CometChatSDK
 import CometChatUIKitSwift.Components.Shared.Constants
+import SwiftUI
 
 public struct CometChatSmartRepliesSwiftUI: View {
-    
     @State private var titles: [String] = []
-    @State private var style: SmartRepliesStyle = SmartRepliesStyle()
+    @State private var style: SmartRepliesStyle = .init()
     @State private var user: User?
     @State private var group: Group?
     @State private var onReplySelectedCallback: ((String) -> Void)?
-    
+
     public init() {}
-    
+
     public init(titles: [String]) {
-        self._titles = State(initialValue: titles)
+        _titles = State(initialValue: titles)
     }
-    
+
     public var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: LayoutMetrics.spacingStandard) {
@@ -59,39 +58,39 @@ public struct CometChatSmartRepliesSwiftUI: View {
         .background(Color(style.background))
         .cornerRadius(style.cornerRadius.cornerRadius)
     }
-    
+
     @discardableResult
     public func set(titles: [String]) -> Self {
         var view = self
         view._titles = State(initialValue: titles)
         return view
     }
-    
+
     @discardableResult
     public func set(user: User) -> Self {
         var view = self
         view._user = State(initialValue: user)
         return view
     }
-    
+
     @discardableResult
     public func set(group: Group) -> Self {
         var view = self
         view._group = State(initialValue: group)
         return view
     }
-    
+
     @discardableResult
     public func set(message: BaseMessage) -> Self {
         var view = self
-        
+
         var replies: [String] = []
         if message.sender?.uid != CometChat.getLoggedInUser()?.uid {
             if let metaData = message.metaData,
                let injected = metaData["@injected"] as? [String: Any],
                let cometChatExtension = injected[ExtensionConstants.extensions] as? [String: Any],
-               let smartReply = cometChatExtension[ExtensionConstants.smartReply] as? [String: Any] {
-                
+               let smartReply = cometChatExtension[ExtensionConstants.smartReply] as? [String: Any]
+            {
                 if let positive = smartReply["reply_positive"] as? String {
                     replies.append(positive)
                 }
@@ -101,31 +100,31 @@ public struct CometChatSmartRepliesSwiftUI: View {
                 if let negative = smartReply["reply_negative"] as? String {
                     replies.append(negative)
                 }
-                
+
                 if !replies.isEmpty {
                     replies.append("")
                 }
             }
         }
-        
+
         view._titles = State(initialValue: replies)
         return view
     }
-    
+
     @discardableResult
     public func set(style: SmartRepliesStyle) -> Self {
         var view = self
         view._style = State(initialValue: style)
         return view
     }
-    
+
     @discardableResult
     public func onReplySelected(_ callback: @escaping (String) -> Void) -> Self {
         var view = self
         view._onReplySelectedCallback = State(initialValue: callback)
         return view
     }
-    
+
     public func toUIKit() -> UIView {
         let hostingController = UIHostingController(rootView: self)
         let view = hostingController.view
@@ -141,13 +140,13 @@ struct CometChatSmartRepliesSwiftUI_Previews: PreviewProvider {
                 .set(titles: ["Thanks!", "I'll check it out", "Not interested", ""])
                 .padding()
                 .previewDisplayName("Default Smart Replies (Light)")
-            
+
             CometChatSmartRepliesSwiftUI()
                 .set(titles: ["Yes, I agree", "Maybe later", "No, thanks", ""])
                 .set(style: SmartRepliesStyle().set(textColor: .blue).set(textBackground: .yellow))
                 .padding()
                 .previewDisplayName("Custom Style Smart Replies (Light)")
-                
+
             CometChatSmartRepliesSwiftUI()
                 .set(titles: ["Thanks!", "I'll check it out", "Not interested", ""])
                 .padding()

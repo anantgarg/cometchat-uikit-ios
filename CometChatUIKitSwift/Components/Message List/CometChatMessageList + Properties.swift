@@ -5,294 +5,282 @@
 //  Created by Suryansh on 18/06/24.
 //
 
-import Foundation
 import CometChatSDK
+import Foundation
 
+public extension CometChatMessageList {
+    // MARK: Data
 
-extension CometChatMessageList {
-    
-    //MARK: Data
     @discardableResult
-    public func set(user: User, parentMessage: BaseMessage? = nil) -> Self {
-        self.viewModel.set(user: user, messagesRequestBuilder: self.messagesRequestBuilder, parentMessage: parentMessage)
+    func set(user: User, parentMessage: BaseMessage? = nil) -> Self {
+        viewModel.set(user: user, messagesRequestBuilder: messagesRequestBuilder, parentMessage: parentMessage)
         return self
     }
-    
+
     @discardableResult
-    public func set(group: Group, parentMessage: BaseMessage? = nil) -> Self {
-        self.viewModel.set(group: group, messagesRequestBuilder: self.messagesRequestBuilder, parentMessage: parentMessage)
+    func set(group: Group, parentMessage: BaseMessage? = nil) -> Self {
+        viewModel.set(group: group, messagesRequestBuilder: messagesRequestBuilder, parentMessage: parentMessage)
         return self
     }
-    
+
     @discardableResult
-    public func set(messagesRequestBuilder: MessagesRequest.MessageRequestBuilder) -> Self {
+    func set(messagesRequestBuilder: MessagesRequest.MessageRequestBuilder) -> Self {
         self.messagesRequestBuilder = messagesRequestBuilder
-        self.viewModel.set(messagesRequestBuilder: messagesRequestBuilder)
+        viewModel.set(messagesRequestBuilder: messagesRequestBuilder)
         return self
     }
-    
+
     @discardableResult
-    public func set(templates: [CometChatMessageTemplate]) -> Self {
+    func set(templates: [CometChatMessageTemplate]) -> Self {
         viewModel.templates.removeAll()
-        for template in (templates) {
+        for template in templates {
             viewModel.templates["\(template.category)_\(template.type)"] = template
         }
         return self
     }
-    
+
     @discardableResult
-    public func add(templates: [CometChatMessageTemplate]) -> Self {
-        for template in (templates) {
+    func add(templates: [CometChatMessageTemplate]) -> Self {
+        for template in templates {
             viewModel.templates["\(template.category)_\(template.type)"] = template
         }
         return self
     }
-    
+
     @discardableResult
-    public func set(reactionsRequestBuilder: ReactionsRequestBuilder) -> Self {
+    func set(reactionsRequestBuilder: ReactionsRequestBuilder) -> Self {
         self.reactionsRequestBuilder = reactionsRequestBuilder
         return self
     }
-    
+
     @discardableResult
-    public func set(parentMessageId: Int) ->  Self {
+    func set(parentMessageId: Int) -> Self {
         viewModel.parentMessage?.id = parentMessageId
-        if let user = viewModel.user{
-            viewModel.set(user: user, messagesRequestBuilder: self.messagesRequestBuilder)
-        }else{
-            viewModel.set(group: viewModel.group!, messagesRequestBuilder: self.messagesRequestBuilder)
+        if let user = viewModel.user {
+            viewModel.set(user: user, messagesRequestBuilder: messagesRequestBuilder)
+        } else {
+            viewModel.set(group: viewModel.group!, messagesRequestBuilder: messagesRequestBuilder)
         }
-        
+
         return self
     }
-    
-    
-    //MARK: Event
+
+    // MARK: Event
+
     @discardableResult
-    public func set(onReactionClick: ((_ reaction: ReactionCount, _ baseMessage: BaseMessage?) -> ())?) -> Self {
+    func set(onReactionClick: ((_ reaction: ReactionCount, _ baseMessage: BaseMessage?) -> Void)?) -> Self {
         self.onReactionClick = onReactionClick
         return self
     }
-    
+
     @discardableResult
-    public func set(onReactionListItemClick: ((_ messageReaction: CometChatSDK.Reaction, _ baseMessage: BaseMessage?) -> ())?) -> Self {
+    func set(onReactionListItemClick: ((_ messageReaction: CometChatSDK.Reaction, _ baseMessage: BaseMessage?) -> Void)?) -> Self {
         self.onReactionListItemClick = onReactionListItemClick
         return self
     }
-    
+
     @discardableResult
-    public func set(onThreadRepliesClick: ((_ message: BaseMessage, _ template: CometChatMessageTemplate) -> ())?) -> Self {
+    func set(onThreadRepliesClick: ((_ message: BaseMessage, _ template: CometChatMessageTemplate) -> Void)?) -> Self {
         self.onThreadRepliesClick = onThreadRepliesClick
         return self
     }
-    
+
     @discardableResult
-    public func set(onError: @escaping ((_ error: CometChatException) -> Void)) -> Self {
+    func set(onError: @escaping ((_ error: CometChatException) -> Void)) -> Self {
         self.onError = onError
         return self
     }
-    
+
     @discardableResult
-    public func set(onLoad: @escaping (([BaseMessage]) -> Void)) -> Self {
+    func set(onLoad: @escaping (([BaseMessage]) -> Void)) -> Self {
         self.onLoad = onLoad
         return self
     }
-    
+
     @discardableResult
-    public func set(onEmpty: @escaping (() -> Void)) -> Self {
+    func set(onEmpty: @escaping (() -> Void)) -> Self {
         self.onEmpty = onEmpty
         return self
     }
-    
-    
-    //MARK: Configurations
+
+    // MARK: Configurations
+
     @discardableResult
-    public func set(textFormatters: [CometChatTextFormatter]) -> Self {
-        self.viewModel.textFormatters = textFormatters
+    func set(textFormatters: [CometChatTextFormatter]) -> Self {
+        viewModel.textFormatters = textFormatters
         return self
     }
-    
+
     @discardableResult
-    public func set(customSoundForMessages: URL) -> Self {
+    func set(customSoundForMessages: URL) -> Self {
         self.customSoundForMessages = customSoundForMessages
         return self
     }
-    
+
     @discardableResult
-    public func set(datePattern: ((_ timestamp: Int?) -> String)?) -> Self {
+    func set(datePattern: ((_ timestamp: Int?) -> String)?) -> Self {
         self.datePattern = datePattern
         return self
     }
-    
+
     @discardableResult
-    public func set(timePattern: ((_ timestamp: Int?) -> String)?) -> Self {
+    func set(timePattern: ((_ timestamp: Int?) -> String)?) -> Self {
         self.timePattern = timePattern
         return self
     }
-    
+
     @discardableResult
-    public func set(dateSeparatorPattern: ((_ timestamp: Int?) -> String)?) -> Self {
+    func set(dateSeparatorPattern: ((_ timestamp: Int?) -> String)?) -> Self {
         self.dateSeparatorPattern = dateSeparatorPattern
         return self
     }
-    
+
     @discardableResult
-    public func scrollToBottom(isAnimated: Bool = true) -> Self {
-        if tableView.numberOfSections > 0 && tableView.numberOfRows(inSection: 0) > 0 {
-            self.tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: isAnimated)
+    func scrollToBottom(isAnimated: Bool = true) -> Self {
+        if tableView.numberOfSections > 0, tableView.numberOfRows(inSection: 0) > 0 {
+            tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: isAnimated)
         }
         return self
     }
-    
+
     @discardableResult
-    public func set(messageAlignment: MessageListAlignment) -> Self {
+    func set(messageAlignment: MessageListAlignment) -> Self {
         self.messageAlignment = messageAlignment
         return self
     }
-    
+
     @discardableResult
-    public func set(smartRepliesKeywords: [String]) -> Self {
+    func set(smartRepliesKeywords: [String]) -> Self {
         self.smartRepliesKeywords = smartRepliesKeywords
         return self
     }
-    
+
     @discardableResult
-    public func set(smartRepliesDelayDuration: Int) -> Self {
-        self.smartRepliesDelayDuration = smartRepliesDelayDuration  
+    func set(smartRepliesDelayDuration: Int) -> Self {
+        self.smartRepliesDelayDuration = smartRepliesDelayDuration
         return self
     }
-    
-    
-    
-    //MARK: Overrides
+
+    // MARK: Overrides
+
     @discardableResult
-    public func set(headerView: UIView?) ->  Self {
-        headerViewContainer.subviews.forEach({ $0.removeFromSuperview() })
+    func set(headerView: UIView?) -> Self {
+        headerViewContainer.subviews.forEach { $0.removeFromSuperview() }
         if headerView != nil {
-            self.headerViewContainer.isHidden = false
-            if let headerView = headerView {
-                self.headerViewContainer.addArrangedSubview(headerView)
+            headerViewContainer.isHidden = false
+            if let headerView {
+                headerViewContainer.addArrangedSubview(headerView)
             }
-        }else{
-            self.headerViewContainer.isHidden = true
+        } else {
+            headerViewContainer.isHidden = true
         }
         return self
     }
-    
+
     @discardableResult
-    public func clear(headerView: Bool) ->  Self {
+    func clear(headerView: Bool) -> Self {
         if headerView {
-            self.hideHeaderView = headerView
-            headerViewContainer.subviews.forEach({ $0.removeFromSuperview() })
-            self.headerViewContainer.isHidden = headerView
+            hideHeaderView = headerView
+            headerViewContainer.subviews.forEach { $0.removeFromSuperview() }
+            headerViewContainer.isHidden = headerView
         }
         return self
     }
-    
+
     @discardableResult
-    public func set(footerView: UIView) ->  Self {
-        footerViewContainer.subviews.forEach({ $0.removeFromSuperview() })
+    func set(footerView: UIView) -> Self {
+        footerViewContainer.subviews.forEach { $0.removeFromSuperview() }
         footerViewContainer.isHidden = false
         footerViewContainer.addArrangedSubview(footerView)
         return self
     }
-    
+
     @discardableResult
-    public func clear(footerView: Bool) ->  Self {
-        self.hideFooterView = footerView
-        self.footerViewContainer.isHidden = true
-        footerViewContainer.subviews.forEach({ $0.removeFromSuperview() })
-        self.layoutIfNeeded()
+    func clear(footerView: Bool) -> Self {
+        hideFooterView = footerView
+        footerViewContainer.isHidden = true
+        footerViewContainer.subviews.forEach { $0.removeFromSuperview() }
+        layoutIfNeeded()
         return self
     }
-    
+
     @discardableResult
-    public func set(loadingView: UIView) ->  Self {
-        self.loadingStateView = loadingView
+    func set(loadingView: UIView) -> Self {
+        loadingStateView = loadingView
         return self
     }
-    
+
     @discardableResult
-    public func set(errorView: UIView) ->  Self {
-        self.errorStateView = errorView
+    func set(errorView: UIView) -> Self {
+        errorStateView = errorView
         return self
     }
-    
+
     @discardableResult
-    public func set(emptyView: UIView) ->  Self {
-        self.emptyStateView = emptyView
+    func set(emptyView: UIView) -> Self {
+        emptyStateView = emptyView
         return self
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
     @discardableResult
-    public func set(controller: UIViewController) -> Self {
+    func set(controller: UIViewController) -> Self {
         self.controller = controller
         return self
     }
-    
+
     @discardableResult
-    public func connect() -> Self {
+    func connect() -> Self {
         viewModel.connect()
         addKeyboardDismissGesture()
         return self
     }
-    
+
     @discardableResult
-    public func disconnect() -> Self {
+    func disconnect() -> Self {
         viewModel.disconnect()
         removeKeyboardDismissGesture()
         return self
     }
-    
+
     @discardableResult
-    public func add(message: BaseMessage) -> Self {
+    func add(message: BaseMessage) -> Self {
         viewModel.add(message: message)
         return self
     }
-    
+
     @discardableResult
-    public func update(message: BaseMessage) -> Self {
+    func update(message: BaseMessage) -> Self {
         viewModel.update(message: message)
         return self
     }
-    
+
     @discardableResult
-    public func remove(message: BaseMessage) -> Self {
+    func remove(message: BaseMessage) -> Self {
         viewModel.remove(message: message)
         return self
     }
-    
+
     @discardableResult
-    public func delete(message: BaseMessage) -> Self {
+    func delete(message: BaseMessage) -> Self {
         viewModel.delete(message: message)
         return self
     }
-    
+
     @discardableResult
-    public func didMessageInformationClicked(message: BaseMessage) -> Self {
+    func didMessageInformationClicked(message: BaseMessage) -> Self {
         let messageInformationController = CometChatMessageInformation()
         let navigationController = UINavigationController(rootViewController: messageInformationController)
-        
-        if let messageInformationConfiguration = self.messageInformationConfiguration {
+
+        if let messageInformationConfiguration {
             configureMessageInformation(configuration: messageInformationConfiguration, messageInformation: messageInformationController)
         }
         messageInformationController.dateTimeFormatter = dateTimeFormatter
         messageInformationController.set(message: message)
-        
+
         if let indexPath = viewModel.getIndexPath(for: message), let cell = tableView.cellForRow(at: indexPath) as? CometChatMessageBubble {
             messageInformationController.bubbleSnapshotView = cell.bubbleStackView.snapshotView(afterScreenUpdates: true)
         }
-        
+
         if #available(iOS 15.0, *) {
             if let presentationController = navigationController.presentationController as? UISheetPresentationController {
                 presentationController.detents = [.medium(), .large()]
@@ -302,31 +290,28 @@ extension CometChatMessageList {
         } else {
             controller?.present(navigationController, animated: true)
         }
-                
+
         return self
     }
-    
+
     @discardableResult
-    public func clearList() -> Self {
+    func clearList() -> Self {
         viewModel.clearList()
         return self
     }
-    
-    
-    
+
     @discardableResult
-    public func isEmpty() -> Bool {
-        return viewModel.messages.isEmpty ? true : false
+    func isEmpty() -> Bool {
+        viewModel.messages.isEmpty ? true : false
     }
-    
-    public func scrollToLastVisibleCell() {
-        if let lastCell = self.tableView.indexPathsForVisibleRows, let lastIndex = lastCell.last {
-            self.tableView.scrollToLastVisibleCell(lastIndex: lastIndex)
+
+    func scrollToLastVisibleCell() {
+        if let lastCell = tableView.indexPathsForVisibleRows, let lastIndex = lastCell.last {
+            tableView.scrollToLastVisibleCell(lastIndex: lastIndex)
         }
     }
-    
-    public func getAdditionalConfiguration() -> AdditionalConfiguration {
-        return viewModel.additionalConfiguration
+
+    func getAdditionalConfiguration() -> AdditionalConfiguration {
+        viewModel.additionalConfiguration
     }
-    
 }

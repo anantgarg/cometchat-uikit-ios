@@ -1,22 +1,21 @@
 //
 //  AIConversationSummaryExtension.swift
-//  
+//
 //
 //  Created by SuryanshBisen on 20/10/23.
 //
 
-import Foundation
 import CometChatSDK
+import Foundation
 
 public class AIConversationSummaryExtension: ExtensionDataSource {
-    
     private let configuration: AIConversationSummaryConfiguration?
-    
+
     public init(configuration: AIConversationSummaryConfiguration? = nil) {
         self.configuration = configuration
         super.init()
     }
-    
+
     override public func enable() {
         CometChat.isAIFeatureEnabled(feature: getExtensionId(), onSuccess: {
             success in
@@ -27,20 +26,18 @@ public class AIConversationSummaryExtension: ExtensionDataSource {
             _ in
         })
     }
-    
-    public override func addExtension() {
+
+    override public func addExtension() {
         ChatConfigurator.enable { dataSource in
-            return AIConversationSummaryDecorator(dataSource: dataSource, configuration: configuration)
+            AIConversationSummaryDecorator(dataSource: dataSource, configuration: configuration)
         }
     }
-    
-    public override func getExtensionId() -> String {
-        return ExtensionConstants.aiConversationSummary
-    }
-    
-    internal func getConfiguration() -> AIConversationSummaryConfiguration? {
-        return configuration
+
+    override public func getExtensionId() -> String {
+        ExtensionConstants.aiConversationSummary
     }
 
-    
+    func getConfiguration() -> AIConversationSummaryConfiguration? {
+        configuration
+    }
 }

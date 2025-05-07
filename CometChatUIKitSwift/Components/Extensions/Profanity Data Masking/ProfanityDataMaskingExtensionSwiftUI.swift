@@ -2,35 +2,34 @@
 //
 //
 
+import CometChatSDK
 import Foundation
 import SwiftUI
-import CometChatSDK
 
 public class ProfanityDataMaskingExtensionSwiftUI: ExtensionDataSource {
-    
-    public override init() {}
-    
+    override public init() {}
+
     var addedExtension = true
-    
-    public override func addExtension() {
+
+    override public func addExtension() {
         if addedExtension {
             ChatConfigurator.enable { dataSource in
-                return ProfanityDataMaskingExtensionDecoratorSwiftUI(dataSource: dataSource)
+                ProfanityDataMaskingExtensionDecoratorSwiftUI(dataSource: dataSource)
             }
             addedExtension = false
         }
     }
-    
-    public override func enable() {
-        CometChat.isExtensionEnabled(extensionId: ExtensionConstants.profanityFilter, onSuccess: {success in
+
+    override public func enable() {
+        CometChat.isExtensionEnabled(extensionId: ExtensionConstants.profanityFilter, onSuccess: { success in
             if success {
                 self.addExtension()
             }
         }, onError: {
             _ in
         })
-        
-        CometChat.isExtensionEnabled(extensionId: getExtensionId(), onSuccess: {success in
+
+        CometChat.isExtensionEnabled(extensionId: getExtensionId(), onSuccess: { success in
             if success {
                 self.addExtension()
             }
@@ -38,8 +37,8 @@ public class ProfanityDataMaskingExtensionSwiftUI: ExtensionDataSource {
             _ in
         })
     }
-    
-    public override func getExtensionId() -> String {
-        return ExtensionConstants.dataMasking
+
+    override public func getExtensionId() -> String {
+        ExtensionConstants.dataMasking
     }
 }

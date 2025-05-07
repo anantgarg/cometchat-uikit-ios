@@ -1,6 +1,6 @@
 //
-//  File.swift
-//  
+//  OutgoingCallStyle.swift
+//
 //
 //  Created by Pushpsen Airekar on 08/03/23.
 //
@@ -19,9 +19,9 @@ public struct OutgoingCallStyle {
     public var declineButtonBackgroundColor = CometChatTheme.errorColor
     public var declineButtonIconTint = CometChatTheme.white
     public var declineButtonIcon = UIImage(systemName: "phone.down.fill")
-    public var declineButtonCornerRadius: CometChatCornerStyle? = nil
+    public var declineButtonCornerRadius: CometChatCornerStyle?
     public var declineButtonBorderWidth: CGFloat = 0
     public var declineButtonBorderColor: UIColor = .clear
-    
-    public init() { }
+
+    public init() {}
 }

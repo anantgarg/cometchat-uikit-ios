@@ -1,5 +1,5 @@
 //
-//  StickerSet.swift
+//  CometChatStickerSet.swift
 //  CometChatSwift
 //
 //  Created by Pushpsen Airekar on 06/11/20.
@@ -10,14 +10,13 @@ import Foundation
 import UIKit
 
 public class CometChatStickerSet {
-    
     var order: Int?
     var id: String?
     var thumbnail: String?
     var name: String?
     var stickers: [CometChatSticker]?
-    
-    init(order: Int ,id: String, thumbnail: String, name: String, stickers: [CometChatSticker]) {
+
+    init(order: Int, id: String, thumbnail: String, name: String, stickers: [CometChatSticker]) {
         self.order = order
         self.id = id
         self.thumbnail = thumbnail

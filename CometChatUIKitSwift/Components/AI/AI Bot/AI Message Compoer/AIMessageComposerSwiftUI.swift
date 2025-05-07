@@ -2,22 +2,22 @@
 //
 //
 
-import SwiftUI
 import CometChatSDK
 import CometChatUIKitSwift.Components.Shared.Constants
+import SwiftUI
 
 public struct AIMessageComposerSwiftUI: View {
     @State private var messageText: String = ""
     @State private var textFieldHeight: CGFloat = LayoutMetrics.avatarMedium
-    
+
     private var placeholderText: String = "TYPE_A_MESSAGE".localize()
     private var user: User?
     private var style: MessageInputStyle?
     private var sendIconName = "paperplane.fill"
     private var onSendButtonClicked: ((BaseMessage) -> Void)?
-    
+
     public init() {}
-    
+
     public var body: some View {
         HStack(spacing: 8) {
             ZStack(alignment: .leading) {
@@ -27,7 +27,7 @@ public struct AIMessageComposerSwiftUI: View {
                         .foregroundColor(Color(style?.placeHolderTextColor ?? CometChatTheme_v4.palatte.accent500))
                         .padding(.horizontal, LayoutMetrics.spacingMedium)
                 }
-                
+
                 TextEditor(text: $messageText)
                     .font(Font(style?.textFont ?? CometChatTheme_v4.typography.text1))
                     .foregroundColor(Color(style?.textColor ?? CometChatTheme_v4.palatte.accent))
@@ -47,7 +47,7 @@ public struct AIMessageComposerSwiftUI: View {
                 RoundedRectangle(cornerRadius: (style?.cornerRadius?.cornerRadius ?? LayoutMetrics.cornerRadiusRound))
                     .stroke(Color(style?.borderColor ?? CometChatTheme_v4.palatte.accent700), lineWidth: style?.borderWidth ?? LayoutMetrics.dividerHeight)
             )
-            
+
             Button(action: sendMessage) {
                 Image(systemName: sendIconName)
                     .resizable()
@@ -61,7 +61,7 @@ public struct AIMessageComposerSwiftUI: View {
         .padding(.horizontal, LayoutMetrics.spacingStandard)
         .padding(.vertical, LayoutMetrics.spacingSmall)
     }
-    
+
     private func sendMessage() {
         let trimmedText = messageText.trimmingCharacters(in: .whitespacesAndNewlines)
         if !trimmedText.isEmpty {
@@ -70,32 +70,31 @@ public struct AIMessageComposerSwiftUI: View {
             messageText = ""
         }
     }
-    
+
     public func set(user: User?) -> AIMessageComposerSwiftUI {
         var view = self
         view.user = user
         return view
     }
-    
+
     public func set(onMessageSent: ((BaseMessage) -> Void)?) -> AIMessageComposerSwiftUI {
         var view = self
         view.onSendButtonClicked = onMessageSent
         return view
     }
-    
+
     public func set(sendIconName: String) -> AIMessageComposerSwiftUI {
         var view = self
         view.sendIconName = sendIconName
         return view
     }
-    
-    
+
     public func set(messageInputStyle: MessageInputStyle) -> AIMessageComposerSwiftUI {
         var view = self
         view.style = messageInputStyle
         return view
     }
-    
+
     public func set(placeholderText: String) -> AIMessageComposerSwiftUI {
         var view = self
         view.placeholderText = placeholderText
@@ -103,8 +102,8 @@ public struct AIMessageComposerSwiftUI: View {
     }
 }
 
-extension AIMessageComposerSwiftUI {
-    public func toUIKit() -> UIView {
+public extension AIMessageComposerSwiftUI {
+    func toUIKit() -> UIView {
         let hostingController = UIHostingController(rootView: self)
         return hostingController.view
     }
@@ -113,7 +112,7 @@ extension AIMessageComposerSwiftUI {
 extension String {
     func height(withConstrainedWidth width: CGFloat, font: UIFont) -> CGFloat {
         let constraintRect = CGSize(width: width, height: .greatestFiniteMagnitude)
-        let boundingBox = self.boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, attributes: [.font: font], context: nil)
+        let boundingBox = boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, attributes: [.font: font], context: nil)
         return ceil(boundingBox.height)
     }
 }
@@ -124,18 +123,18 @@ struct AIMessageComposerSwiftUI_Previews: PreviewProvider {
             AIMessageComposerSwiftUI()
                 .padding()
                 .previewDisplayName("Default (Light)")
-            
+
             AIMessageComposerSwiftUI()
                 .preferredColorScheme(.dark)
                 .padding()
                 .previewDisplayName("Default (Dark)")
-            
+
             AIMessageComposerSwiftUI()
                 .set(placeholderText: "Ask the AI assistant...")
                 .set(messageInputStyle: getCustomStyle())
                 .padding()
                 .previewDisplayName("Custom Style (Light)")
-            
+
             AIMessageComposerSwiftUI()
                 .set(placeholderText: "Ask the AI assistant...")
                 .set(messageInputStyle: getCustomStyle())
@@ -144,7 +143,7 @@ struct AIMessageComposerSwiftUI_Previews: PreviewProvider {
                 .previewDisplayName("Custom Style (Dark)")
         }
     }
-    
+
     static func getCustomStyle() -> MessageInputStyle {
         let style = MessageInputStyle()
         style.textColor = CometChatTheme_v4.palatte.accent900

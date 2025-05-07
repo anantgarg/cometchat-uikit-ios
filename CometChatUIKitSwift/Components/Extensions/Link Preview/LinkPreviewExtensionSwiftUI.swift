@@ -6,16 +6,15 @@ import Foundation
 import SwiftUI
 
 public class LinkPreviewExtensionSwiftUI: ExtensionDataSource {
-    
-    public override init() {}
-    
-    public override func addExtension() {
+    override public init() {}
+
+    override public func addExtension() {
         ChatConfigurator.enable { dataSource in
-            return LinkPreviewViewModelSwiftUI(dataSource: dataSource)
+            LinkPreviewViewModelSwiftUI(dataSource: dataSource)
         }
     }
-    
-    public override func getExtensionId() -> String {
-        return ExtensionConstants.linkPreview
+
+    override public func getExtensionId() -> String {
+        ExtensionConstants.linkPreview
     }
 }

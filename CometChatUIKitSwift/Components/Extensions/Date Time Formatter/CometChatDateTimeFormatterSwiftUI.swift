@@ -6,39 +6,38 @@ import Foundation
 import SwiftUI
 
 public struct CometChatDateTimeFormatterSwiftUI {
-
     public var time: ((_ timestamp: Int) -> String)?
     public var today: ((_ timestamp: Int) -> String)?
     public var yesterday: ((_ timestamp: Int) -> String)?
     public var lastWeek: ((_ timestamp: Int) -> String)?
     public var otherDay: ((_ timestamp: Int) -> String)?
-    
+
     public var minute: ((_ timestamp: Int) -> String)?
     public var minutes: ((_ timestamp: Int) -> String)?
     public var hour: ((_ timestamp: Int) -> String)?
     public var hours: ((_ timestamp: Int) -> String)?
 
     public init() {}
-    
+
     public func toUIKit() -> CometChatDateTimeFormatter {
         let formatter = CometChatDateTimeFormatter()
-        
-        formatter.time = self.time
-        formatter.today = self.today
-        formatter.yesterday = self.yesterday
-        formatter.lastWeek = self.lastWeek
-        formatter.otherDay = self.otherDay
-        formatter.minute = self.minute
-        formatter.minutes = self.minutes
-        formatter.hour = self.hour
-        formatter.hours = self.hours
-        
+
+        formatter.time = time
+        formatter.today = today
+        formatter.yesterday = yesterday
+        formatter.lastWeek = lastWeek
+        formatter.otherDay = otherDay
+        formatter.minute = minute
+        formatter.minutes = minutes
+        formatter.hour = hour
+        formatter.hours = hours
+
         return formatter
     }
-    
+
     public static func from(uiKitFormatter: CometChatDateTimeFormatter) -> CometChatDateTimeFormatterSwiftUI {
         let formatter = CometChatDateTimeFormatterSwiftUI()
-        
+
         formatter.time = uiKitFormatter.time
         formatter.today = uiKitFormatter.today
         formatter.yesterday = uiKitFormatter.yesterday
@@ -48,7 +47,7 @@ public struct CometChatDateTimeFormatterSwiftUI {
         formatter.minutes = uiKitFormatter.minutes
         formatter.hour = uiKitFormatter.hour
         formatter.hours = uiKitFormatter.hours
-        
+
         return formatter
     }
 }
@@ -59,32 +58,32 @@ struct CometChatDateTimeFormatterSwiftUI_Previews: PreviewProvider {
             VStack(spacing: 10) {
                 Text("Date Time Formatter Preview")
                     .font(.headline)
-                
+
                 let currentTimestamp = Int(Date().timeIntervalSince1970)
-                
+
                 Group {
                     Text("Default formatting:")
                     Text("Current time: \(DateFormatter.localizedString(from: Date(), dateStyle: .medium, timeStyle: .short))")
                         .font(.body)
                 }
-                
+
                 Spacer()
             }
             .padding()
             .previewDisplayName("Date Time Formatter (Light)")
-            
+
             VStack(spacing: 10) {
                 Text("Date Time Formatter Preview")
                     .font(.headline)
-                
+
                 let currentTimestamp = Int(Date().timeIntervalSince1970)
-                
+
                 Group {
                     Text("Default formatting:")
                     Text("Current time: \(DateFormatter.localizedString(from: Date(), dateStyle: .medium, timeStyle: .short))")
                         .font(.body)
                 }
-                
+
                 Spacer()
             }
             .padding()

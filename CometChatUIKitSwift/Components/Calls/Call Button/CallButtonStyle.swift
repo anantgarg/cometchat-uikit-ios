@@ -8,7 +8,6 @@
 import UIKit
 
 public struct CallButtonStyle {
-    
     public var videoCallIconTint = CometChatTheme.iconColorPrimary
     public var videoCallTextFont = CometChatTypography.Body.regular
     public var videoCallTextColor = CometChatTheme.iconColorPrimary
@@ -17,7 +16,7 @@ public struct CallButtonStyle {
     public var videoCallButtonBorder: CGFloat?
     public var videoCallButtonBorderColor: UIColor?
     public var videoCallIcon = UIImage(systemName: "video")?.withRenderingMode(.alwaysTemplate) ?? UIImage()
-    
+
     public var audioCallIconTint = CometChatTheme.iconColorPrimary
     public var audioCallTextFont = CometChatTypography.Body.regular
     public var audioCallTextColor = CometChatTheme.iconColorPrimary
@@ -26,6 +25,6 @@ public struct CallButtonStyle {
     public var audioCallButtonBorder: CGFloat?
     public var audioCallButtonBorderColor: UIColor?
     public var audioCallIcon = UIImage(systemName: "phone")?.withRenderingMode(.alwaysTemplate) ?? UIImage()
-    
-    public init() { }
+
+    public init() {}
 }

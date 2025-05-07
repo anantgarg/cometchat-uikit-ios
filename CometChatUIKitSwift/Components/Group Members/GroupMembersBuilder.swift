@@ -1,12 +1,12 @@
 //
 //  GroupMembersBuilder.swift
- 
+
 //
 //  Created by Pushpsen Airekar on 22/11/22.
 //
 
-import Foundation
 import CometChatSDK
+import Foundation
 
 enum GroupMembersBuilderResult {
     case success([GroupMember])
@@ -24,32 +24,31 @@ enum KickBanGroupMemberResult {
 }
 
 public class GroupMembersBuilder {
-    
-    static public func getSharedBuilder(for group: Group) -> GroupMembersRequest.GroupMembersRequestBuilder {
-        return GroupMembersRequest.GroupMembersRequestBuilder(guid: group.guid).set(limit: 30)
+    public static func getSharedBuilder(for group: Group) -> GroupMembersRequest.GroupMembersRequestBuilder {
+        GroupMembersRequest.GroupMembersRequestBuilder(guid: group.guid).set(limit: 30)
     }
-    
-    static func fetchGroupMembers(groupMemberRequest: GroupMembersRequest,  completion: @escaping (GroupMembersBuilderResult) -> Void) {
+
+    static func fetchGroupMembers(groupMemberRequest: GroupMembersRequest, completion: @escaping (GroupMembersBuilderResult) -> Void) {
         groupMemberRequest.fetchNext { fetchedGroupMembers in
             completion(.success(fetchedGroupMembers))
         } onError: { error in
-            guard let error = error else { return }
+            guard let error else { return }
             completion(.failure(error))
         }
     }
-    
+
     static func getfilteredGroupMembers(filterGroupMemberRequest: GroupMembersRequest, completion: @escaping (GroupMembersBuilderResult) -> Void) {
         filterGroupMemberRequest.fetchNext { groupMembers in
             completion(.success(groupMembers))
         } onError: { error in
-            guard let error = error else { return }
+            guard let error else { return }
             completion(.failure(error))
         }
     }
-    
+
     static func changeScope(group: Group, member: GroupMember, scope: CometChat.MemberScope, completion: @escaping (GroupMemberScopeChangeResult) -> Void) {
         guard let uid = member.uid else { return }
-        CometChat.updateGroupMemberScope(UID: uid, GUID: group.guid, scope: scope) { scopeChangeSuccess in
+        CometChat.updateGroupMemberScope(UID: uid, GUID: group.guid, scope: scope) { _ in
             var groupMember: GroupMember?
             switch scope {
             case .admin:
@@ -62,33 +61,32 @@ public class GroupMembersBuilder {
             }
             groupMember?.avatar = member.avatar
             groupMember?.name = member.name
-            if let groupMember = groupMember {
+            if let groupMember {
                 completion(.success(groupMember))
             }
         } onError: { error in
-            guard let error = error else { return }
+            guard let error else { return }
             completion(.failure(error))
         }
     }
-    
+
     static func banGroupMember(group: Group, member: GroupMember, completion: @escaping (KickBanGroupMemberResult) -> Void) {
         guard let uid = member.uid else { return }
-        CometChat.banGroupMember(UID: uid, GUID: group.guid) { bannedSuccess in
+        CometChat.banGroupMember(UID: uid, GUID: group.guid) { _ in
             completion(.success(member))
         } onError: { error in
-            guard let error = error else { return }
+            guard let error else { return }
             completion(.failure(error))
         }
     }
-    
+
     static func kickGroupMember(group: Group, member: GroupMember, completion: @escaping (KickBanGroupMemberResult) -> Void) {
         guard let uid = member.uid else { return }
-        CometChat.kickGroupMember(UID: uid, GUID: group.guid) { kickedSuccess in
+        CometChat.kickGroupMember(UID: uid, GUID: group.guid) { _ in
             completion(.success(member))
         } onError: { error in
-            guard let error = error else { return }
+            guard let error else { return }
             completion(.failure(error))
         }
     }
 }
-

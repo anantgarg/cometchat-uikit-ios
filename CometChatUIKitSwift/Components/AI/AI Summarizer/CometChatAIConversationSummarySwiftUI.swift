@@ -2,31 +2,31 @@
 //
 //
 
-import SwiftUI
 import CometChatSDK
 import CometChatUIKitSwift.Components.Shared.Constants
+import SwiftUI
 
 public struct CometChatAIConversationSummarySwiftUI: View {
     @StateObject private var viewModel = AIConversationSummaryViewModelSwiftUI()
-    
+
     private var onCloseButtonClicked: (() -> Void)?
     private var id: [String: Any]?
     private var disableLoadingState: Bool = false
-    
+
     public static var style = AIConversationSummaryStyle()
     private var style = CometChatAIConversationSummarySwiftUI.style
-    
+
     public init() {}
-    
+
     public var body: some View {
         VStack(spacing: 0) {
             HStack {
                 Text(viewModel.title)
                     .font(Font(style.titleTextFont))
                     .foregroundColor(Color(style.titleTextColor))
-                
+
                 Spacer()
-                
+
                 Button(action: {
                     onCloseButtonClicked?() ?? closeButtonAction()
                 }) {
@@ -40,7 +40,7 @@ public struct CometChatAIConversationSummarySwiftUI: View {
             }
             .padding(.horizontal, LayoutMetrics.spacingLarge)
             .padding(.top, LayoutMetrics.spacingMedium)
-            
+
             if viewModel.showError {
                 errorView
             } else if viewModel.isLoading {
@@ -57,7 +57,7 @@ public struct CometChatAIConversationSummarySwiftUI: View {
         )
         .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
     }
-    
+
     private var errorView: some View {
         VStack {
             Text("SOMETHING_WENT_WRONG_WITH_NEW_LINE".localize())
@@ -71,7 +71,7 @@ public struct CometChatAIConversationSummarySwiftUI: View {
         .padding(.top, LayoutMetrics.spacingStandard)
         .padding(.bottom, LayoutMetrics.spacingStandard)
     }
-    
+
     private var loadingView: some View {
         CometChatAIConversationSummaryShimmerSwiftUI()
             .frame(height: 160)
@@ -80,7 +80,7 @@ public struct CometChatAIConversationSummarySwiftUI: View {
             .padding(.horizontal, LayoutMetrics.spacingStandard)
             .padding(.bottom, LayoutMetrics.spacingMedium)
     }
-    
+
     private var summaryView: some View {
         Text(viewModel.summary)
             .font(Font(style.summaryTextFont))
@@ -91,48 +91,48 @@ public struct CometChatAIConversationSummarySwiftUI: View {
             .padding(.bottom, LayoutMetrics.spacingMedium)
             .frame(maxWidth: .infinity, alignment: .leading)
     }
-    
+
     private func closeButtonAction() {
-        if let id = id {
+        if let id {
             CometChatUIEvents.hidePanel(id: id, alignment: .composerTop)
         }
     }
-    
+
     @discardableResult
     public func set(summary: String) -> Self {
         var view = self
         view.viewModel.set(summary: summary)
         return view
     }
-    
+
     @discardableResult
     public func set(id: [String: Any]?) -> Self {
         var view = self
         view.id = id
         return view
     }
-    
+
     @discardableResult
     public func set(title: String) -> Self {
         var view = self
         view.viewModel.set(title: title)
         return view
     }
-    
+
     @discardableResult
     public func onCloseButtonClicked(onCloseButtonClicked: @escaping (() -> Void)) -> Self {
         var view = self
         view.onCloseButtonClicked = onCloseButtonClicked
         return view
     }
-    
+
     @discardableResult
     public func show(error: Bool) -> Self {
         var view = self
         view.viewModel.show(error: error)
         return view
     }
-    
+
     @discardableResult
     public func showLoadingView() -> Self {
         var view = self
@@ -141,32 +141,32 @@ public struct CometChatAIConversationSummarySwiftUI: View {
         }
         return view
     }
-    
+
     @discardableResult
     public func hideLoadingView() -> Self {
         var view = self
         view.viewModel.hideLoadingView()
         return view
     }
-    
+
     @discardableResult
     public func set(disableLoadingState: Bool) -> Self {
         var view = self
         view.disableLoadingState = disableLoadingState
         return view
     }
-    
+
     @discardableResult
     public func set(style: AIConversationSummaryStyle) -> Self {
         var view = self
         view.style = style
         return view
     }
-    
+
     @discardableResult
     public func set(configuration: AIConversationSummaryConfiguration?) -> Self {
         var view = self
-        if let configuration = configuration, let title = configuration.title {
+        if let configuration, let title = configuration.title {
             view.viewModel.set(title: title)
         }
         return view
@@ -175,10 +175,10 @@ public struct CometChatAIConversationSummarySwiftUI: View {
 
 struct CometChatAIConversationSummaryShimmerSwiftUI: View {
     @State private var isAnimating = false
-    
+
     var body: some View {
         VStack(spacing: 12) {
-            ForEach(0..<4, id: \.self) { _ in
+            ForEach(0 ..< 4, id: \.self) { _ in
                 shimmerLine
             }
         }
@@ -188,14 +188,14 @@ struct CometChatAIConversationSummaryShimmerSwiftUI: View {
             }
         }
     }
-    
+
     private var shimmerLine: some View {
         RoundedRectangle(cornerRadius: 4)
             .fill(LinearGradient(
                 gradient: Gradient(colors: [
                     Color.gray.opacity(0.3),
                     Color.gray.opacity(0.1),
-                    Color.gray.opacity(0.3)
+                    Color.gray.opacity(0.3),
                 ]),
                 startPoint: .leading,
                 endPoint: isAnimating ? .trailing : .leading
@@ -204,8 +204,8 @@ struct CometChatAIConversationSummaryShimmerSwiftUI: View {
     }
 }
 
-extension CometChatAIConversationSummarySwiftUI {
-    public func toUIKit() -> UIView {
+public extension CometChatAIConversationSummarySwiftUI {
+    func toUIKit() -> UIView {
         let hostingController = UIHostingController(rootView: self)
         return hostingController.view
     }
@@ -219,19 +219,19 @@ struct CometChatAIConversationSummarySwiftUI_Previews: PreviewProvider {
                 .previewLayout(.sizeThatFits)
                 .padding()
                 .previewDisplayName("Default")
-            
+
             CometChatAIConversationSummarySwiftUI()
                 .showLoadingView()
                 .previewLayout(.sizeThatFits)
                 .padding()
                 .previewDisplayName("Loading")
-            
+
             CometChatAIConversationSummarySwiftUI()
                 .show(error: true)
                 .previewLayout(.sizeThatFits)
                 .padding()
                 .previewDisplayName("Error")
-            
+
             CometChatAIConversationSummarySwiftUI()
                 .set(summary: "This conversation was about scheduling a meeting for next week. The team discussed availability and decided on Tuesday at 2 PM.")
                 .preferredColorScheme(.dark)

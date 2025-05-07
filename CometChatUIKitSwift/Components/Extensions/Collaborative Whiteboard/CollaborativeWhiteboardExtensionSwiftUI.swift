@@ -6,16 +6,15 @@ import Foundation
 import SwiftUI
 
 public class CollaborativeWhiteboardExtensionSwiftUI: ExtensionDataSource {
-    
-    public override init() {}
-    
-    public override func addExtension() {
+    override public init() {}
+
+    override public func addExtension() {
         ChatConfigurator.enable { dataSource in
-            return CollaborativeWhiteboardViewModelSwiftUI(dataSource: dataSource)
+            CollaborativeWhiteboardViewModelSwiftUI(dataSource: dataSource)
         }
     }
-    
-    public override func getExtensionId() -> String {
-        return ExtensionConstants.whiteboard
+
+    override public func getExtensionId() -> String {
+        ExtensionConstants.whiteboard
     }
 }

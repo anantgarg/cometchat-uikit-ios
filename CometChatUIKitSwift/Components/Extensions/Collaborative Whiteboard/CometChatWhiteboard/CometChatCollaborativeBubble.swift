@@ -1,16 +1,16 @@
 //
-//  CometChatWhiteboardBubble.swift
- 
+//  CometChatCollaborativeBubble.swift
+
 //
 //  Created by Abdullah Ansari on 16/05/22.
 //
 
-import UIKit
 import CometChatSDK
+import UIKit
 
 public class CometChatCollaborativeBubble: UIStackView {
-
     // MARK: - Properties
+
     public lazy var topImageView: UIImageView = {
         let imageView = UIImageView().withoutAutoresizingMaskConstraints()
         imageView.pin(anchors: [.height], to: 140)
@@ -18,7 +18,7 @@ public class CometChatCollaborativeBubble: UIStackView {
         imageView.image = topImage
         return imageView
     }()
-    
+
     // Title label
     public lazy var title: UILabel = {
         let label = UILabel().withoutAutoresizingMaskConstraints()
@@ -47,7 +47,7 @@ public class CometChatCollaborativeBubble: UIStackView {
         button.pin(anchors: [.height], to: 25)
         return button
     }()
-    
+
     // divider button
     public lazy var dividerView: UIView = {
         let view = UIView().withoutAutoresizingMaskConstraints()
@@ -55,14 +55,14 @@ public class CometChatCollaborativeBubble: UIStackView {
         view.pin(anchors: [.height], to: 0.3)
         return view
     }()
-    
+
     // Line view
     public lazy var middleContainerView: UIView = {
         let view = UIView().withoutAutoresizingMaskConstraints()
         view.addSubview(icon)
         view.addSubview(title)
         view.addSubview(subTitle)
-        
+
         icon.pin(anchors: [.top, .bottom], to: view)
         title.pin(anchors: [.top, .trailing], to: view)
         subTitle.pin(anchors: [.bottom, .trailing], to: view)
@@ -71,48 +71,51 @@ public class CometChatCollaborativeBubble: UIStackView {
             icon.trailingAnchor.pin(equalTo: title.leadingAnchor, constant: -CometChatSpacing.Padding.p1),
             title.bottomAnchor.pin(equalTo: icon.centerYAnchor, constant: CometChatSpacing.Padding.p),
             subTitle.leadingAnchor.pin(equalTo: title.leadingAnchor),
-            subTitle.topAnchor.pin(equalTo: title.bottomAnchor)
+            subTitle.topAnchor.pin(equalTo: title.bottomAnchor),
         ])
-        
+
         return view
     }()
-    
+
     // MARK: - Initializers
+
     private var customMessage: CustomMessage?
     public var style = CollaborativeBubbleStyle()
-    public var onOpenButtonClicked: (() -> ())?
+    public var onOpenButtonClicked: (() -> Void)?
     public var collaborativeIconImage: UIImage? = UIImage(named: "collaborative-message-icon", in: CometChatUIKit.bundle, with: nil)?.withRenderingMode(.alwaysTemplate) {
         didSet {
-            self.icon.image = collaborativeIconImage
+            icon.image = collaborativeIconImage
         }
     }
+
     public var topImage: UIImage? = UIImage(named: "collaborative-document-image", in: CometChatUIKit.bundle, with: nil)?.withRenderingMode(.alwaysOriginal) {
         didSet {
-            self.topImageView.image = topImage
+            topImageView.image = topImage
         }
     }
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         buildUI()
     }
-    
+
     convenience init(frame: CGRect, message: CustomMessage) {
         self.init(frame: frame)
-        self.customMessage = message
+        customMessage = message
         buildUI()
     }
-    
-    required init(coder: NSCoder) {
+
+    @available(*, unavailable)
+    required init(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    public override func willMove(toWindow newWindow: UIWindow?) {
+
+    override public func willMove(toWindow newWindow: UIWindow?) {
         if newWindow != nil {
             setupStyle()
         }
     }
-    
+
     public func buildUI() {
         withoutAutoresizingMaskConstraints()
         axis = .vertical
@@ -125,7 +128,7 @@ public class CometChatCollaborativeBubble: UIStackView {
             bottom: 0,
             right: CometChatSpacing.Padding.p1
         )
-        
+
         addArrangedSubview(topImageView)
         addArrangedSubview(middleContainerView)
         setCustomSpacing(CometChatSpacing.Padding.p3, after: middleContainerView)
@@ -133,12 +136,10 @@ public class CometChatCollaborativeBubble: UIStackView {
         setCustomSpacing(CometChatSpacing.Padding.p1, after: dividerView)
 
         addArrangedSubview(openButton)
-        
+
         openButton.addTarget(self, action: #selector(onOpenWhiteboardClick), for: .primaryActionTriggered)
     }
-    
-    
-    
+
     public func setupStyle() {
         title.font = style.titleFont
         title.textColor = style.titleColor
@@ -148,31 +149,31 @@ public class CometChatCollaborativeBubble: UIStackView {
         openButton.tintColor = style.buttonTextColor
         openButton.titleLabel?.font = style.buttonTextFont
     }
-    
+
     @discardableResult
     public func set(title: String) -> Self {
         self.title.text = title
         return self
     }
-    
+
     @discardableResult
     public func set(subTitle: String) -> Self {
         self.subTitle.text = subTitle
         return self
     }
-    
+
     @discardableResult
     public func set(buttonText: String) -> Self {
-        self.openButton.setTitle(buttonText, for: .normal)
+        openButton.setTitle(buttonText, for: .normal)
         return self
     }
-    
+
     @discardableResult
-    public func set(onOpenButtonClicked: @escaping (() -> ())) -> Self {
+    public func set(onOpenButtonClicked: @escaping (() -> Void)) -> Self {
         self.onOpenButtonClicked = onOpenButtonClicked
         return self
     }
-    
+
     @objc func onOpenWhiteboardClick() {
         onOpenButtonClicked?()
     }

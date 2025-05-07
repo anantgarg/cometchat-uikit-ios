@@ -1,23 +1,21 @@
 //
 //  CometChatSmartReplyExtension.swift
-//  
+//
 //
 //  Created by Pushpsen Airekar on 16/02/23.
 //
 import Foundation
 
 public class CometChatSmartReplyExtension: ExtensionDataSource {
-    
-    public override init() {}
-    
-    public override func addExtension() {
+    override public init() {}
+
+    override public func addExtension() {
         ChatConfigurator.enable { dataSource in
-            return SmartReplyExtensionDecorator(dataSource: dataSource)
+            SmartReplyExtensionDecorator(dataSource: dataSource)
         }
     }
-    
-    public override func getExtensionId() -> String {
-        return ExtensionConstants.smartReply
+
+    override public func getExtensionId() -> String {
+        ExtensionConstants.smartReply
     }
 }
-

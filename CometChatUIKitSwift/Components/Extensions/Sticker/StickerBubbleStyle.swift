@@ -1,6 +1,6 @@
 //
 //  StickerBubbleStyle.swift
-//  
+//
 //
 //  Created by Abdullah Ansari on 31/08/22.
 //
@@ -8,7 +8,6 @@
 import UIKit
 
 public struct StickerBubbleStyle: BaseMessageBubbleStyle {
-    
     public var backgroundColor: UIColor?
     public var backgroundDrawable: UIImage?
     public var borderWidth: CGFloat?
@@ -23,14 +22,13 @@ public struct StickerBubbleStyle: BaseMessageBubbleStyle {
     public var threadedIndicatorTextColor: UIColor?
     public var threadedIndicatorImageTint: UIColor?
     public var reactionsStyle: ReactionsStyle?
-    
+
     private var styleType: BubbleStyleType = .incoming
- 
-    
-    public init() { }
-    internal init(styleType: BubbleStyleType) { // for default values according to the bubble type
+
+    public init() {}
+    init(styleType: BubbleStyleType) { // for default values according to the bubble type
         backgroundColor = .clear
-        
+
         var dateStyle = DateStyle()
         dateStyle.textColor = CometChatTheme.white
         dateStyle.textFont = CometChatTypography.Caption2.regular
@@ -39,9 +37,7 @@ public struct StickerBubbleStyle: BaseMessageBubbleStyle {
         dateStyle.cornerRadius = .init(cornerRadius: CometChatSpacing.Radius.r2)
         dateStyle.textColor = CometChatTheme.white
         self.dateStyle = dateStyle
-        
+
         self.styleType = styleType
     }
-
-    
 }

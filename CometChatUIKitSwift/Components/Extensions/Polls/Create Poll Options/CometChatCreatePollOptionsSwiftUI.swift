@@ -7,12 +7,12 @@ import SwiftUI
 struct CometChatCreatePollOptionsSwiftUI: View {
     @Binding var optionText: String
     @Binding var items: [String]
-    @State private var style: CreatePollStyle = CreatePollStyle()
+    @State private var style: CreatePollStyle = .init()
     let index: Int
     var onDelete: (() -> Void)?
     var onTextChanged: ((String, Int) -> Void)?
     var onEditingEnd: ((String) -> Void)?
-    
+
     var body: some View {
         HStack(spacing: CometChatSpacing.Spacing.s2) {
             Image(uiImage: style.dragButtonImage ?? UIImage())
@@ -21,7 +21,7 @@ struct CometChatCreatePollOptionsSwiftUI: View {
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 24, height: 24)
                 .foregroundColor(Color(style.dragButtonTintColor))
-            
+
             TextField("ADD".localize(), text: $optionText)
                 .font(Font(style.optionsTextFont))
                 .foregroundColor(Color(style.optionsTextColor))
@@ -39,7 +39,7 @@ struct CometChatCreatePollOptionsSwiftUI: View {
                 .onSubmit {
                     onEditingEnd?(optionText)
                 }
-            
+
             Button(action: {
                 onDelete?()
             }) {
@@ -56,7 +56,7 @@ struct CometChatCreatePollOptionsSwiftUI: View {
         .padding(.vertical, CometChatSpacing.Spacing.s1)
         .padding(.horizontal, CometChatSpacing.Spacing.s4)
     }
-    
+
     func set(style: CreatePollStyle) -> Self {
         var view = self
         view.style = style
@@ -72,13 +72,13 @@ struct CometChatCreatePollOptionsSwiftUI_Previews: PreviewProvider {
                 items: .constant(["Option 1", "Option 2", ""]),
                 index: 0
             )
-            
+
             CometChatCreatePollOptionsSwiftUI(
                 optionText: .constant("Option 2"),
                 items: .constant(["Option 1", "Option 2", ""]),
                 index: 1
             )
-            
+
             CometChatCreatePollOptionsSwiftUI(
                 optionText: .constant(""),
                 items: .constant(["Option 1", "Option 2", ""]),

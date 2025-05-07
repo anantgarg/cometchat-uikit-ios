@@ -9,42 +9,41 @@ import Foundation
 import UIKit
 
 open class CometChatAISmartRepliesShimmer: CometChatShimmerView {
-    
     public var cellCount = 3
     var cellCountManager = 0 // for managing cell count internally
-    
-    open override func buildUI() {
+
+    override open func buildUI() {
         super.buildUI()
         backgroundColor = .clear
         tableView.register(AIRepliesCell.self, forCellReuseIdentifier: "AIRepliesCell")
     }
-    
-    open override func startShimmer() {
+
+    override open func startShimmer() {
         cellCountManager = cellCount
         tableView.reloadData()
     }
-    
-    open override func stopShimmer() {
+
+    override open func stopShimmer() {
         cellCountManager = 0
         tableView.reloadData()
     }
-    
-    open override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return cellCountManager
+
+    override open func tableView(_: UITableView, numberOfRowsInSection _: Int) -> Int {
+        cellCountManager
     }
-    
-    open override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+
+    override open func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if let listItem = tableView.dequeueReusableCell(withIdentifier: "AIRepliesCell", for: indexPath) as? AIRepliesCell {
             listItem.backgroundColor = .clear
-            listItem.containerView.pin(anchors: [.width], to: (tableView.bounds.width - CometChatSpacing.Padding.p6))
+            listItem.containerView.pin(anchors: [.width], to: tableView.bounds.width - CometChatSpacing.Padding.p6)
             listItem.containerView.pin(anchors: [.height], to: 63)
             listItem.containerView.roundViewCorners(corner: .init(cornerRadius: 8))
-            
-            addShimmer(view: listItem.containerView, size: CGSize(width: (tableView.bounds.width - CometChatSpacing.Padding.p6), height: 63))
-            
+
+            addShimmer(view: listItem.containerView, size: CGSize(width: tableView.bounds.width - CometChatSpacing.Padding.p6, height: 63))
+
             return listItem
         }
-        
+
         return UITableViewCell()
     }
 }

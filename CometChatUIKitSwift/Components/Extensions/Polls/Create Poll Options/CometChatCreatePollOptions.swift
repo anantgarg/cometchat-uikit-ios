@@ -13,13 +13,13 @@ protocol CometChatCreatePollOptionsDelegate: AnyObject {
 }
 
 class CometChatCreatePollOptions: UITableViewCell, UITextFieldDelegate {
-
     // MARK: - UI Elements
+
     lazy var containerView: UIView = {
         let view = UIView().withoutAutoresizingMaskConstraints()
         return view
     }()
-    
+
     lazy var options: UITextField = {
         let textField = UITextField().withoutAutoresizingMaskConstraints()
         textField.placeholder = "ADD".localize()
@@ -27,19 +27,19 @@ class CometChatCreatePollOptions: UITableViewCell, UITextFieldDelegate {
         textField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
         return textField
     }()
-    
+
     lazy var reorderButton: UIButton = {
         let button = UIButton().withoutAutoresizingMaskConstraints()
         button.pin(anchors: [.height, .width], to: 24)
         return button
     }()
-    
+
     lazy var deleteButton: UIButton = {
         let button = UIButton().withoutAutoresizingMaskConstraints()
         button.pin(anchors: [.height, .width], to: 24)
         return button
     }()
-    
+
     lazy var optionStack: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [reorderButton, containerView, deleteButton]).withoutAutoresizingMaskConstraints()
         stack.distribution = .fill
@@ -47,35 +47,39 @@ class CometChatCreatePollOptions: UITableViewCell, UITextFieldDelegate {
         stack.spacing = CometChatSpacing.Spacing.s2
         return stack
     }()
-    
+
     var index: Int?
     weak var delegate: CometChatCreatePollOptionsDelegate?
     var textChanged: ((String?, Int) -> Void)?
-    var editingEnd: ((String) -> ())?
-    var deleteOption: (() -> ())?
+    var editingEnd: ((String) -> Void)?
+    var deleteOption: (() -> Void)?
 
     // MARK: - Initialization
+
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupCell()
     }
-    
-    required init?(coder: NSCoder) {
+
+    @available(*, unavailable)
+    required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
     // MARK: - Setup UI
+
     private func setupCell() {
-        self.selectionStyle = .none
-        
+        selectionStyle = .none
+
         contentView.addSubview(optionStack)
         containerView.addSubview(options)
-        
+
         setupConstraints()
         options.delegate = self
     }
-    
+
     // MARK: - Constraints Setup
+
     private func setupConstraints() {
         NSLayoutConstraint.activate([
             // Constraints for optionStack in contentView
@@ -91,24 +95,25 @@ class CometChatCreatePollOptions: UITableViewCell, UITextFieldDelegate {
             options.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: CometChatSpacing.Padding.p2),
             options.topAnchor.constraint(equalTo: containerView.topAnchor),
             options.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
-            options.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -(CometChatSpacing.Padding.p2))
+            options.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -(CometChatSpacing.Padding.p2)),
         ])
         deleteButton.addTarget(self, action: #selector(onDeleteOption), for: .touchUpInside)
     }
-    
-    @objc func onDeleteOption(){
-        self.deleteOption?()
+
+    @objc func onDeleteOption() {
+        deleteOption?()
     }
 
     // MARK: - UITextFieldDelegate Methods
+
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        if let index = index {
+        if let index {
             delegate?.didStartEditingOption(at: index, with: textField.text ?? "")
         }
     }
 
     @objc func textFieldDidChange(_ textField: UITextField) {
-        if let index = index {
+        if let index {
             textChanged?(textField.text, index)
         }
     }
@@ -117,4 +122,3 @@ class CometChatCreatePollOptions: UITableViewCell, UITextFieldDelegate {
         editingEnd?(textField.text ?? "")
     }
 }
-

@@ -2,10 +2,10 @@
 //
 //
 
-import Foundation
-import CometChatSDK
-import SwiftUI
 import Combine
+import CometChatSDK
+import Foundation
+import SwiftUI
 
 public class ConversationsViewModelSwiftUI: ObservableObject {
     @Published var conversations: [Conversation] = []
@@ -14,75 +14,75 @@ public class ConversationsViewModelSwiftUI: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var hasError: Bool = false
     @Published var errorMessage: String = ""
-    
+
     private var conversationRequest: ConversationRequest?
     private var refereshConversationRequest: ConversationRequest?
     private var conversationRequestBuilder: ConversationRequest.ConversationRequestBuilder
     private var listenerRandomID = Date().timeIntervalSince1970
-    
+
     var isFetching = false
     var isFetchedAll = false
     var isRefresh: Bool = false {
         didSet {
             if isRefresh {
-                self.fetchConversations()
+                fetchConversations()
             }
         }
     }
-    
+
     var disableReceipt: Bool = false
     var enableSoundForConversation: Bool = true
     var customSoundForConversations: URL?
-    
+
     var onNewMessageReceived: ((BaseMessage) -> Void)?
     var onError: ((CometChatException) -> Void)?
     var onTypingStatusChanged: ((Int, TypingIndicator, Bool) -> Void)?
-    
+
     public init(conversationRequestBuilder: ConversationRequest.ConversationRequestBuilder = ConversationsBuilder.getDefaultRequestBuilder()) {
         self.conversationRequestBuilder = conversationRequestBuilder.with(blockedInfo: true)
-        self.conversationRequest = conversationRequestBuilder.build()
+        conversationRequest = conversationRequestBuilder.build()
     }
-    
+
     deinit {
         disconnect()
     }
-    
+
     public func fetchConversations() {
         if isRefresh {
             isFetchedAll = false
             refereshConversationRequest = conversationRequestBuilder.build()
-            self.conversationRequest = refereshConversationRequest
+            conversationRequest = refereshConversationRequest
         }
-        
+
         if isFetchedAll { return }
-        
+
         isLoading = true
         isFetching = true
-        
+
         ConversationsBuilder.fetchConversation(conversationRequest: conversationRequest!) { [weak self] result in
-            guard let self = self else { return }
-            
+            guard let self else { return }
+
             DispatchQueue.main.async {
                 self.isLoading = false
                 self.isFetching = false
-                
+
                 switch result {
-                case .success(let conversations):
+                case let .success(conversations):
                     if conversations.isEmpty {
                         self.isFetchedAll = true
                     }
-                    
+
                     if self.isRefresh {
                         self.conversations = conversations
                     } else {
                         self.conversations.append(contentsOf: conversations)
                     }
-                    
+
                     for conversation in self.conversations {
                         self.markAsDelivered(conversation: conversation)
                     }
-                    
-                case .failure(let error):
+
+                case let .failure(error):
                     self.hasError = true
                     self.errorMessage = error.errorDescription
                     self.onError?(error)
@@ -90,12 +90,12 @@ public class ConversationsViewModelSwiftUI: ObservableObject {
             }
         }
     }
-    
+
     public func setRequestBuilder(conversationRequestBuilder: ConversationRequest.ConversationRequestBuilder) {
         self.conversationRequestBuilder = conversationRequestBuilder.with(blockedInfo: true)
-        self.conversationRequest = conversationRequestBuilder.build()
+        conversationRequest = conversationRequestBuilder.build()
     }
-    
+
     func markAsDelivered(conversation: Conversation) {
         if !disableReceipt {
             if let message = conversation.lastMessage, message.deliveredAt == 0.0, message.senderUid != CometChat.getLoggedInUser()?.uid {
@@ -103,25 +103,25 @@ public class ConversationsViewModelSwiftUI: ObservableObject {
             }
         }
     }
-    
+
     func getConversationRow(with typingDetails: TypingIndicator) -> Int? {
-        guard let row = self.conversations.firstIndex(where: {
+        guard let row = conversations.firstIndex(where: {
             (
                 ($0.conversationWith as? User)?.uid == typingDetails.sender?.uid &&
-                typingDetails.receiverType == .user
+                    typingDetails.receiverType == .user
             ) ||
-            (
-                ($0.conversationWith as? Group)?.guid == typingDetails.receiverID &&
-                typingDetails.receiverType == .group
-            )
+                (
+                    ($0.conversationWith as? Group)?.guid == typingDetails.receiverID &&
+                        typingDetails.receiverType == .group
+                )
         }) else { return nil }
         return row
     }
-    
-    func checkForConversationUpdate(action: ActionMessage? = nil) -> Bool {
-        return CometChat.getConversationUpdateSettings().groupActions
+
+    func checkForConversationUpdate(action _: ActionMessage? = nil) -> Bool {
+        CometChat.getConversationUpdateSettings().groupActions
     }
-    
+
     func checkForConversationUpdate(message: BaseMessage) -> Bool {
         let settings = CometChat.getConversationUpdateSettings()
         if message.parentMessageId == 0 || settings.messageReplies == true {
@@ -140,13 +140,13 @@ public class ConversationsViewModelSwiftUI: ObservableObject {
             return false
         }
     }
-    
+
     func update(group: Group) {
-        if let conversationOfGroup = self.conversations.first(where: { ($0.conversationWith as? Group)?.guid == group.guid }) {
+        if let conversationOfGroup = conversations.first(where: { ($0.conversationWith as? Group)?.guid == group.guid }) {
             conversationOfGroup.conversationWith = group
         }
     }
-    
+
     func removerConversation(for entity: AppEntity) {
         if let conversationIndex = conversations.firstIndex(where: { conversation in
             if let user = conversation.conversationWith as? User, let entityUser = entity as? User {
@@ -159,40 +159,40 @@ public class ConversationsViewModelSwiftUI: ObservableObject {
             removeAt(at: conversationIndex)
         }
     }
-    
+
     func add(conversation: Conversation) -> Self {
-        if !self.conversations.contains(obj: conversation) {
+        if !conversations.contains(obj: conversation) {
             DispatchQueue.main.async {
                 self.conversations.append(conversation)
             }
         }
         return self
     }
-    
+
     func insert(conversation: Conversation, at: Int = 0) {
         DispatchQueue.main.async {
             self.conversations.insert(conversation, at: at)
         }
     }
-    
+
     func update(conversation: Conversation) {
         markAsDelivered(conversation: conversation)
         if let currentRow = conversations.firstIndex(where: {
-            return $0.conversationId == conversation.conversationId
+            $0.conversationId == conversation.conversationId
         }) {
             DispatchQueue.main.async {
                 self.conversations[currentRow] = conversation
             }
         }
     }
-    
+
     func update(lastMessage: BaseMessage, updateCount: Bool = true) {
         if let conversation = CometChat.getConversationFromMessage(lastMessage) {
             if let existingConversation = conversations.first(where: {
                 lastMessage.conversationId == $0.conversationId
             }) {
                 if !LoggedInUserInformation.isLoggedInUser(uid: lastMessage.sender?.uid) {
-                    if updateCount && lastMessage.readAt == 0 {
+                    if updateCount, lastMessage.readAt == 0 {
                         conversation.unreadMessageCount = existingConversation.unreadMessageCount + 1
                     } else {
                         conversation.unreadMessageCount = existingConversation.unreadMessageCount
@@ -204,11 +204,11 @@ public class ConversationsViewModelSwiftUI: ObservableObject {
                 if !LoggedInUserInformation.isLoggedInUser(uid: lastMessage.sender?.uid) {
                     conversation.unreadMessageCount = 1
                 }
-                self.insert(conversation: conversation)
+                insert(conversation: conversation)
             }
         }
     }
-    
+
     func updateAlreadyPresent(lastMessage: BaseMessage) {
         if let existingConversation = conversations.first(where: {
             lastMessage.conversationId == $0.conversationId
@@ -222,7 +222,7 @@ public class ConversationsViewModelSwiftUI: ObservableObject {
             }
         }
     }
-    
+
     @discardableResult
     public func remove(conversation: Conversation) -> Self {
         if let index = conversations.firstIndex(of: conversation) {
@@ -232,18 +232,18 @@ public class ConversationsViewModelSwiftUI: ObservableObject {
         }
         return self
     }
-    
+
     @discardableResult
     public func delete(conversation: Conversation) -> Self {
         guard let id = conversation.conversationType == .user ? (conversation.conversationWith as? User)?.uid! : (conversation.conversationWith as? Group)?.guid else { return self }
-        
+
         let type: CometChat.ConversationType = conversation.conversationType == .user ? .user : .group
-        
-        CometChat.deleteConversation(conversationWith: id, conversationType: type) { [weak self] success in
-            guard let self = self else { return }
-            self.remove(conversation: conversation)
+
+        CometChat.deleteConversation(conversationWith: id, conversationType: type) { [weak self] _ in
+            guard let self else { return }
+            remove(conversation: conversation)
         } onError: { [weak self] error in
-            guard let error = error, let self = self else { return }
+            guard let error, let self else { return }
             DispatchQueue.main.async {
                 self.hasError = true
                 self.errorMessage = error.errorDescription
@@ -252,36 +252,36 @@ public class ConversationsViewModelSwiftUI: ObservableObject {
         }
         return self
     }
-    
+
     public func moveToTop(conversation: Conversation) {
-        guard let row = conversations.firstIndex(where: {$0.conversationId == conversation.conversationId}) else { return }
-        
+        guard let row = conversations.firstIndex(where: { $0.conversationId == conversation.conversationId }) else { return }
+
         DispatchQueue.main.async {
             self.conversations.remove(at: row)
             self.conversations.insert(conversation, at: 0)
         }
     }
-    
+
     public func removeAt(at index: Int) {
         DispatchQueue.main.async {
             self.conversations.remove(at: index)
         }
     }
-    
+
     public func clearList() {
         DispatchQueue.main.async {
             self.conversations.removeAll()
         }
     }
-    
+
     public func size() -> Int {
-        return self.conversations.count
+        conversations.count
     }
-    
+
     func disable(receipt: Bool) {
-        self.disableReceipt = receipt
+        disableReceipt = receipt
     }
-    
+
     func connect() {
         CometChat.addUserListener("conversations-list-users-sdk-listner-\(listenerRandomID)", self as? CometChatUserDelegate)
         CometChatUserEvents.addListener("conversations-list-user-event-listener-\(listenerRandomID)", self as? CometChatUserEventListener)
@@ -291,7 +291,7 @@ public class ConversationsViewModelSwiftUI: ObservableObject {
         CometChatCallEvents.addListener("conversations-list-call-event-listener-\(listenerRandomID)", self as? CometChatCallEventListener)
         CometChat.addCallListener("conversations-list-call-sdk-listener-\(listenerRandomID)", self as? CometChatCallDelegate)
     }
-    
+
     func disconnect() {
         CometChat.removeUserListener("conversations-list-users-sdk-listner-\(listenerRandomID)")
         CometChatUserEvents.removeListener("conversations-list-user-event-listener-\(listenerRandomID)")

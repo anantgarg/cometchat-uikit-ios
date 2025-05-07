@@ -2,9 +2,9 @@
 //
 //
 
-import SwiftUI
 import CometChatSDK
 import CometChatUIKitSwift.Components.Shared.Constants
+import SwiftUI
 
 protocol StickerViewDelegateSwiftUI {
     func didStickerSelected(sticker: CometChatSticker)
@@ -18,15 +18,15 @@ protocol StickerkeyboardDelegateSwiftUI {
 struct StickerCellSwiftUI: View {
     var sticker: CometChatSticker?
     var stickerSet: CometChatStickerSet?
-    
+
     var body: some View {
         Group {
-            if let sticker = sticker, let url = URL(string: sticker.url) {
+            if let sticker, let url = URL(string: sticker.url) {
                 AsyncImage(url: url) { phase in
                     switch phase {
                     case .empty:
                         ProgressView()
-                    case .success(let image):
+                    case let .success(image):
                         image
                             .resizable()
                             .aspectRatio(contentMode: .fit)
@@ -38,12 +38,12 @@ struct StickerCellSwiftUI: View {
                     }
                 }
                 .frame(width: LayoutMetrics.avatarLarge + LayoutMetrics.spacingMedium, height: LayoutMetrics.avatarLarge + LayoutMetrics.spacingMedium)
-            } else if let stickerSet = stickerSet, let stickers = stickerSet.stickers, let firstSticker = stickers.first, let url = URL(string: firstSticker.url) {
+            } else if let stickerSet, let stickers = stickerSet.stickers, let firstSticker = stickers.first, let url = URL(string: firstSticker.url) {
                 AsyncImage(url: url) { phase in
                     switch phase {
                     case .empty:
                         ProgressView()
-                    case .success(let image):
+                    case let .success(image):
                         image
                             .resizable()
                             .aspectRatio(contentMode: .fit)
@@ -65,7 +65,6 @@ struct StickerCellSwiftUI: View {
 }
 
 public struct CometChatStickerKeyboardSwiftUI: View {
-    
     @State private var stickerSet: [CometChatStickerSet] = []
     @State private var stickersForPreview: [CometChatSticker] = []
     @State private var allstickers: [CometChatSticker] = []
@@ -75,20 +74,20 @@ public struct CometChatStickerKeyboardSwiftUI: View {
     @State private var onStickerTap: ((CometChatSticker) -> Void)?
     @State private var onStickerSetSelected: ((CometChatStickerSet) -> Void)?
     @State private var selectedStickerSetIndex: Int = 0
-    
+
     static var stickerDelegate: StickerViewDelegateSwiftUI?
     static var stickerkeyboardDelegate: StickerkeyboardDelegateSwiftUI?
-    
+
     public init() {
         fetchStickers()
     }
-    
+
     public var body: some View {
         VStack(spacing: LayoutMetrics.spacingNone) {
             Rectangle()
                 .fill(Color(CometChatTheme.palatte.accent100))
                 .frame(height: LayoutMetrics.dividerHeight)
-            
+
             if isLoading {
                 loadingView
             } else if showError {
@@ -102,7 +101,7 @@ public struct CometChatStickerKeyboardSwiftUI: View {
         .frame(height: LayoutMetrics.loadingContentHeight * 4)
         .background(Color(CometChatTheme.palatte.background))
     }
-    
+
     private var contentView: some View {
         VStack(spacing: LayoutMetrics.spacingStandard) {
             ScrollView {
@@ -120,11 +119,11 @@ public struct CometChatStickerKeyboardSwiftUI: View {
                 .padding(.horizontal, LayoutMetrics.spacingStandard)
                 .padding(.vertical, LayoutMetrics.spacingStandard)
             }
-            
+
             Rectangle()
                 .fill(Color(CometChatTheme.palatte.accent100))
                 .frame(height: LayoutMetrics.dividerHeight)
-            
+
             ScrollView(.horizontal, showsIndicators: false) {
                 LazyHGrid(rows: [GridItem(.fixed(32))], spacing: CometChatSpacing.Spacing.s4) {
                     ForEach(stickerSet.indices, id: \.self) { index in
@@ -147,7 +146,7 @@ public struct CometChatStickerKeyboardSwiftUI: View {
             }
         }
     }
-    
+
     private var loadingView: some View {
         VStack {
             Spacer()
@@ -160,19 +159,19 @@ public struct CometChatStickerKeyboardSwiftUI: View {
             Spacer()
         }
     }
-    
+
     private var errorView: some View {
         VStack(spacing: LayoutMetrics.spacingLarge) {
             Spacer()
             Image(systemName: "exclamationmark.triangle")
                 .font(.largeTitle)
                 .foregroundColor(Color(CometChatTheme.palatte.error))
-            
+
             Text(errorMessage)
                 .font(.body)
                 .foregroundColor(Color(CometChatTheme.palatte.accent600))
                 .multilineTextAlignment(.center)
-            
+
             Button(action: {
                 retry()
             }) {
@@ -188,18 +187,18 @@ public struct CometChatStickerKeyboardSwiftUI: View {
         }
         .padding()
     }
-    
+
     private var emptyView: some View {
         VStack(spacing: LayoutMetrics.spacingLarge) {
             Spacer()
             Image(systemName: "photo.on.rectangle.angled")
                 .font(.largeTitle)
                 .foregroundColor(Color(CometChatTheme.palatte.accent400))
-            
+
             Text("No Stickers Found")
                 .font(.headline)
                 .foregroundColor(Color(CometChatTheme.palatte.accent600))
-            
+
             Text("There are no stickers available at the moment.")
                 .font(.caption)
                 .foregroundColor(Color(CometChatTheme.palatte.accent500))
@@ -208,79 +207,79 @@ public struct CometChatStickerKeyboardSwiftUI: View {
         }
         .padding()
     }
-    
+
     private func fetchStickers() {
         isLoading = true
         showError = false
-        
+
         CometChat.callExtension(slug: ExtensionConstants.stickers, type: .get, endPoint: "v1/fetch", params: nil) { result in
             DispatchQueue.main.async {
                 isLoading = false
-                
+
                 switch result {
-                case .success(let response):
+                case let .success(response):
                     if let response = response as? [String: Any], let data = response["data"] as? [String: Any], let stickerSets = data["sticker_sets"] as? [[String: Any]], let customStickers = data["custom_stickers"] as? [[String: Any]] {
                         parseStickersSet(stickerSets: stickerSets, customStickerSet: customStickers) { dictionary in
-                            self.stickerSet = dictionary.map { CometChatStickerSet(name: $0.key, stickers: $0.value) }
-                            if let firstSet = self.stickerSet.first, let stickers = firstSet.stickers {
-                                self.stickersForPreview = stickers
+                            stickerSet = dictionary.map { CometChatStickerSet(name: $0.key, stickers: $0.value) }
+                            if let firstSet = stickerSet.first, let stickers = firstSet.stickers {
+                                stickersForPreview = stickers
                             }
                         }
                     } else {
                         showError = true
                         errorMessage = "Failed to parse stickers data"
                     }
-                    
-                case .failure(let error):
+
+                case let .failure(error):
                     showError = true
                     errorMessage = error.errorDescription
                 }
             }
         }
     }
-    
+
     private func parseStickersSet(stickerSets: [[String: Any]], customStickerSet: [[String: Any]], onSuccess: @escaping ([String: [CometChatSticker]]) -> Void) {
         var stickers: [CometChatSticker] = []
         var allstickers: [CometChatSticker] = []
-        
-        stickerSets.forEach { stickerData in
+
+        for stickerData in stickerSets {
             if let stickerList = stickerData["stickers"] as? [[String: Any]] {
-                stickerList.forEach { stickerInfo in
+                for stickerInfo in stickerList {
                     let sticker = CometChatSticker(id: stickerInfo["id"] as? String ?? "", name: stickerInfo["stickerName"] as? String ?? "", order: stickerInfo["stickerOrder"] as? Int ?? 0, setID: stickerInfo["stickerSetId"] as? String ?? "", setName: stickerInfo["stickerSetName"] as? String ?? "", setOrder: stickerInfo["stickerSetOrder"] as? Int ?? 0, url: stickerInfo["stickerUrl"] as? String ?? "")
                     stickers.append(sticker)
                     allstickers.append(sticker)
                 }
             }
         }
-        
-        customStickerSet.forEach { stickerData in
+
+        for stickerData in customStickerSet {
             let sticker = CometChatSticker(id: stickerData["id"] as? String ?? "", name: stickerData["stickerName"] as? String ?? "", order: stickerData["stickerOrder"] as? Int ?? 0, setID: stickerData["stickerSetId"] as? String ?? "", setName: stickerData["stickerSetName"] as? String ?? "", setOrder: stickerData["stickerSetOrder"] as? Int ?? 0, url: stickerData["stickerUrl"] as? String ?? "")
             stickers.append(sticker)
             allstickers.append(sticker)
         }
-        
+
         let dictionary = Dictionary(grouping: stickers, by: { $0.setName })
         onSuccess(dictionary)
     }
-    
+
     private func retry() {
         fetchStickers()
     }
-    
+
     @discardableResult
     public func setOnStickerTap(onStickerTap: @escaping (_ sticker: CometChatSticker) -> Void) -> Self {
         var view = self
         view._onStickerTap = State(initialValue: onStickerTap)
         return view
     }
-    
+
     @discardableResult
     public func setOnStickerSetSelected(onStickerSetSelected: @escaping (_ stickerSet: CometChatStickerSet) -> Void) -> Self {
         var view = self
         view._onStickerSetSelected = State(initialValue: onStickerSetSelected)
         return view
     }
-    
+
     public func toUIKit() -> UIView {
         let hostingController = UIHostingController(rootView: self)
         let view = hostingController.view
@@ -292,7 +291,7 @@ public struct CometChatStickerKeyboardSwiftUI: View {
 
 extension Array {
     subscript(safe index: Int) -> Element? {
-        return indices.contains(index) ? self[index] : nil
+        indices.contains(index) ? self[index] : nil
     }
 }
 
@@ -302,7 +301,7 @@ struct CometChatStickerKeyboardSwiftUI_Previews: PreviewProvider {
             CometChatStickerKeyboardSwiftUI()
                 .frame(width: LayoutMetrics.previewWidth, height: LayoutMetrics.stickerKeyboardHeight)
                 .previewDisplayName("Sticker Keyboard (Light)")
-            
+
             CometChatStickerKeyboardSwiftUI()
                 .frame(width: LayoutMetrics.previewWidth, height: LayoutMetrics.stickerKeyboardHeight)
                 .preferredColorScheme(.dark)

@@ -1,12 +1,12 @@
 
-//  StickerKeyboard.swift
+//  CometChatStickerKeyboard.swift
 //  Created by admin on 04/11/22.
 
+import CometChatSDK
 import Foundation
 import UIKit
-import CometChatSDK
 
-protocol  StickerViewDelegate {
+protocol StickerViewDelegate {
     func didStickerSelected(sticker: CometChatSticker)
     func didStickerSetSelected(stickerSet: CometChatStickerSet)
     func didClosePressed()
@@ -16,21 +16,20 @@ protocol StickerkeyboardDelegate {
     func showStickerKeyboard(status: Bool)
 }
 
-@objc @IBDesignable 
+@objc @IBDesignable
 public class CometChatStickerKeyboard: UIView {
-    
     /// Collection view to display sticker sets in a horizontal scrollable layout.
     lazy var stickerSetCollectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout()).withoutAutoresizingMaskConstraints()
-        
+
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         collectionView.collectionViewLayout = layout
         collectionView.contentInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 0)
-        collectionView.showsVerticalScrollIndicator = false  // Disable vertical scroll indicator
+        collectionView.showsVerticalScrollIndicator = false // Disable vertical scroll indicator
         collectionView.showsHorizontalScrollIndicator = false // Disable horizontal scroll indicator
-        collectionView.dataSource = self  // Set the data source to the current class
-        collectionView.delegate = self    // Set the delegate to the current class
+        collectionView.dataSource = self // Set the data source to the current class
+        collectionView.delegate = self // Set the delegate to the current class
         collectionView.isPagingEnabled = true // Enable paging for horizontal scrolling
         collectionView.backgroundColor = .clear // Set background color to clear
         collectionView.register(StickerCell.self, forCellWithReuseIdentifier: "StickerCell") // Register custom cell for sticker set
@@ -41,10 +40,10 @@ public class CometChatStickerKeyboard: UIView {
     lazy var stickersCollectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout()).withoutAutoresizingMaskConstraints()
         collectionView.contentInset = UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0)
-        collectionView.showsVerticalScrollIndicator = false  // Disable vertical scroll indicator
+        collectionView.showsVerticalScrollIndicator = false // Disable vertical scroll indicator
         collectionView.showsHorizontalScrollIndicator = false // Disable horizontal scroll indicator
-        collectionView.dataSource = self  // Set the data source to the current class
-        collectionView.delegate = self    // Set the delegate to the current class
+        collectionView.dataSource = self // Set the data source to the current class
+        collectionView.delegate = self // Set the delegate to the current class
         collectionView.isPagingEnabled = true // Enable paging for horizontal scrolling
         collectionView.backgroundColor = .clear // Set background color to clear
         collectionView.register(StickerCell.self, forCellWithReuseIdentifier: "StickerCell") // Register custom cell for stickers
@@ -180,7 +179,7 @@ public class CometChatStickerKeyboard: UIView {
     // MARK: - Initializers
 
     /// Initializer to set up the UI when the view is created programmatically.
-    override public init(frame: CGRect) {
+    override public init(frame _: CGRect) {
         super.init(frame: UIScreen.main.bounds)
         buildUI()
     }
@@ -192,98 +191,96 @@ public class CometChatStickerKeyboard: UIView {
     }
 
     open func buildUI() {
-        
         // Initialize the loading view
         loadingView = CometChatStickerShimmer()
-        
+
         // Add subviews
-        self.addSubview(stickerSetCollectionView)
-        self.addSubview(stickersCollectionView)
-        self.addSubview(separatorLineView)
-        self.addSubview(errorView)
-        self.addSubview(emptyView)
-        
+        addSubview(stickerSetCollectionView)
+        addSubview(stickersCollectionView)
+        addSubview(separatorLineView)
+        addSubview(errorView)
+        addSubview(emptyView)
+
         // Configure empty stack view
         emptyStackView.addArrangedSubview(emptyImageView)
         emptyStackView.addArrangedSubview(emptyTitleLabel)
         emptyStackView.addArrangedSubview(emptySubTitleLabel)
-        
+
         // Configure error stack view
         errorStackView.addArrangedSubview(errorLabel)
         errorStackView.addArrangedSubview(errorRetryButton)
-        
+
         // Add stack views to their respective views
         emptyView.addSubview(emptyStackView)
         errorView.addSubview(errorStackView)
-        
+
         // Sticker set collection view constraints
-        stickerSetCollectionView.leadingAnchor.pin(equalTo: self.leadingAnchor).isActive = true
-        stickerSetCollectionView.trailingAnchor.pin(equalTo: self.trailingAnchor).isActive = true
-        stickerSetCollectionView.bottomAnchor.pin(equalTo: self.bottomAnchor).isActive = true
+        stickerSetCollectionView.leadingAnchor.pin(equalTo: leadingAnchor).isActive = true
+        stickerSetCollectionView.trailingAnchor.pin(equalTo: trailingAnchor).isActive = true
+        stickerSetCollectionView.bottomAnchor.pin(equalTo: bottomAnchor).isActive = true
         stickerSetCollectionView.pin(anchors: [.height], to: 49)
-        
+
         // Separator line view constraints
         separatorLineView.pin(anchors: [.leading, .trailing], to: self)
         separatorLineView.pin(anchors: [.height], to: 1)
         separatorLineView.bottomAnchor.pin(equalTo: stickerSetCollectionView.topAnchor, constant: -(CometChatSpacing.Spacing.s2)).isActive = true
-        
+
         // Stickers collection view constraints
-        stickersCollectionView.leadingAnchor.pin(equalTo: self.leadingAnchor, constant: CometChatSpacing.Padding.p4).isActive = true
-        stickersCollectionView.trailingAnchor.pin(equalTo: self.trailingAnchor, constant: -(CometChatSpacing.Padding.p4)).isActive = true
+        stickersCollectionView.leadingAnchor.pin(equalTo: leadingAnchor, constant: CometChatSpacing.Padding.p4).isActive = true
+        stickersCollectionView.trailingAnchor.pin(equalTo: trailingAnchor, constant: -(CometChatSpacing.Padding.p4)).isActive = true
         stickersCollectionView.bottomAnchor.pin(equalTo: separatorLineView.topAnchor).isActive = true
-        stickersCollectionView.topAnchor.pin(equalTo: self.topAnchor).isActive = true
-        
+        stickersCollectionView.topAnchor.pin(equalTo: topAnchor).isActive = true
+
         stickersCollectionView.pin(anchors: [.height], to: 250)
-        
+
         // Error view constraints
-        errorView.leadingAnchor.pin(equalTo: self.leadingAnchor, constant: CometChatSpacing.Padding.p3).isActive = true
-        errorView.trailingAnchor.pin(equalTo: self.trailingAnchor, constant: -(CometChatSpacing.Padding.p3)).isActive = true
-        errorView.bottomAnchor.pin(equalTo: self.bottomAnchor, constant: -(CometChatSpacing.Padding.p2)).isActive = true
-        errorView.topAnchor.pin(equalTo: self.topAnchor, constant: CometChatSpacing.Padding.p3).isActive = true
-        
+        errorView.leadingAnchor.pin(equalTo: leadingAnchor, constant: CometChatSpacing.Padding.p3).isActive = true
+        errorView.trailingAnchor.pin(equalTo: trailingAnchor, constant: -(CometChatSpacing.Padding.p3)).isActive = true
+        errorView.bottomAnchor.pin(equalTo: bottomAnchor, constant: -(CometChatSpacing.Padding.p2)).isActive = true
+        errorView.topAnchor.pin(equalTo: topAnchor, constant: CometChatSpacing.Padding.p3).isActive = true
+
         // Empty view constraints
-        emptyView.leadingAnchor.pin(equalTo: self.leadingAnchor, constant: CometChatSpacing.Padding.p3).isActive = true
-        emptyView.trailingAnchor.pin(equalTo: self.trailingAnchor, constant: -(CometChatSpacing.Padding.p3)).isActive = true
-        emptyView.bottomAnchor.pin(equalTo: self.bottomAnchor, constant: -(CometChatSpacing.Padding.p2)).isActive = true
-        emptyView.topAnchor.pin(equalTo: self.topAnchor, constant: CometChatSpacing.Padding.p3).isActive = true
-        
+        emptyView.leadingAnchor.pin(equalTo: leadingAnchor, constant: CometChatSpacing.Padding.p3).isActive = true
+        emptyView.trailingAnchor.pin(equalTo: trailingAnchor, constant: -(CometChatSpacing.Padding.p3)).isActive = true
+        emptyView.bottomAnchor.pin(equalTo: bottomAnchor, constant: -(CometChatSpacing.Padding.p2)).isActive = true
+        emptyView.topAnchor.pin(equalTo: topAnchor, constant: CometChatSpacing.Padding.p3).isActive = true
+
         // Empty stack view constraints
         emptyStackView.pin(anchors: [.centerX, .centerY], to: emptyView)
         emptyStackView.leadingAnchor.pin(equalTo: emptyView.leadingAnchor, constant: CometChatSpacing.Padding.p2).isActive = true
         emptyStackView.trailingAnchor.pin(equalTo: emptyView.trailingAnchor, constant: -(CometChatSpacing.Padding.p2)).isActive = true
-        
+
         // Error stack view constraints
         errorStackView.pin(anchors: [.centerX, .centerY], to: errorView)
-        
+
         // Hide views by default
         emptyView.isHidden = true
         errorView.isHidden = true
         separatorLineView.isHidden = true
-        
+
         // Set labels' text
         emptyTitleLabel.text = "STICKERS_EMPTY_MESSAGE".localize()
         emptySubTitleLabel.text = "DONT_HAVE_STICKERS_MESSAGE".localize()
         errorLabel.text = "SOMETHING_WENT_WRONG_WITH_NEW_LINE".localize()
     }
 
-    
     /// Sets up the styles for various UI components based on the provided `style` object.
     /// This method applies the background color, separator color, and text styles for empty and error states.
     open func setupStyle() {
         // Set the background color of the view.
         backgroundColor = style.backgroundColor
-        
+
         // Set the background color for the separator line view.
         separatorLineView.backgroundColor = style.separatorColor
-        
+
         // Set the text color and font for the empty state title label.
         emptyTitleLabel.textColor = style.emptyStateTitleTextColor
         emptyTitleLabel.font = style.emptyStateTitleTextFont
-        
+
         // Set the text color and font for the empty state subtitle label.
         emptySubTitleLabel.textColor = style.emptyStateSubtitleTextColor
         emptySubTitleLabel.font = style.emptyStateSubtitleTextFont
-        
+
         // Set the text color and font for the error state label.
         errorLabel.textColor = style.errorStateTextColor
         errorLabel.font = style.errorStateTextFont
@@ -293,12 +290,12 @@ public class CometChatStickerKeyboard: UIView {
     /// It checks if the view is being added to a valid window and if the sticker set is empty,
     /// triggering sticker fetching and applying styles accordingly.
     /// - Parameter newWindow: The new window that the view will be added to.
-    public override func willMove(toWindow newWindow: UIWindow?) {
+    override public func willMove(toWindow newWindow: UIWindow?) {
         // Check if the view is being added to a valid window.
-        if newWindow != nil && stickerSet.isEmpty {
+        if newWindow != nil, stickerSet.isEmpty {
             // If the sticker set is empty, fetch stickers.
             fetchStickers()
-            
+
             // Apply the style to the view components.
             setupStyle()
         }
@@ -309,34 +306,33 @@ public class CometChatStickerKeyboard: UIView {
     func showLoadingView() {
         // If loading state is disabled, exit the function.
         if disableLoadingState { return }
-        
+
         // Start shimmer animation if loadingView is of type CometChatShimmerView.
         (loadingView as? CometChatShimmerView)?.startShimmer()
-        
+
         // Mark the loading view as visible.
         isLoadingViewVisible = true
-        
+
         // Add the loadingView as a subview.
-        self.addSubview(loadingView)
-        
+        addSubview(loadingView)
+
         // Pin the loadingView to the edges of the parent view with padding.
-        loadingView.leadingAnchor.pin(equalTo: self.leadingAnchor, constant: CometChatSpacing.Padding.p4).isActive = true
-        loadingView.trailingAnchor.pin(equalTo: self.trailingAnchor, constant: -(CometChatSpacing.Padding.p4)).isActive = true
-        loadingView.bottomAnchor.pin(equalTo: self.bottomAnchor).isActive = true
-        loadingView.topAnchor.pin(equalTo: self.topAnchor).isActive = true
-        
+        loadingView.leadingAnchor.pin(equalTo: leadingAnchor, constant: CometChatSpacing.Padding.p4).isActive = true
+        loadingView.trailingAnchor.pin(equalTo: trailingAnchor, constant: -(CometChatSpacing.Padding.p4)).isActive = true
+        loadingView.bottomAnchor.pin(equalTo: bottomAnchor).isActive = true
+        loadingView.topAnchor.pin(equalTo: topAnchor).isActive = true
+
         loadingView.heightAnchor.constraint(equalToConstant: 300).isActive = true
-        
     }
 
     /// Hides the loading view and stops the shimmer animation.
     func hideLoadingView() {
         // Stop shimmer animation if loadingView is of type CometChatShimmerView.
         (loadingView as? CometChatShimmerView)?.stopShimmer()
-        
+
         // Mark the loading view as not visible.
         isLoadingViewVisible = false
-        
+
         // Remove the loadingView from its superview.
         loadingView.removeFromSuperview()
     }
@@ -345,41 +341,41 @@ public class CometChatStickerKeyboard: UIView {
     public func fetchStickers() {
         // Show loading view while fetching stickers.
         showLoadingView()
-        
+
         // Hide error and empty views initially.
-        self.errorView.isHidden = true
-        self.emptyView.isHidden = true
-        
+        errorView.isHidden = true
+        emptyView.isHidden = true
+
         // Clear previous sticker data.
-        self.stickerSet.removeAll()
-        self.stickersForPreview.removeAll()
-        self.allstickers.removeAll()
-        self.stickers.removeAll()
-        
+        stickerSet.removeAll()
+        stickersForPreview.removeAll()
+        allstickers.removeAll()
+        stickers.removeAll()
+
         // Make a network call to fetch stickers.
         CometChat.callExtension(slug: ExtensionConstants.stickers, type: .get, endPoint: "v1/fetch", body: nil, onSuccess: { response in
-            if let response = response {
+            if let response {
                 // Parse the response and group stickers by set.
                 self.parseStickersSet(forData: response) { result in
-                    self.stickerSet = result.compactMap { key, value in
+                    self.stickerSet = result.compactMap { _, value in
                         CometChatStickerSet(order: value.first?.setOrder ?? 0, id: value.first?.setID ?? "", thumbnail: value.first?.url ?? "", name: value.first?.setName ?? "", stickers: value)
                     }
-                    
+
                     // Sort the sticker sets based on their order.
                     self.stickerSet.sort { $0.order ?? 0 < $1.order ?? 0 }
-                    
+
                     // Filter stickers for preview based on the first sticker set.
                     self.stickersForPreview = self.allstickers.filter { $0.setID == self.stickerSet.first?.id }
-                    
+
                     DispatchQueue.main.async {
                         // Update the collection views.
                         self.stickersCollectionView.backgroundView?.isHidden = true
                         self.stickersCollectionView.reloadData()
                         self.stickerSetCollectionView.reloadData()
-                        
+
                         // Hide loading view after data is loaded.
                         self.hideLoadingView()
-                        
+
                         // Handle empty sticker sets scenario.
                         if self.stickerSet.isEmpty {
                             self.stickersCollectionView.isHidden = true
@@ -415,22 +411,22 @@ public class CometChatStickerKeyboard: UIView {
     ///   - onSuccess: Closure to return grouped sticker sets.
     private func parseStickersSet(forData response: [String: Any]?, onSuccess: @escaping ([String?: [CometChatSticker]]) -> Void) {
         // Ensure response contains valid data for default and custom sticker sets.
-        guard let response = response, let defaultStickerSet = response["defaultStickers"] as? [[String: Any]], let customStickerSet = response["customStickers"] as? [[String: Any]] else { return }
-        
+        guard let response, let defaultStickerSet = response["defaultStickers"] as? [[String: Any]], let customStickerSet = response["customStickers"] as? [[String: Any]] else { return }
+
         // Parse default sticker sets.
-        defaultStickerSet.forEach { stickerData in
+        for stickerData in defaultStickerSet {
             let sticker = CometChatSticker(id: stickerData["id"] as? String ?? "", name: stickerData["stickerName"] as? String ?? "", order: stickerData["stickerOrder"] as? Int ?? 0, setID: stickerData["stickerSetId"] as? String ?? "", setName: stickerData["stickerSetName"] as? String ?? "", setOrder: stickerData["stickerSetOrder"] as? Int ?? 0, url: stickerData["stickerUrl"] as? String ?? "")
             stickers.append(sticker)
             allstickers.append(sticker)
         }
-        
+
         // Parse custom sticker sets.
-        customStickerSet.forEach { stickerData in
+        for stickerData in customStickerSet {
             let sticker = CometChatSticker(id: stickerData["id"] as? String ?? "", name: stickerData["stickerName"] as? String ?? "", order: stickerData["stickerOrder"] as? Int ?? 0, setID: stickerData["stickerSetId"] as? String ?? "", setName: stickerData["stickerSetName"] as? String ?? "", setOrder: stickerData["stickerSetOrder"] as? Int ?? 0, url: stickerData["stickerUrl"] as? String ?? "")
             stickers.append(sticker)
             allstickers.append(sticker)
         }
-        
+
         // Group stickers by their set name and pass the result to the success closure.
         let dictionary = Dictionary(grouping: stickers, by: { $0.setName })
         onSuccess(dictionary)
@@ -458,32 +454,30 @@ public class CometChatStickerKeyboard: UIView {
     @objc func retry() {
         fetchStickers()
     }
-
 }
 
 // MARK: - CollectionView Delegate
-extension CometChatStickerKeyboard : UICollectionViewDelegate , UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-    
-    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if collectionView == self.stickerSetCollectionView {
-            return stickerSet.count
-        }else if collectionView == self.stickersCollectionView {
-            return stickersForPreview.count
+
+extension CometChatStickerKeyboard: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection _: Int) -> Int {
+        if collectionView == stickerSetCollectionView {
+            stickerSet.count
+        } else if collectionView == stickersCollectionView {
+            stickersForPreview.count
         } else {
-            return 0
+            0
         }
     }
-    
+
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
         let sticketSetCell = collectionView.dequeueReusableCell(withReuseIdentifier: "StickerCell", for: indexPath) as! StickerCell
-        if collectionView == self.stickersCollectionView {
+        if collectionView == stickersCollectionView {
             if stickersForPreview.count != 0 {
                 if let sticker = stickersForPreview[safe: indexPath.row] {
                     sticketSetCell.sticker = sticker
                 }
             }
-        }else if collectionView == self.stickerSetCollectionView {
+        } else if collectionView == stickerSetCollectionView {
             if stickerSet.count != 0 {
                 let stickerCollection = stickerSet[safe: indexPath.row]
                 sticketSetCell.stickerSet = stickerCollection
@@ -491,15 +485,14 @@ extension CometChatStickerKeyboard : UICollectionViewDelegate , UICollectionView
         }
         return sticketSetCell
     }
-    
+
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
-        if collectionView == self.stickerSetCollectionView {
+        if collectionView == stickerSetCollectionView {
             if let cell = collectionView.cellForItem(at: indexPath) as? StickerCell, let stickerSet = cell.stickerSet, let stickers = stickerSet.stickers {
-                self.stickersForPreview.removeAll()
-                self.stickersForPreview = stickers
+                stickersForPreview.removeAll()
+                stickersForPreview = stickers
                 for sticker in stickers {
-                    self.stickersForPreview.append(sticker)
+                    stickersForPreview.append(sticker)
                 }
                 DispatchQueue.main.async {
                     self.stickersCollectionView.reloadData()
@@ -508,8 +501,8 @@ extension CometChatStickerKeyboard : UICollectionViewDelegate , UICollectionView
                 onStickerSetSelected?(stickerSet)
                 CometChatStickerKeyboard.stickerDelegate?.didStickerSetSelected(stickerSet: stickerSet)
             }
-            
-        }else if collectionView == self.stickersCollectionView {
+
+        } else if collectionView == stickersCollectionView {
             if let cell = collectionView.cellForItem(at: indexPath) as? StickerCell, let sticker = cell.sticker {
                 onStickerTap?(sticker)
                 CometChatStickerKeyboard.stickerDelegate?.didStickerSelected(sticker: sticker)
@@ -517,39 +510,36 @@ extension CometChatStickerKeyboard : UICollectionViewDelegate , UICollectionView
             }
         }
     }
-    
-    
-    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
 
+    public func collectionView(_ collectionView: UICollectionView, layout _: UICollectionViewLayout, sizeForItemAt _: IndexPath) -> CGSize {
         var spacing: CGFloat = 0 // Space between cells
         var numberOfCellsPerRow: CGFloat = 0
-        
-        if collectionView == self.stickersCollectionView {
+
+        if collectionView == stickersCollectionView {
             spacing = CometChatSpacing.Spacing.s4 // Space between cells
             numberOfCellsPerRow = 4
             let totalSpacing = (numberOfCellsPerRow - 1) * spacing
             let availableWidth = collectionView.frame.width - totalSpacing
             let cellWidth = availableWidth / numberOfCellsPerRow
             return CGSize(width: cellWidth, height: cellWidth)
-        } else if collectionView == self.stickerSetCollectionView {
+        } else if collectionView == stickerSetCollectionView {
             return CGSize(width: 32, height: 32)
         }
         return CGSize(width: 0, height: 0)
     }
-    
-    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+
+    public func collectionView(_: UICollectionView, layout _: UICollectionViewLayout, minimumLineSpacingForSectionAt _: Int) -> CGFloat {
         // This is the spacing between rows
-        return CometChatSpacing.Spacing.s5
+        CometChatSpacing.Spacing.s5
     }
 
-    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+    public func collectionView(_ collectionView: UICollectionView, layout _: UICollectionViewLayout, minimumInteritemSpacingForSectionAt _: Int) -> CGFloat {
         // This is the spacing between items in the same row
-        if collectionView == self.stickerSetCollectionView {
+        if collectionView == stickerSetCollectionView {
             return CometChatSpacing.Spacing.s4
         }
         return 0
     }
-
 }
 
 extension CometChatStickerKeyboard {

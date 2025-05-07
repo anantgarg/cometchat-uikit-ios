@@ -2,23 +2,22 @@
 //
 //
 
-import SwiftUI
 import CometChatSDK
+import SwiftUI
 
 public struct StickerAuxiliaryButtonSwiftUI: View {
-    
     @State private var isKeyboardMode: Bool = false
-    @State private var stickerButtonIcon: UIImage = UIImage(named: "sticker-image", in: CometChatUIKit.bundle, compatibleWith: nil)?.withRenderingMode(.alwaysTemplate) ?? UIImage()
-    @State private var keyboardButtonIcon: UIImage = UIImage(named: "sticker-image-filled", in: CometChatUIKit.bundle, compatibleWith: nil)?.withRenderingMode(.alwaysTemplate) ?? UIImage()
+    @State private var stickerButtonIcon: UIImage = .init(named: "sticker-image", in: CometChatUIKit.bundle, compatibleWith: nil)?.withRenderingMode(.alwaysTemplate) ?? UIImage()
+    @State private var keyboardButtonIcon: UIImage = .init(named: "sticker-image-filled", in: CometChatUIKit.bundle, compatibleWith: nil)?.withRenderingMode(.alwaysTemplate) ?? UIImage()
     @State private var onStickerTap: (() -> Void)?
     @State private var onKeyboardTap: (() -> Void)?
-    
+
     public init() {
         NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillShowNotification, object: nil, queue: .main) { _ in
-            self.isKeyboardMode = false
+            isKeyboardMode = false
         }
     }
-    
+
     public var body: some View {
         Button(action: {
             if !isKeyboardMode {
@@ -37,35 +36,35 @@ public struct StickerAuxiliaryButtonSwiftUI: View {
         }
         .frame(width: 44, height: 44)
     }
-    
+
     @discardableResult
     public func setStickerButtonIcon(_ icon: UIImage) -> Self {
         var view = self
         view._stickerButtonIcon = State(initialValue: icon)
         return view
     }
-    
+
     @discardableResult
     public func setKeyboardButtonIcon(_ icon: UIImage) -> Self {
         var view = self
         view._keyboardButtonIcon = State(initialValue: icon)
         return view
     }
-    
+
     @discardableResult
     public func setOnStickerTap(_ callback: @escaping () -> Void) -> Self {
         var view = self
         view._onStickerTap = State(initialValue: callback)
         return view
     }
-    
+
     @discardableResult
     public func setOnKeyboardTap(_ callback: @escaping () -> Void) -> Self {
         var view = self
         view._onKeyboardTap = State(initialValue: callback)
         return view
     }
-    
+
     public func toUIKit() -> UIView {
         let hostingController = UIHostingController(rootView: self)
         let view = hostingController.view

@@ -5,14 +5,13 @@
 //  Created by SuryanshBisen on 29/02/24.
 //
 
-import UIKit
 import Foundation
+import UIKit
 
 /// `QuickReactionsStyle` struct allows customization of the appearance and style
 /// for the `CometChatQuickReactions` component. It provides properties for
 /// modifying the look of reaction buttons, the plus icon, and the container's overall styling.
 public struct QuickReactionsStyle {
-
     /// Background color for the "plus" icon that allows users to add more reactions.
     public var plusIconBackgroundColor: UIColor = CometChatTheme.backgroundColor03
 
@@ -20,7 +19,7 @@ public struct QuickReactionsStyle {
     public var plusIconTintColor: UIColor = CometChatTheme.iconColorSecondary
 
     /// Corner radius for the "plus" icon's background, enabling rounded corners for a custom look.
-    public var plusIconCornerRadius: CometChatCornerStyle? = nil
+    public var plusIconCornerRadius: CometChatCornerStyle?
 
     /// Background color for each individual reaction button.
     public var reactionsBackgroundColor: UIColor = .clear
@@ -29,7 +28,7 @@ public struct QuickReactionsStyle {
     public var reactionFont: UIFont = CometChatTypography.Heading2.regular
 
     /// Corner radius for the reaction buttons, allowing for rounded button corners.
-    public var reactionCornerRadius: CometChatCornerStyle = CometChatCornerStyle(cornerRadius: 0)
+    public var reactionCornerRadius: CometChatCornerStyle = .init(cornerRadius: 0)
 
     /// Boolean to determine whether the "add reaction" icon (plus button) should be hidden.
     public var hideAddReactionsIcon: Bool = false
@@ -44,9 +43,8 @@ public struct QuickReactionsStyle {
     public var borderColor: UIColor = CometChatTheme.borderColorLight
 
     /// Corner radius for the overall `CometChatQuickReactions` container, enabling rounded corners.
-    public var cornerRadius: CometChatCornerStyle? = nil
+    public var cornerRadius: CometChatCornerStyle?
 
     /// Default initializer for `QuickReactionsStyle`, providing default styles.
-    public init() { }
+    public init() {}
 }
-

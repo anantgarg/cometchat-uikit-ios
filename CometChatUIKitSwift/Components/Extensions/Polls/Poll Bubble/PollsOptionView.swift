@@ -5,25 +5,24 @@
 //  Created by SuryanshBisen on 13/05/24.
 //
 
-import Foundation
 import CometChatSDK
+import Foundation
 
 class PollsOptionView: UIView {
-    
     lazy var spinnerView: UIActivityIndicatorView = {
         let activityIndicatorView = UIActivityIndicatorView().withoutAutoresizingMaskConstraints()
         activityIndicatorView.style = .medium
         activityIndicatorView.isHidden = true
         return activityIndicatorView
     }()
-    
+
     lazy var optionSelectedIndicatorImageView: UIImageView = {
         let imageView = UIImageView().withoutAutoresizingMaskConstraints()
         imageView.pin(anchors: [.height, .width], to: 20)
         imageView.roundViewCorners(corner: .init(cornerRadius: 10))
         return imageView
     }()
-    
+
     lazy var optionProgressBar: UIProgressView = {
         let progressBar = UIProgressView().withoutAutoresizingMaskConstraints()
         progressBar.translatesAutoresizingMaskIntoConstraints = false
@@ -34,17 +33,17 @@ class PollsOptionView: UIView {
         if total == 0 {
             progressBar.setProgress(0, animated: true)
         } else {
-            progressBar.setProgress(Float(((Float(pollOption.count)/Float(total)))), animated: false)
+            progressBar.setProgress(Float(Float(pollOption.count) / Float(total)), animated: false)
         }
         return progressBar
     }()
-    
+
     lazy var optionLabel: UILabel = {
         let label = UILabel().withoutAutoresizingMaskConstraints()
         label.numberOfLines = 0
         return label
     }()
-    
+
     lazy var avatarContainerStackView: UIStackView = {
         let stackView = UIStackView().withoutAutoresizingMaskConstraints()
         stackView.axis = .horizontal
@@ -54,8 +53,8 @@ class PollsOptionView: UIView {
         stackView.pin(anchors: [.height], to: 20)
         stackView.addArrangedSubview(UIView())
         var widthCalculation: CGFloat = 30
-        
-        for index in 0..<min(pollOption.user.count, 4) {
+
+        for index in 0 ..< min(pollOption.user.count, 4) {
             let user = pollOption.user[index]
             let avatarView = CometChatAvatar(frame: .zero).withoutAutoresizingMaskConstraints()
             avatarView.style = avatarStyle
@@ -67,19 +66,19 @@ class PollsOptionView: UIView {
         stackView.pin(anchors: [.width], to: widthCalculation)
         stackView.setCustomSpacing(4, after: stackView.subviews.last ?? UIView())
         stackView.addArrangedSubview(pollAttemptedCountLabel)
-        
+
         return stackView
     }()
-    
+
     lazy var pollAttemptedCountLabel: UILabel = {
         let label = UILabel().withoutAutoresizingMaskConstraints()
         label.text = String(pollOption.count)
         return label
     }()
-    
+
     var pollOption: PollOptions
     var total: Int
-    var onSelected: ((_ pollOption: PollOptions) -> ())?
+    var onSelected: ((_ pollOption: PollOptions) -> Void)?
     var optionCheckIcon: UIImage? {
         didSet {
             if isOptionSelected {
@@ -87,6 +86,7 @@ class PollsOptionView: UIView {
             }
         }
     }
+
     var optionUncheckIcon: UIImage? {
         didSet {
             if !isOptionSelected {
@@ -94,85 +94,85 @@ class PollsOptionView: UIView {
             }
         }
     }
+
     var isOptionSelected: Bool = false
     lazy var avatarStyle: AvatarStyle = {
         var avatarStyle = CometChatAvatar.style
         avatarStyle.textFont = CometChatTypography.Caption2.regular
         return avatarStyle
     }()
-    
+
     init(pollOption: PollOptions, total: Int) {
         self.pollOption = pollOption
         self.total = total
         super.init(frame: .infinite)
         buildUI()
     }
-    
+
     func buildUI() {
         withoutAutoresizingMaskConstraints()
-        
+
         let gesture = UITapGestureRecognizer_WithOptionInfo(target: self, action: #selector(onOptionSelected))
         gesture.option = pollOption.index
         addGestureRecognizer(gesture)
-        
-        var nsActiveLayout : [NSLayoutConstraint] = [NSLayoutConstraint]()
+
+        var nsActiveLayout = [NSLayoutConstraint]()
 
         addSubview(optionSelectedIndicatorImageView)
         nsActiveLayout += [
             optionSelectedIndicatorImageView.topAnchor.pin(equalTo: topAnchor),
-            optionSelectedIndicatorImageView.leadingAnchor.pin(equalTo: leadingAnchor)
+            optionSelectedIndicatorImageView.leadingAnchor.pin(equalTo: leadingAnchor),
         ]
-        pollOption.user.forEach { uid, avatar, name in
+        for (uid, avatar, name) in pollOption.user {
             if uid == CometChat.getLoggedInUser()?.uid {
                 isOptionSelected = true
             }
         }
-        
+
         addSubview(optionLabel)
         optionLabel.text = pollOption.text
         nsActiveLayout += [
             optionLabel.leadingAnchor.pin(equalTo: optionSelectedIndicatorImageView.trailingAnchor, constant: CometChatSpacing.Padding.p2),
             optionLabel.topAnchor.pin(equalTo: optionSelectedIndicatorImageView.topAnchor),
-            optionLabel.trailingAnchor.pin(equalTo: avatarContainerStackView.leadingAnchor)
+            optionLabel.trailingAnchor.pin(equalTo: avatarContainerStackView.leadingAnchor),
         ]
 
         addSubview(avatarContainerStackView)
         nsActiveLayout += [
             avatarContainerStackView.trailingAnchor.pin(equalTo: trailingAnchor),
-            avatarContainerStackView.topAnchor.pin(equalTo: optionLabel.topAnchor)
+            avatarContainerStackView.topAnchor.pin(equalTo: optionLabel.topAnchor),
         ]
-        
-        
+
         addSubview(optionProgressBar)
         nsActiveLayout += [
             optionProgressBar.leadingAnchor.pin(equalTo: optionLabel.leadingAnchor),
             optionProgressBar.trailingAnchor.pin(equalTo: trailingAnchor),
             optionProgressBar.topAnchor.pin(equalTo: optionLabel.bottomAnchor, constant: CometChatSpacing.Padding.p1 + 2),
-            optionProgressBar.bottomAnchor.pin(equalTo: bottomAnchor)
+            optionProgressBar.bottomAnchor.pin(equalTo: bottomAnchor),
         ]
-        
+
         addSubview(spinnerView)
         nsActiveLayout += [
             spinnerView.centerXAnchor.constraint(equalTo: optionSelectedIndicatorImageView.centerXAnchor),
-            spinnerView.centerYAnchor.constraint(equalTo: optionSelectedIndicatorImageView.centerYAnchor)
+            spinnerView.centerYAnchor.constraint(equalTo: optionSelectedIndicatorImageView.centerYAnchor),
         ]
 
         NSLayoutConstraint.activate(nsActiveLayout)
     }
-    
+
     @objc func onOptionSelected() {
         spinnerView.isHidden = false
         spinnerView.startAnimating()
         optionSelectedIndicatorImageView.isHidden = true
         onSelected?(pollOption)
     }
-    
+
     @discardableResult
-    func set(onClicked: @escaping ((_ pollOption: PollOptions) -> ())) -> Self {
-        self.onSelected = onClicked
+    func set(onClicked: @escaping ((_ pollOption: PollOptions) -> Void)) -> Self {
+        onSelected = onClicked
         return self
     }
-    
+
     @discardableResult
     func set(style: PollBubbleStyle) -> Self {
         optionLabel.textColor = style.optionTextColor
@@ -191,9 +191,9 @@ class PollsOptionView: UIView {
         }
         return self
     }
-        
-    
-    required init?(coder: NSCoder) {
+
+    @available(*, unavailable)
+    required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }

@@ -2,19 +2,18 @@
 //
 //
 
-import SwiftUI
 import CometChatSDK
-import SafariServices
-import MessageUI
 import CometChatUIKitSwift.Components.Shared.Constants
+import MessageUI
+import SafariServices
+import SwiftUI
 
 public struct CometChatLinkPreviewBubbleSwiftUI: View {
-    
-    @State private var style: LinkPreviewBubbleStyle = LinkPreviewBubbleStyle()
+    @State private var style: LinkPreviewBubbleStyle = .init()
     @State private var message: TextMessage?
     @State private var controller: UIViewController?
     @State private var attributedText: NSAttributedString?
-    
+
     @State private var url: String?
     @State private var title: String?
     @State private var subtitle: String?
@@ -24,11 +23,11 @@ public struct CometChatLinkPreviewBubbleSwiftUI: View {
     @State private var showFavicon: Bool = false
     @State private var thumbnailImage: UIImage?
     @State private var faviconImage: UIImage?
-    
+
     private let imageService = ImageService()
-    
+
     public init() {}
-    
+
     public var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             VStack(alignment: .leading, spacing: 0) {
@@ -39,15 +38,15 @@ public struct CometChatLinkPreviewBubbleSwiftUI: View {
                         .frame(width: LayoutMetrics.loadingContentWidth + LayoutMetrics.spacingLarge, height: LayoutMetrics.loadingContentHeight * 2.5)
                         .clipped()
                 }
-                
+
                 VStack(alignment: .leading, spacing: LayoutMetrics.spacingSmall) {
-                    if let title = title, !title.isEmpty {
+                    if let title, !title.isEmpty {
                         HStack(spacing: LayoutMetrics.spacingSmall) {
                             Text(title)
                                 .font(.headline)
                                 .foregroundColor(Color(style.titleTextColor))
                                 .lineLimit(3)
-                            
+
                             if showFavicon, let image = faviconImage {
                                 Image(uiImage: image)
                                     .resizable()
@@ -57,15 +56,15 @@ public struct CometChatLinkPreviewBubbleSwiftUI: View {
                             }
                         }
                     }
-                    
-                    if let subtitle = subtitle, !subtitle.isEmpty {
+
+                    if let subtitle, !subtitle.isEmpty {
                         Text(subtitle)
                             .font(.subheadline)
                             .foregroundColor(Color(style.subtitleTextColor))
                             .lineLimit(4)
                     }
-                    
-                    if let url = url {
+
+                    if let url {
                         Text(url)
                             .font(.caption)
                             .foregroundColor(Color(style.linkTextColor))
@@ -79,12 +78,12 @@ public struct CometChatLinkPreviewBubbleSwiftUI: View {
                 onLinkPreviewClick()
             }
             .padding(LayoutMetrics.spacingSmall)
-            
-            if let attributedText = attributedText {
+
+            if let attributedText {
                 AttributedTextView(attributedText: attributedText)
                     .padding(.horizontal, LayoutMetrics.spacingMedium)
                     .padding(.top, LayoutMetrics.spacingMedium)
-            } else if let message = message {
+            } else if let message {
                 Text(message.text)
                     .font(.body)
                     .foregroundColor(Color(style.messageTextColor))
@@ -96,7 +95,7 @@ public struct CometChatLinkPreviewBubbleSwiftUI: View {
             setupStyle()
         }
     }
-    
+
     @discardableResult
     public func set(message: TextMessage) -> Self {
         var view = self
@@ -104,85 +103,84 @@ public struct CometChatLinkPreviewBubbleSwiftUI: View {
         view.parseLinkPreviewForMessage(message: message)
         return view
     }
-    
+
     @discardableResult
     public func set(controller: UIViewController?) -> Self {
         var view = self
         view.controller = controller
         return view
     }
-    
+
     @discardableResult
     public func set(attributedText: NSAttributedString) -> Self {
         var view = self
         view.attributedText = attributedText
         return view
     }
-    
+
     @discardableResult
     public func set(style: LinkPreviewBubbleStyle) -> Self {
         var view = self
         view.style = style
         return view
     }
-    
-    private func setupStyle() {
-    }
-    
+
+    private func setupStyle() {}
+
     private func parseLinkPreviewForMessage(message: TextMessage) {
         if let metaData = message.metaData,
            let injected = metaData["@injected"] as? [String: Any],
            let cometChatExtension = injected["extensions"] as? [String: Any],
            let linkPreviewDictionary = cometChatExtension["link-preview"] as? [String: Any],
            let linkArray = linkPreviewDictionary["links"] as? [[String: Any]],
-           let linkPreview = linkArray.first {
-            
+           let linkPreview = linkArray.first
+        {
             if let linkTitle = linkPreview["title"] as? String {
-                self.title = linkTitle
+                title = linkTitle
             }
-            
+
             if let description = linkPreview["description"] as? String {
-                self.subtitle = description
+                subtitle = description
             }
-            
+
             if let thumbnail = linkPreview["image"] as? String, let url = URL(string: thumbnail) {
-                self.thumbnailURL = thumbnail
-                self.showThumbnail = true
-                self.showFavicon = false
-                
+                thumbnailURL = thumbnail
+                showThumbnail = true
+                showFavicon = false
+
                 imageService.image(for: url, cacheType: .normal) { image in
-                    if let image = image {
+                    if let image {
                         DispatchQueue.main.async {
-                            self.thumbnailImage = image
+                            thumbnailImage = image
                         }
                     }
                 }
             } else if let favIcon = linkPreview["favicon"] as? String, let url = URL(string: favIcon) {
-                self.faviconURL = favIcon
-                self.showThumbnail = false
-                self.showFavicon = true
-                
+                faviconURL = favIcon
+                showThumbnail = false
+                showFavicon = true
+
                 imageService.image(for: url, cacheType: .normal) { image in
-                    if let image = image {
+                    if let image {
                         DispatchQueue.main.async {
-                            self.faviconImage = image
+                            faviconImage = image
                         }
                     }
                 }
             }
-            
+
             if let linkURL = linkPreview["url"] as? String {
-                self.url = linkURL
+                url = linkURL
             }
         }
     }
-    
+
     private func onLinkPreviewClick() {
-        if let url = url, let url = URL(string: url) {
+        if let url, let url = URL(string: url) {
             UIApplication.shared.open(url)
         }
     }
-    
+
     public func toUIKit() -> UIView {
         let hostingController = UIHostingController(rootView: self)
         return hostingController.view
@@ -191,8 +189,8 @@ public struct CometChatLinkPreviewBubbleSwiftUI: View {
 
 struct AttributedTextView: UIViewRepresentable {
     let attributedText: NSAttributedString
-    
-    func makeUIView(context: Context) -> UITextView {
+
+    func makeUIView(context _: Context) -> UITextView {
         let textView = UITextView()
         textView.isEditable = false
         textView.isScrollEnabled = false
@@ -201,8 +199,8 @@ struct AttributedTextView: UIViewRepresentable {
         textView.textContainer.lineFragmentPadding = 0
         return textView
     }
-    
-    func updateUIView(_ uiView: UITextView, context: Context) {
+
+    func updateUIView(_ uiView: UITextView, context _: Context) {
         uiView.attributedText = attributedText
     }
 }
@@ -214,7 +212,7 @@ struct CometChatLinkPreviewBubbleSwiftUI_Previews: PreviewProvider {
                 .set(message: createMockMessage())
                 .padding()
                 .previewDisplayName("Link Preview Bubble (Light)")
-                
+
             CometChatLinkPreviewBubbleSwiftUI()
                 .set(message: createMockMessage())
                 .padding()
@@ -222,23 +220,23 @@ struct CometChatLinkPreviewBubbleSwiftUI_Previews: PreviewProvider {
                 .previewDisplayName("Link Preview Bubble (Dark)")
         }
     }
-    
+
     static func createMockMessage() -> TextMessage {
         let message = TextMessage(receiverUid: "receiver123", text: "Check out this link: https://www.cometchat.com", receiverType: .user)
-        
+
         let linkPreview: [String: Any] = [
             "title": "CometChat - Communication APIs",
             "description": "Add chat, voice and video to your app",
             "url": "https://www.cometchat.com",
-            "image": "https://www.cometchat.com/images/logo.png"
+            "image": "https://www.cometchat.com/images/logo.png",
         ]
-        
+
         let links: [[String: Any]] = [linkPreview]
         let linkPreviewDict: [String: Any] = ["links": links]
         let extensions: [String: Any] = ["link-preview": linkPreviewDict]
         let injected: [String: Any] = ["extensions": extensions]
         message.metaData = ["@injected": injected]
-        
+
         return message
     }
 }

@@ -2,51 +2,49 @@
 //
 //
 
-import Foundation
-import CometChatSDK
-import SwiftUI
 import Combine
+import CometChatSDK
+import Foundation
+import SwiftUI
 
 class SmartReplyExtensionDecoratorSwiftUI: DataSourceDecorator {
-    
     var dataStamp: Double?
     var _messageListenerId: String?
     var loggedInUser: User?
     var isVisible = false
     var id = [String: Any]()
-    
+
     private var cancellables = Set<AnyCancellable>()
-    
+
     override init(dataSource: DataSource) {
         super.init(dataSource: dataSource)
-        self.dataStamp = Date().timeIntervalSince1970
-        self._messageListenerId = "ExtensionMessageListener"
-        self.loggedInUser = CometChat.getLoggedInUser()
+        dataStamp = Date().timeIntervalSince1970
+        _messageListenerId = "ExtensionMessageListener"
+        loggedInUser = CometChat.getLoggedInUser()
         disconnect()
         connect()
     }
-    
+
     override func getId() -> String {
-        return "smart-reply"
+        "smart-reply"
     }
-    
+
     public func connect() {
-        if let _messageListenerId = _messageListenerId {
+        if let _messageListenerId {
             CometChatMessageEvents.addListener(_messageListenerId, self)
         }
     }
-    
+
     public func disconnect() {
-        if let _messageListenerId = _messageListenerId {
+        if let _messageListenerId {
             CometChatMessageEvents.removeListener(_messageListenerId)
             CometChatUIEvents.removeListener(_messageListenerId)
         }
     }
-    
+
     public func getReplies(message: BaseMessage) -> [String]? {
         var replies = [String]()
-        if let map = ExtensionModerator.extensionCheck(baseMessage: message), !map.isEmpty && map.containsKey(ExtensionConstants.smartReply), let smartReplies = map[ExtensionConstants.smartReply] {
-            
+        if let map = ExtensionModerator.extensionCheck(baseMessage: message), !map.isEmpty, map.containsKey(ExtensionConstants.smartReply), let smartReplies = map[ExtensionConstants.smartReply] {
             if smartReplies.containsKey("reply_neutral") {
                 if let reply_neutral = smartReplies["reply_neutral"] as? String {
                     replies.append(reply_neutral)
@@ -68,9 +66,9 @@ class SmartReplyExtensionDecoratorSwiftUI: DataSourceDecorator {
         }
         return replies
     }
-    
+
     func getID(for message: BaseMessage) -> [String: Any] {
-        var id = [String:Any]()
+        var id = [String: Any]()
         if let receiver = message.receiver {
             if receiver is User {
                 id["uid"] = message.sender?.uid
@@ -81,23 +79,23 @@ class SmartReplyExtensionDecoratorSwiftUI: DataSourceDecorator {
         if message.parentMessageId != 0 {
             id["parentMessageId"] = message.parentMessageId
         }
-        
+
         return id
     }
-    
+
     public func getRepliesPublisher(for message: BaseMessage) -> AnyPublisher<[String], Never> {
-        return Just(getReplies(message: message) ?? [])
+        Just(getReplies(message: message) ?? [])
             .eraseToAnyPublisher()
     }
-    
+
     public func presentSmartReplies(for textMessage: BaseMessage) {
         id = getID(for: textMessage)
-        if let replies = getReplies(message: textMessage) , !replies.isEmpty {
+        if let replies = getReplies(message: textMessage), !replies.isEmpty {
             let smartRepliesView = CometChatSmartRepliesSwiftUI(titles: replies)
                 .onReplySelected { [weak self] title in
-                    guard let self = self else { return }
+                    guard let self else { return }
                     if title == "" {
-                        self.isVisible = false
+                        isVisible = false
                         CometChatUIEvents.hidePanel(id: id, alignment: .composerTop)
                     } else {
                         let newMessage: TextMessage?
@@ -108,81 +106,80 @@ class SmartReplyExtensionDecoratorSwiftUI: DataSourceDecorator {
                             let receiverUid = textMessage.receiverUid
                             newMessage = TextMessage(receiverUid: receiverUid, text: title, receiverType: .group)
                         }
-                        if let newMessage = newMessage {
+                        if let newMessage {
                             newMessage.muid = "\(Int(Date().timeIntervalSince1970))"
                             newMessage.senderUid = CometChat.getLoggedInUser()?.uid ?? ""
                             newMessage.sender = CometChat.getLoggedInUser()
                             newMessage.parentMessageId = textMessage.parentMessageId
                             CometChatUIKit.sendTextMessage(message: newMessage)
-                            self.isVisible = false
+                            isVisible = false
                             CometChatUIEvents.hidePanel(id: id, alignment: .composerTop)
                         }
                     }
                 }
                 .toUIKit()
-            
+
             let hostingController = UIHostingController(rootView: smartRepliesView)
             let smartRepliesUIView = hostingController.view
             smartRepliesUIView?.translatesAutoresizingMaskIntoConstraints = false
             smartRepliesUIView?.heightAnchor.constraint(equalToConstant: 60).isActive = true
-            
-            self.isVisible = true
+
+            isVisible = true
             CometChatUIEvents.showPanel(id: id, alignment: .composerTop, view: smartRepliesUIView ?? UIView())
         } else {
-            self.isVisible = false
+            isVisible = false
             CometChatUIEvents.hidePanel(id: id, alignment: .composerTop)
         }
     }
 }
 
 extension SmartReplyExtensionDecoratorSwiftUI: CometChatMessageEventListener {
-    func ccMessageSent(message: CometChatSDK.BaseMessage, status: MessageStatus) {
+    func ccMessageSent(message _: CometChatSDK.BaseMessage, status _: MessageStatus) {
         if isVisible {
             DispatchQueue.main.async { [weak self] in
-                guard let self = self else { return }
-                CometChatUIEvents.hidePanel(id: self.id, alignment: .composerTop)
+                guard let self else { return }
+                CometChatUIEvents.hidePanel(id: id, alignment: .composerTop)
             }
         }
     }
-    
-    func onMediaMessageReceived(mediaMessage: CometChatSDK.MediaMessage) {
+
+    func onMediaMessageReceived(mediaMessage _: CometChatSDK.MediaMessage) {
         if isVisible {
             DispatchQueue.main.async { [weak self] in
-                guard let self = self else { return }
-                CometChatUIEvents.hidePanel(id: self.id, alignment: .composerTop)
+                guard let self else { return }
+                CometChatUIEvents.hidePanel(id: id, alignment: .composerTop)
             }
         }
     }
-    
-    func onCustomMessageReceived(customMessage: CometChatSDK.CustomMessage) {
+
+    func onCustomMessageReceived(customMessage _: CometChatSDK.CustomMessage) {
         if isVisible {
             DispatchQueue.main.async { [weak self] in
-                guard let self = self else { return }
-                CometChatUIEvents.hidePanel(id: self.id, alignment: .composerTop)
+                guard let self else { return }
+                CometChatUIEvents.hidePanel(id: id, alignment: .composerTop)
             }
         }
     }
-    
-    func onFormMessageReceived(message: FormMessage) {
+
+    func onFormMessageReceived(message _: FormMessage) {
         if isVisible {
             DispatchQueue.main.async { [weak self] in
-                guard let self = self else { return }
-                CometChatUIEvents.hidePanel(id: self.id, alignment: .composerTop)
+                guard let self else { return }
+                CometChatUIEvents.hidePanel(id: id, alignment: .composerTop)
             }
         }
     }
-    
-    func onCardMessageReceived(message: CardMessage) {
+
+    func onCardMessageReceived(message _: CardMessage) {
         if isVisible {
             DispatchQueue.main.async { [weak self] in
-                guard let self = self else { return }
-                CometChatUIEvents.hidePanel(id: self.id, alignment: .composerTop)
+                guard let self else { return }
+                CometChatUIEvents.hidePanel(id: id, alignment: .composerTop)
             }
         }
     }
-    
-    func onTextMessageReceived(textMessage: TextMessage) {
-        DispatchQueue.main.async {
-        }
+
+    func onTextMessageReceived(textMessage _: TextMessage) {
+        DispatchQueue.main.async {}
     }
 }

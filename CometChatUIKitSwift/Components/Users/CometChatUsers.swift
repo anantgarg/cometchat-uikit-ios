@@ -5,8 +5,8 @@
 //  Created by Abdullah Ansari on 18/11/22.
 //
 
-import UIKit
 import CometChatSDK
+import UIKit
 
 public enum titleAlignment {
     case left
@@ -15,8 +15,8 @@ public enum titleAlignment {
 
 @MainActor
 open class CometChatUsers: CometChatListBase {
-    
     // MARK: - Properties
+
     public var viewModel: UsersViewModel // ViewModel to manage user data and API requests.
     var subtitle: ((_ user: User?) -> UIView)? // Closure to provide a custom subtitle view for each user.
     var listItemView: ((_ user: User?) -> UIView)? // Closure to provide a custom list item view for each user.
@@ -35,7 +35,6 @@ open class CometChatUsers: CometChatListBase {
     public lazy var avatarStyle: AvatarStyle = CometChatUsers.avatarStyle
     public lazy var statusIndicatorStyle: StatusIndicatorStyle = CometChatUsers.statusIndicatorStyle
 
-
     var onItemClick: ((_ user: User, _ indexPath: IndexPath) -> Void)? // Closure to handle item click events.
     var onItemLongClick: ((_ user: User, _ indexPath: IndexPath) -> Void)? // Closure to handle long click events.
     var onError: ((_ error: CometChatException) -> Void)? // Closure to handle errors.
@@ -44,63 +43,66 @@ open class CometChatUsers: CometChatListBase {
     var isLoaded = false
     var onDidSelect: ((_ user: User, _ indexPath: IndexPath) -> Void)? // Closure for user selection events.
     public internal(set) var selectionLimit: Int? // Optional property to limit the number of selectable users.
-    
+
     public var selectedCellCount: Int = 0 {
         didSet {
             updateNavigationBarTitleWithCount() // Update the title when the count changes
         }
     }
+
     public var onSelectedItemProceed: ((_ user: [User]) -> Void)?
-    
+
     public var onSelection: ((_ user: [User]) -> Void)?
-    
-    var searchKeyWord : String?
+
+    var searchKeyWord: String?
     public var hideUserStatus: Bool = false
 
     // MARK: - Initializer
+
     public init(usersRequestBuilder: UsersRequest.UsersRequestBuilder = UsersBuilder.getDefaultRequestBuilder()) {
         // Initialize the view model with a default or custom user request builder.
         viewModel = UsersViewModel(userRequestBuilder: usersRequestBuilder)
         super.init(nibName: nil, bundle: nil) // Initialize the superclass.
-        self.defaultSetup() // Setup default properties.
+        defaultSetup() // Setup default properties.
     }
 
-    required public init?(coder: NSCoder) {
+    @available(*, unavailable)
+    public required init?(coder _: NSCoder) {
         // Fatal error for unsupported initialization through storyboard or XIB.
         fatalError("init(coder:) has not been implemented")
     }
 
     // MARK: - ViewController Life Cycle
-    open override func viewDidLoad() {
+
+    override open func viewDidLoad() {
         super.viewDidLoad()
         setupTableView(style: .grouped, withRefreshControl: true) // Setup the table view.
         showLoadingView()
         setupViewModel() // Setup the view model observers.
-        
+
         initialSetup()
     }
-    
-    func initialSetup(){
-        
-        if let searchKeyWord = searchKeyWord{
+
+    func initialSetup() {
+        if let searchKeyWord {
             viewModel.userRequestBuilder = viewModel.userRequestBuilder.set(searchKeyword: searchKeyWord)
             viewModel.userRequest = viewModel.userRequestBuilder.build()
         }
-        
+
         tableView.separatorStyle = .none
-        
-        if selectionMode == .single{
+
+        if selectionMode == .single {
             tableView.allowsMultipleSelection = false
-        }else if selectionMode == .multiple{
+        } else if selectionMode == .multiple {
             tableView.allowsMultipleSelection = true
         }
-        
+
         if #available(iOS 15.0, *) {
             tableView.sectionHeaderTopPadding = 0
         }
     }
 
-    open override func viewWillAppear(_ animated: Bool) {
+    override open func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         // Register a connection listener and refresh UI.
         CometChat.addConnectionListener("users-sdk-listener", self)
@@ -111,19 +113,20 @@ open class CometChatUsers: CometChatListBase {
         fetchData() // Fetch new user data.
     }
 
-    open override func viewWillDisappear(_ animated: Bool) {
+    override open func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         // Remove the connection listener and disconnect the view model.
         CometChat.removeConnectionListener("users-sdk-listener")
         viewModel.disconnect()
     }
-    
+
     // MARK: - Update Navigation Bar Title with Selected Cell Count
+
     open func updateNavigationBarTitleWithCount() {
-        if selectedCellCount == 0{
+        if selectedCellCount == 0 {
             navigationItem.rightBarButtonItems = []
             navigationItem.leftBarButtonItems = []
-        }else{
+        } else {
             let button = UIButton(type: .custom)
             button.widthAnchor.constraint(equalToConstant: 50).isActive = true
             button.setTitle("\(selectedCellCount)", for: .normal)
@@ -143,9 +146,10 @@ open class CometChatUsers: CometChatListBase {
     }
 
     // MARK: - Tick Button Action
+
     @objc open func tickButtonTapped() {
         guard let selectedRows = tableView.indexPathsForSelectedRows else { return }
-        
+
         onSelectedItemProceed?(viewModel.selectedUsers)
 
         for indexPath in selectedRows {
@@ -155,8 +159,9 @@ open class CometChatUsers: CometChatListBase {
         selectedCellCount = 0
         tableView.reloadData()
     }
-    
+
     // MARK: - Cancel Selection Button Action
+
     @objc open func crossButtonTapped() {
         guard let selectedRows = tableView.indexPathsForSelectedRows else { return }
 
@@ -166,13 +171,13 @@ open class CometChatUsers: CometChatListBase {
 
         viewModel.selectedUsers.removeAll()
         selectedCellCount = 0
-        
+
         tableView.reloadData()
     }
 
     // Call this method when a cell is selected or deselected to update the count.
     open func updateSelectedCellCount(isSelected: Bool) {
-        if selectionMode != .none{
+        if selectionMode != .none {
             if isSelected {
                 selectedCellCount += 1
             } else {
@@ -182,10 +187,11 @@ open class CometChatUsers: CometChatListBase {
     }
 
     // MARK: - Setup Methods
+
     open func defaultSetup() {
         // Setup default styles and error states.
         loadingView = UsersShimmerView() // Display a shimmer view while loading.
-        
+
         title = "USERS".localize() // Localized title for the view.
         prefersLargeTitles = true // Enable large titles.
 
@@ -194,7 +200,6 @@ open class CometChatUsers: CometChatListBase {
         errorStateSubTitleText = "LOOKS_LIKE_SOMETHINGS_WENT_WORNG._PLEASE_TRY_AGAIN".localize()
         errorStateImage = UIImage(named: "error-icon", in: CometChatUIKit.bundle, compatibleWith: nil)?.withRenderingMode(.alwaysOriginal) ?? UIImage()
         (errorStateView as? StateView)?.retryButton.isHidden = true
-        
 
         emptyStateImage = UIImage(systemName: "person.fill")?.withRenderingMode(.alwaysTemplate) ?? UIImage()
         emptyStateTitleText = "USERS_EMPTY_MESSAGE".localize()
@@ -205,32 +210,35 @@ open class CometChatUsers: CometChatListBase {
         statusIndicatorStyle.borderColor = style.backgroundColor
         statusIndicatorStyle.borderWidth = 2
         avatarStyle.textFont = CometChatTypography.Heading3.bold
-        
+
         hideSearch = false
     }
-    
-    override func onRefreshControlTriggered(){
+
+    override func onRefreshControlTriggered() {
         viewModel.isRefresh = true
     }
 
     // MARK: - Styling Methods
-    open override func setupStyle() {
+
+    override open func setupStyle() {
         listBaseStyle = style
         super.setupStyle()
     }
-    
-    open override func styleSearchBar() {
+
+    override open func styleSearchBar() {
         searchStyle = style
         super.styleSearchBar()
     }
 
     // MARK: - Data Fetching Methods
+
     open func fetchData() {
         // Trigger fetching of user data through the ViewModel.
         viewModel.fetchUsers()
     }
 
     // MARK: - Data Reloading
+
     open func reloadData() {
         // Set up a closure to reload the table view when data is updated in the ViewModel.
         viewModel.reload = { [weak self] in
@@ -249,15 +257,15 @@ open class CometChatUsers: CometChatListBase {
                 if !usersEmpty {
                     // If there are users, restore the table view's default state (e.g., no empty message).
                     this.tableView.restore()
-                }else{
+                } else {
                     this.onEmpty?()
                 }
                 this.refreshControl.endRefreshing()
                 // Hide any loading view (e.g., loading spinner) once the data is loaded.
                 this.hideFooterIndicator() // Hide any footer loading indicators.
                 this.removeLoadingView()
-                
-                if let onLoad = this.onLoad?(this.viewModel.users), this.isLoaded{
+
+                if let onLoad = this.onLoad?(this.viewModel.users), this.isLoaded {
                     this.isLoaded = true
                     onLoad
                 }
@@ -266,6 +274,7 @@ open class CometChatUsers: CometChatListBase {
     }
 
     // MARK: - ViewModel Setup
+
     open func setupViewModel() {
         // Set up a closure to handle failures when fetching data from the ViewModel.
         viewModel.failure = { [weak self] error in
@@ -283,8 +292,7 @@ open class CometChatUsers: CometChatListBase {
                 }
             }
         }
-        
-        
+
         viewModel.reloadAtIndex = { [weak self] indexPath in
             guard let this = self else { return }
             DispatchQueue.main.async {
@@ -294,6 +302,7 @@ open class CometChatUsers: CometChatListBase {
     }
 
     // MARK: - Cell Registration
+
     open func registerCells() {
         // Register a reusable cell for the table view (in this case, a CometChatListItem).
         // This enables the table view to reuse cells for better performance.
@@ -301,7 +310,8 @@ open class CometChatUsers: CometChatListBase {
     }
 
     // MARK: - Search Handling
-    open override func onSearch(state: SearchState, text: String) {
+
+    override open func onSearch(state: SearchState, text: String) {
         // Handle different states of search: either clearing or filtering based on search text.
         switch state {
         case .clear:
@@ -324,8 +334,8 @@ open class CometChatUsers: CometChatListBase {
         }
     }
 
-
     // MARK: - User Management Methods
+
     // Adds a user to the ViewModel's user list and returns the current instance (self) for chaining.
     @discardableResult
     public func add(user: User) -> Self {
@@ -361,14 +371,13 @@ open class CometChatUsers: CometChatListBase {
         // Returns the current instance to enable method chaining.
         return self
     }
-
 }
 
 // MARK: - TableView delegate and datasource method that inherited from the CometChatListBase.
-extension CometChatUsers {
 
+extension CometChatUsers {
     // Provides and configures a cell for the user at the given indexPath
-    open override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    override open func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         // Dequeues a reusable cell of type CometChatListItem
         guard let listItem = tableView.dequeueReusableCell(withIdentifier: CometChatListItem.identifier, for: indexPath) as? CometChatListItem else {
             return UITableViewCell()
@@ -381,20 +390,20 @@ extension CometChatUsers {
         listItem.set(title: user?.name ?? "")
         listItem.set(avatarURL: user?.avatar ?? "", with: user?.name)
         listItem.avatar.style = avatarStyle
-        
-        if let title = titleView?(user){
+
+        if let title = titleView?(user) {
             listItem.set(titleView: title)
         }
         // If subtitle and custom view are provided, set them
         if let subtitle = subtitle?(user) {
             listItem.set(subtitle: subtitle)
         }
-        
-        if let leading = leadingView?(user){
+
+        if let leading = leadingView?(user) {
             listItem.set(leadingView: leading)
         }
-        
-        if let trail = trailingView?(user){
+
+        if let trail = trailingView?(user) {
             listItem.set(tail: trail)
         }
         if let listItemView = listItemView?(user) {
@@ -407,9 +416,9 @@ extension CometChatUsers {
 
         // Set presence indicator if not disabled
         listItem.statusIndicator.isHidden = !(user?.status == .online && !(user?.hasBlockedMe ?? true) && !(user?.blockedByMe ?? true))
-        if !hideUserStatus && user?.status == .online && user?.blockedByMe == false {
+        if !hideUserStatus, user?.status == .online, user?.blockedByMe == false {
             listItem.statusIndicator.isHidden = false
-        }else{
+        } else {
             listItem.statusIndicator.isHidden = true
         }
         listItem.statusIndicator.style = statusIndicatorStyle
@@ -425,18 +434,18 @@ extension CometChatUsers {
 
         // Handle long click action
         listItem.onItemLongClick = { [weak self] in
-            guard let self = self, let user = user else { return }
-            self.onItemLongClick?(user, indexPath)
+            guard let self, let user else { return }
+            onItemLongClick?(user, indexPath)
         }
 
         // Manage the selection state of the list item
-        if let user = user {
+        if let user {
             manageSelectionState(for: user, in: listItem, at: indexPath)
         }
 
         return listItem
     }
-    
+
     // Handles the selection state for a user in the list item
     public func manageSelectionState(for user: User, in listItem: CometChatListItem, at indexPath: IndexPath) {
         // Check if the user is selected and update the UI accordingly
@@ -449,23 +458,24 @@ extension CometChatUsers {
     }
 
     // Returns the number of sections in the table view
-    open override func numberOfSections(in tableView: UITableView) -> Int {
+    override open func numberOfSections(in _: UITableView) -> Int {
         // If searching, there is only one section
-        return viewModel.isSearching ? 1 : viewModel.users.count
+        viewModel.isSearching ? 1 : viewModel.users.count
     }
 
     // Returns the number of rows in a section
-    open override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override open func tableView(_: UITableView, numberOfRowsInSection section: Int) -> Int {
         // If searching, return the count of filtered users; otherwise, return the number of users in the section
-        return viewModel.isSearching ? viewModel.filteredUsers.count : viewModel.users[safe: section]?.count ?? 0
+        viewModel.isSearching ? viewModel.filteredUsers.count : viewModel.users[safe: section]?.count ?? 0
     }
 
     // Returns the height for a row at a given indexPath (automatic dimension)
-    open override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
+    override open func tableView(_: UITableView, heightForRowAt _: IndexPath) -> CGFloat {
+        UITableView.automaticDimension
     }
-    public func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return hideSectionHeader ? 0.01 : UITableView.automaticDimension
+
+    public func tableView(_: UITableView, heightForHeaderInSection _: Int) -> CGFloat {
+        hideSectionHeader ? 0.01 : UITableView.automaticDimension
     }
 
     // Provides a custom header view for the section
@@ -490,41 +500,41 @@ extension CometChatUsers {
         return headerView
     }
 
-
     // Handles row selection in the table view
-    open override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    override open func tableView(_: UITableView, didSelectRowAt indexPath: IndexPath) {
         let user = viewModel.isSearching ? viewModel.filteredUsers[indexPath.row] : viewModel.users[indexPath.section][indexPath.row]
 
         // Handle selection based on mode and selection limit
         if selectionMode == .none {
             onItemClick?(user, indexPath) ?? onDidSelect?(user, indexPath)
-        } else if !viewModel.selectedUsers.contains(user), (selectionLimit == nil || viewModel.selectedUsers.count < selectionLimit!) {
+        } else if !viewModel.selectedUsers.contains(user), selectionLimit == nil || viewModel.selectedUsers.count < selectionLimit! {
             viewModel.selectedUsers.append(user)
             updateSelectedCellCount(isSelected: true)
-            self.onSelection?(viewModel.selectedUsers)
+            onSelection?(viewModel.selectedUsers)
         }
     }
 
     // Handles row deselection in the table view
-    open override func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+    override open func tableView(_: UITableView, didDeselectRowAt indexPath: IndexPath) {
         let user = viewModel.isSearching ? viewModel.filteredUsers[indexPath.row] : viewModel.users[indexPath.section][indexPath.row]
 
         // Remove the user from the selected list
         if let foundUser = viewModel.selectedUsers.firstIndex(where: { $0.uid == user.uid }) {
             viewModel.selectedUsers.remove(at: foundUser)
             updateSelectedCellCount(isSelected: false)
-            self.onSelection?(viewModel.selectedUsers)
+            onSelection?(viewModel.selectedUsers)
         }
     }
+
     // Handles table view scrolling and triggers fetching more users if at the end
-    open func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+    open func tableView(_: UITableView, willDisplay _: UITableViewCell, forRowAt indexPath: IndexPath) {
         // Check if we're in the last section
         let lastSection = viewModel.users.count - 1
 
         // Safely get the number of rows in the last section
-        if let lastRow = viewModel.users[safe: lastSection]?.count, indexPath.section == lastSection && indexPath.row == lastRow - 1 {
+        if let lastRow = viewModel.users[safe: lastSection]?.count, indexPath.section == lastSection, indexPath.row == lastRow - 1 {
             // If it's the last row of the last section, trigger the fetch for more users
-            if !viewModel.isFetchedAll && !viewModel.isFetching {
+            if !viewModel.isFetchedAll, !viewModel.isFetching {
                 showFooterIndicator()
                 viewModel.isRefresh = false
                 viewModel.fetchUsers()
@@ -533,17 +543,16 @@ extension CometChatUsers {
             hideFooterIndicator()
         }
     }
-    
-    open override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        
+
+    override open func tableView(_: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         guard let user = viewModel.users[safe: indexPath.section]?[safe: indexPath.row] else {
             return nil
         }
-            
+
         var actions = [UIContextualAction]()
         if let customOptions = options?(user) {
             let customActions = customOptions.map { option -> UIContextualAction in
-                let action = UIContextualAction(style: .normal, title: option.title) { (action, sourceView, completionHandler) in
+                let action = UIContextualAction(style: .normal, title: option.title) { _, _, completionHandler in
                     option.onClick?(nil, indexPath.section, option, self)
                     completionHandler(true)
                 }
@@ -553,10 +562,10 @@ extension CometChatUsers {
             }
             actions.append(contentsOf: customActions)
         }
-        
-        if let addOptions = addOptions?(user){
+
+        if let addOptions = addOptions?(user) {
             let customActions = addOptions.map { option -> UIContextualAction in
-                let action = UIContextualAction(style: .normal, title: option.title) { (action, sourceView, completionHandler) in
+                let action = UIContextualAction(style: .normal, title: option.title) { _, _, completionHandler in
                     option.onClick?(nil, indexPath.section, option, self)
                     completionHandler(true)
                 }
@@ -566,25 +575,25 @@ extension CometChatUsers {
             }
             actions.append(contentsOf: customActions)
         }
-        
+
         return UISwipeActionsConfiguration(actions: actions)
     }
 
     // Returns the list of currently selected users
     public func getSelectedUsers() -> [User] {
-        return viewModel.selectedUsers
+        viewModel.selectedUsers
     }
 }
 
+// MARK: Connection Listener
 
-//MARK: Connection Listener
 extension CometChatUsers: CometChatConnectionDelegate {
     public func connected() {
         reloadData()
         fetchData()
     }
-    
+
     public func connecting() {}
-    
+
     public func disconnected() {}
 }

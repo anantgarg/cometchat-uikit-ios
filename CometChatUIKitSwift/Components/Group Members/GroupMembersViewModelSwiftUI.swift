@@ -2,10 +2,10 @@
 //
 //
 
-import Foundation
-import CometChatSDK
-import SwiftUI
 import Combine
+import CometChatSDK
+import Foundation
+import SwiftUI
 
 public class GroupMembersViewModelSwiftUI: ObservableObject {
     @Published var groupMembers: [GroupMember] = []
@@ -14,73 +14,73 @@ public class GroupMembersViewModelSwiftUI: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var hasError: Bool = false
     @Published var errorMessage: String = ""
-    
+
     public var group: Group!
     @Published var isSearching: Bool = false
-    
+
     private var groupsMembersRequest: GroupMembersRequest?
     private var filterGroupMembersRequest: GroupMembersRequest?
     private var groupMembersRequestBuilder: GroupMembersRequest.GroupMembersRequestBuilder!
     private var filterGroupMembersRequestBuilder: GroupMembersRequest.GroupMembersRequestBuilder?
     private var listenerRandomID = Date().timeIntervalSince1970
-    
+
     public var isFetchedAll = false
-    
+
     var onError: ((CometChatException) -> Void)?
-    
+
     public init() {}
-    
+
     deinit {
         disconnect()
     }
-    
+
     func connect() {
         CometChat.addGroupListener("group-members-groups-sdk-listner-\(listenerRandomID)", self as? CometChatGroupDelegate)
         CometChatGroupEvents.addListener("group-members-groups-event-listner-\(listenerRandomID)", self as? CometChatGroupEventListener)
     }
-    
+
     func disconnect() {
         CometChat.removeGroupListener("group-members-groups-sdk-listner-\(listenerRandomID)")
         CometChatGroupEvents.removeListener("group-members-groups-event-listner-\(listenerRandomID)")
     }
-    
+
     public func set(group: Group) {
         self.group = group
-        if self.groupMembersRequestBuilder == nil {
-            self.groupMembersRequestBuilder = GroupMembersBuilder.getSharedBuilder(for: group)
-            self.groupsMembersRequest = groupMembersRequestBuilder.build()
+        if groupMembersRequestBuilder == nil {
+            groupMembersRequestBuilder = GroupMembersBuilder.getSharedBuilder(for: group)
+            groupsMembersRequest = groupMembersRequestBuilder.build()
         }
     }
-    
+
     public func set(groupMembersRequestBuilder: GroupMembersRequest.GroupMembersRequestBuilder) {
         self.groupMembersRequestBuilder = groupMembersRequestBuilder
-        self.groupsMembersRequest = self.groupMembersRequestBuilder.build()
+        groupsMembersRequest = self.groupMembersRequestBuilder.build()
     }
-    
+
     public func set(searchGroupMembersRequestBuilder: GroupMembersRequest.GroupMembersRequestBuilder) {
-        self.filterGroupMembersRequestBuilder = searchGroupMembersRequestBuilder
-        self.filterGroupMembersRequest = self.filterGroupMembersRequestBuilder!.build()
+        filterGroupMembersRequestBuilder = searchGroupMembersRequestBuilder
+        filterGroupMembersRequest = filterGroupMembersRequestBuilder!.build()
     }
-    
+
     public func fetchGroupsMembers() {
-        guard let groupsMembersRequest = groupsMembersRequest else { return }
-        
+        guard let groupsMembersRequest else { return }
+
         isLoading = true
-        
+
         GroupMembersBuilder.fetchGroupMembers(groupMemberRequest: groupsMembersRequest) { [weak self] result in
-            guard let self = self else { return }
-            
+            guard let self else { return }
+
             DispatchQueue.main.async {
                 self.isLoading = false
-                
+
                 switch result {
-                case .success(let fetchedGroupMembers):
-                    if fetchedGroupMembers.isEmpty { 
-                        self.isFetchedAll = true 
+                case let .success(fetchedGroupMembers):
+                    if fetchedGroupMembers.isEmpty {
+                        self.isFetchedAll = true
                     }
                     self.groupMembers.append(contentsOf: fetchedGroupMembers)
-                    
-                case .failure(let error):
+
+                case let .failure(error):
                     self.hasError = true
                     self.errorMessage = error.errorDescription
                     self.onError?(error)
@@ -88,24 +88,24 @@ public class GroupMembersViewModelSwiftUI: ObservableObject {
             }
         }
     }
-    
+
     public func filterGroupMembers(text: String) {
-        self.filterGroupMembersRequest = (self.filterGroupMembersRequestBuilder ?? self.groupMembersRequestBuilder)?.set(searchKeyword: text).build()
-        
-        guard let filterGroupMembersRequest = filterGroupMembersRequest else { return }
-        
+        self.filterGroupMembersRequest = (filterGroupMembersRequestBuilder ?? groupMembersRequestBuilder)?.set(searchKeyword: text).build()
+
+        guard let filterGroupMembersRequest else { return }
+
         isLoading = true
-        
+
         GroupMembersBuilder.getfilteredGroupMembers(filterGroupMemberRequest: filterGroupMembersRequest) { [weak self] result in
-            guard let self = self else { return }
-            
+            guard let self else { return }
+
             DispatchQueue.main.async {
                 self.isLoading = false
-                
+
                 switch result {
-                case .success(let filteredGroupMembers):
+                case let .success(filteredGroupMembers):
                     self.filteredGroupMembers = filteredGroupMembers
-                case .failure(let error):
+                case let .failure(error):
                     self.hasError = true
                     self.errorMessage = error.errorDescription
                     self.onError?(error)
@@ -113,14 +113,14 @@ public class GroupMembersViewModelSwiftUI: ObservableObject {
             }
         }
     }
-    
+
     func changeScope(for member: GroupMember, scope: CometChat.MemberScope) {
         GroupMembersBuilder.changeScope(group: group, member: member, scope: scope) { [weak self] result in
-            guard let self = self else { return }
-            
+            guard let self else { return }
+
             DispatchQueue.main.async {
                 switch result {
-                case .success(let groupMember):
+                case let .success(groupMember):
                     if let loggedInUser = CometChat.getLoggedInUser() {
                         let actionMessage = ActionMessage()
                         actionMessage.action = .scopeChanged
@@ -137,12 +137,12 @@ public class GroupMembersViewModelSwiftUI: ObservableObject {
                         actionMessage.receiverType = .group
                         actionMessage.newScope = groupMember.scope
                         actionMessage.sentAt = Int(Date().timeIntervalSince1970)
-                        
+
                         CometChatGroupEvents.ccGroupMemberScopeChanged(action: actionMessage, updatedUser: groupMember, scopeChangedTo: scope.toString(), scopeChangedFrom: member.scope.toString(), group: self.group)
                     }
                     self.update(groupMember: groupMember)
-                    
-                case .failure(let error):
+
+                case let .failure(error):
                     self.hasError = true
                     self.errorMessage = error.errorDescription
                     self.onError?(error)
@@ -150,17 +150,17 @@ public class GroupMembersViewModelSwiftUI: ObservableObject {
             }
         }
     }
-    
+
     func banGroupMember(group: Group, member: GroupMember) {
         GroupMembersBuilder.banGroupMember(group: group, member: member) { [weak self] result in
-            guard let self = self else { return }
-            
+            guard let self else { return }
+
             DispatchQueue.main.async {
                 switch result {
-                case .success(let groupMember):
+                case let .success(groupMember):
                     group.membersCount = group.membersCount - 1
                     self.remove(groupMember: groupMember)
-                    
+
                     if let loggedInUser = LoggedInUserInformation.getUser() {
                         let actionMessage = ActionMessage()
                         actionMessage.action = .banned
@@ -176,11 +176,11 @@ public class GroupMembersViewModelSwiftUI: ObservableObject {
                         actionMessage.messageCategory = .action
                         actionMessage.receiverType = .group
                         actionMessage.sentAt = Int(Date().timeIntervalSince1970)
-                        
+
                         CometChatGroupEvents.ccGroupMemberBanned(action: actionMessage, bannedUser: groupMember, bannedBy: loggedInUser, bannedFrom: group)
                     }
-                    
-                case .failure(let error):
+
+                case let .failure(error):
                     self.hasError = true
                     self.errorMessage = error.errorDescription
                     self.onError?(error)
@@ -188,17 +188,17 @@ public class GroupMembersViewModelSwiftUI: ObservableObject {
             }
         }
     }
-    
+
     func kickGroupMember(group: Group, member: GroupMember) {
         GroupMembersBuilder.kickGroupMember(group: group, member: member) { [weak self] result in
-            guard let self = self else { return }
-            
+            guard let self else { return }
+
             DispatchQueue.main.async {
                 switch result {
-                case .success(let groupMember):
+                case let .success(groupMember):
                     group.membersCount = group.membersCount - 1
                     self.remove(groupMember: groupMember)
-                    
+
                     if let loggedInUser = LoggedInUserInformation.getUser() {
                         let actionMessage = ActionMessage()
                         actionMessage.action = .kicked
@@ -214,11 +214,11 @@ public class GroupMembersViewModelSwiftUI: ObservableObject {
                         actionMessage.actionOn = member
                         actionMessage.receiverType = .group
                         actionMessage.sentAt = Int(Date().timeIntervalSince1970)
-                        
+
                         CometChatGroupEvents.ccGroupMemberKicked(action: actionMessage, kickedUser: member, kickedBy: loggedInUser, kickedFrom: group)
                     }
-                    
-                case .failure(let error):
+
+                case let .failure(error):
                     self.hasError = true
                     self.errorMessage = error.errorDescription
                     self.onError?(error)
@@ -226,7 +226,7 @@ public class GroupMembersViewModelSwiftUI: ObservableObject {
             }
         }
     }
-    
+
     @discardableResult
     public func add(groupMember: GroupMember) -> Self {
         DispatchQueue.main.async {
@@ -234,17 +234,17 @@ public class GroupMembersViewModelSwiftUI: ObservableObject {
         }
         return self
     }
-    
+
     @discardableResult
     public func update(groupMember: GroupMember) -> Self {
-        if let row = self.groupMembers.firstIndex(where: {$0.uid == groupMember.uid}) {
+        if let row = groupMembers.firstIndex(where: { $0.uid == groupMember.uid }) {
             DispatchQueue.main.async {
                 self.groupMembers[row] = groupMember
             }
         }
         return self
     }
-    
+
     @discardableResult
     public func insert(groupMember: GroupMember, at: Int) -> Self {
         DispatchQueue.main.async {
@@ -252,7 +252,7 @@ public class GroupMembersViewModelSwiftUI: ObservableObject {
         }
         return self
     }
-    
+
     @discardableResult
     public func remove(groupMember: GroupMember) -> Self {
         if let index = groupMembers.firstIndex(of: groupMember) {
@@ -262,7 +262,7 @@ public class GroupMembersViewModelSwiftUI: ObservableObject {
         }
         return self
     }
-    
+
     @discardableResult
     public func clearList() -> Self {
         DispatchQueue.main.async {
@@ -270,23 +270,23 @@ public class GroupMembersViewModelSwiftUI: ObservableObject {
         }
         return self
     }
-    
+
     public func size() -> Int {
-        return self.groupMembers.count
+        groupMembers.count
     }
-    
+
     func selectGroupMember(_ groupMember: GroupMember) {
         if !selectedGroupMembers.contains(where: { $0.uid == groupMember.uid }) {
             selectedGroupMembers.append(groupMember)
         }
     }
-    
+
     func deselectGroupMember(_ groupMember: GroupMember) {
         if let index = selectedGroupMembers.firstIndex(where: { $0.uid == groupMember.uid }) {
             selectedGroupMembers.remove(at: index)
         }
     }
-    
+
     func clearSelection() {
         selectedGroupMembers.removeAll()
     }

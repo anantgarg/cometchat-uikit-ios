@@ -5,122 +5,107 @@
 //  Created by Dawinder on 13/02/25.
 //
 
+import CometChatSDK
 import Foundation
 import UIKit
-import CometChatSDK
 
+// MARK: CONVERSATIONS STARTS
 
-//MARK: CONVERSATIONS STARTS
-extension CometChatMessageList: CometChatMessageEventListener, CometChatUIEventListener{
-    
+extension CometChatMessageList: CometChatMessageEventListener, CometChatUIEventListener {
     func getConversationStarter(configuration: [String: Any]? = nil) {
-        
         DispatchQueue.main.async { [weak self] in
             guard let this = self else { return }
-            
+
             let receiverId = this.viewModel.user?.uid ?? this.viewModel.group?.guid
             let receiverType: CometChat.ReceiverType = this.viewModel.user?.uid != nil ? .user : .group
-            guard let receiverId = receiverId else { return }
-            
+            guard let receiverId else { return }
+
             this.aiConversationStarterView = CometChatAIConversationStarter()
             this.aiConversationStarterView.onMessageClicked { selectedReply in
                 this.onMessageTapped(message: selectedReply, receiverType: receiverType, receiverId: receiverId, id: this.getId())
             }
             this.aiConversationStarterView.showLoadingView()
-            
+
             CometChat.getConversationStarter(receiverId: receiverId, receiverType: receiverType, configuration: configuration) { conversationStarter in
                 DispatchQueue.main.async {
-                    if conversationStarter.isEmpty{
+                    if conversationStarter.isEmpty {
                         this.aiConversationStarterView.removeFromSuperview()
-                    }else{
+                    } else {
                         this.aiConversationStarterView.set(aiMessageOptions: conversationStarter)
                     }
                 }
-            } onError: { error in
-                DispatchQueue.main.async{
+            } onError: { _ in
+                DispatchQueue.main.async {
                     this.aiConversationStarterView.hideLoadingView()
                     this.aiConversationStarterView.removeFromSuperview()
                 }
             }
-            
+
             this.set(footerView: this.aiConversationStarterView)
         }
     }
-    
-    func onMessageTapped(message: String, receiverType: CometChat.ReceiverType, receiverId: String?, id: [String: Any]?){
-        
-        guard let receiverId = receiverId else { return }
+
+    func onMessageTapped(message: String, receiverType: CometChat.ReceiverType, receiverId: String?, id _: [String: Any]?) {
+        guard let receiverId else { return }
         let textMessage = TextMessage(receiverUid: receiverId, text: message, receiverType: receiverType)
         aiConversationStarterView.removeFromSuperview()
         CometChatUIEvents.ccComposeMessage(id: getId(), message: textMessage)
-        
     }
-    
-    func hideEmptyChatView() {
-        
-    }
+
+    func hideEmptyChatView() {}
 }
 
-extension CometChatMessageList{
-    
-    public func updateAIOnNewMessageReceived(message: BaseMessage) {
-        
+public extension CometChatMessageList {
+    func updateAIOnNewMessageReceived(message: BaseMessage) {
         if message.parentMessageId == 0 {
-            
             if let textMessage = message as? TextMessage, message.senderUid != CometChat.getLoggedInUser()?.uid {
-                
                 if enableSmartReplies {
                     if !smartRepliesKeywords.isEmpty {
                         var isKeyPresent = false
                         let text = textMessage.text
-                        
+
                         if !text.isEmpty {
                             for keyword in smartRepliesKeywords {
                                 if text.lowercased().contains(keyword.lowercased()) {
                                     isKeyPresent = true
-                                }else{
+                                } else {
                                     isKeyPresent = false
                                 }
                             }
                         }
-                        if enableSmartReplies && isKeyPresent{
+                        if enableSmartReplies, isKeyPresent {
                             getSmartReplies()
                         }
-                    } else{
+                    } else {
                         getSmartReplies()
                     }
                 }
-                
+
             } else {
                 DispatchQueue.main.async { [weak self] in
                     self?.aiConversationStarterView.removeFromSuperview()
                     self?.aiSmartReplyView.removeFromSuperview()
                 }
             }
-            
         }
-        
     }
-    
 }
 
+// MARK: SMART REPLIES
 
-//MARK: SMART REPLIES
-extension CometChatMessageList{
-    
+extension CometChatMessageList {
     func getSmartReplies(configuration: [String: Any]? = nil) {
-        
         smartRepliesWorkItem?.cancel()
         aiSmartReplyView.removeFromSuperview()
-    
+
         smartRepliesWorkItem = DispatchWorkItem(block: { [weak self] in
-            
-            guard let self = self else { return }
-            
+
+            guard let self else { return }
+
             let receiverId = viewModel.user?.uid ?? viewModel.group?.guid
             let receiverType: CometChat.ReceiverType = viewModel.user?.uid != nil ? .user : .group
             let id = getId()
-            guard let receiverId = receiverId else { return }
+            guard let receiverId else { return }
 
             aiSmartReplyView = CometChatAISmartReply()
             aiSmartReplyView.onMessageClicked { [weak self] selectedReply in
@@ -130,14 +115,13 @@ extension CometChatMessageList{
                 self.aiSmartReplyView.removeFromSuperview()
             }
             aiSmartReplyView.showLoadingView()
-            
+
             CometChat.getSmartReplies(receiverId: receiverId, receiverType: receiverType, configuration: configuration) { [weak self] smartRepliesMap in
                 DispatchQueue.main.async {
-                    
                     guard let this = self else { return }
-                    if smartRepliesMap.isEmpty{
+                    if smartRepliesMap.isEmpty {
                         this.aiSmartReplyView.show(error: true)
-                    } else{
+                    } else {
                         let replies = Array(smartRepliesMap.values)
                         this.aiSmartReplyView.set(aiMessageOptions: replies)
                     }
@@ -150,20 +134,17 @@ extension CometChatMessageList{
                     this.aiSmartReplyView.show(error: true)
                 }
             }
-            self.set(footerView: aiSmartReplyView)
-            
-        })
-        
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(smartRepliesDelayDuration), execute: smartRepliesWorkItem!)
-        
+            set(footerView: aiSmartReplyView)
 
+        })
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(smartRepliesDelayDuration), execute: smartRepliesWorkItem!)
     }
-    
+
     func onSmartReplyMessageTapped(message: String, receiverType: CometChat.ReceiverType, receiverId: String?, id: [String: Any]?) {
-        guard let receiverId = receiverId else { return }
+        guard let receiverId else { return }
         let textMessage = TextMessage(receiverUid: receiverId, text: message, receiverType: receiverType)
-        self.aiSmartReplyView.removeFromSuperview()
+        aiSmartReplyView.removeFromSuperview()
         CometChatUIEvents.ccComposeMessage(id: id, message: textMessage)
     }
 }

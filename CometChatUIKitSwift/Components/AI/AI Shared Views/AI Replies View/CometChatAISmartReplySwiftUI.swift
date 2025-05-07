@@ -2,32 +2,32 @@
 //
 //
 
-import SwiftUI
 import CometChatSDK
 import CometChatUIKitSwift.Components.Shared.Constants
+import SwiftUI
 
 public struct CometChatAISmartReplySwiftUI: View {
     @StateObject private var viewModel = AISmartRepliesViewModelSwiftUI()
-    
+
     private var onAiMessageClicked: ((String) -> Void)?
     private var onAiCloseButtonClicked: (() -> Void)?
     private var id: [String: Any]?
     private var disableLoadingState: Bool = false
-    
+
     public static var style = AISmartRepliesStyle()
     private var style = CometChatAISmartReplySwiftUI.style
-    
+
     public init() {}
-    
+
     public var body: some View {
         VStack(spacing: 0) {
             HStack {
                 Text("SUGGEST_A_REPLY".localize())
                     .font(Font(style.titleTextFont))
                     .foregroundColor(Color(style.titleTextColor))
-                
+
                 Spacer()
-                
+
                 Button(action: {
                     onAiCloseButtonClicked?()
                 }) {
@@ -41,7 +41,7 @@ public struct CometChatAISmartReplySwiftUI: View {
             }
             .padding(.horizontal, LayoutMetrics.spacingMedium)
             .padding(.top, LayoutMetrics.spacingMedium)
-            
+
             if viewModel.showError {
                 errorView
             } else if viewModel.isLoading {
@@ -58,7 +58,7 @@ public struct CometChatAISmartReplySwiftUI: View {
         )
         .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
     }
-    
+
     private var errorView: some View {
         VStack {
             Text("SOMETHING_WENT_WRONG_WITH_NEW_LINE".localize())
@@ -72,7 +72,7 @@ public struct CometChatAISmartReplySwiftUI: View {
         .padding(.top, LayoutMetrics.spacingStandard)
         .padding(.bottom, LayoutMetrics.spacingStandard)
     }
-    
+
     private var loadingView: some View {
         CometChatAISmartRepliesShimmerSwiftUI()
             .frame(height: 217)
@@ -80,7 +80,7 @@ public struct CometChatAISmartReplySwiftUI: View {
             .padding(.top, LayoutMetrics.spacingStandard)
             .padding(.bottom, LayoutMetrics.spacingSmall)
     }
-    
+
     private var repliesListView: some View {
         ScrollView {
             LazyVStack(spacing: LayoutMetrics.spacingStandard) {
@@ -98,42 +98,42 @@ public struct CometChatAISmartReplySwiftUI: View {
             .padding(.bottom, LayoutMetrics.spacingMedium)
         }
     }
-    
+
     @discardableResult
     public func set(aiMessageOptions: [String]) -> Self {
         var view = self
         view.viewModel.set(aiMessageOptions: aiMessageOptions)
         return view
     }
-    
+
     @discardableResult
     public func onMessageClicked(onAiMessageClicked: @escaping ((String) -> Void)) -> Self {
         var view = self
         view.onAiMessageClicked = onAiMessageClicked
         return view
     }
-    
+
     @discardableResult
     public func onCloseButtonClicked(onAiCloseButtonClicked: @escaping (() -> Void)) -> Self {
         var view = self
         view.onAiCloseButtonClicked = onAiCloseButtonClicked
         return view
     }
-    
+
     @discardableResult
     public func set(id: [String: Any]?) -> Self {
         var view = self
         view.id = id
         return view
     }
-    
+
     @discardableResult
     public func show(error: Bool) -> Self {
         var view = self
         view.viewModel.show(error: error)
         return view
     }
-    
+
     @discardableResult
     public func showLoadingView() -> Self {
         var view = self
@@ -142,21 +142,21 @@ public struct CometChatAISmartReplySwiftUI: View {
         }
         return view
     }
-    
+
     @discardableResult
     public func hideLoadingView() -> Self {
         var view = self
         view.viewModel.hideLoadingView()
         return view
     }
-    
+
     @discardableResult
     public func set(disableLoadingState: Bool) -> Self {
         var view = self
         view.disableLoadingState = disableLoadingState
         return view
     }
-    
+
     @discardableResult
     public func set(style: AISmartRepliesStyle) -> Self {
         var view = self
@@ -169,7 +169,7 @@ struct AIRepliesCellSwiftUI: View {
     let message: String
     let style: AISmartRepliesStyle
     let onTap: (String) -> Void
-    
+
     var body: some View {
         Button(action: {
             onTap(message)
@@ -195,10 +195,10 @@ struct AIRepliesCellSwiftUI: View {
 
 struct CometChatAISmartRepliesShimmerSwiftUI: View {
     @State private var isAnimating = false
-    
+
     var body: some View {
         VStack(spacing: 12) {
-            ForEach(0..<5, id: \.self) { _ in
+            ForEach(0 ..< 5, id: \.self) { _ in
                 shimmerCell
             }
         }
@@ -209,14 +209,14 @@ struct CometChatAISmartRepliesShimmerSwiftUI: View {
             }
         }
     }
-    
+
     private var shimmerCell: some View {
         RoundedRectangle(cornerRadius: LayoutMetrics.cornerRadiusStandard)
             .fill(LinearGradient(
                 gradient: Gradient(colors: [
                     Color.gray.opacity(0.3),
                     Color.gray.opacity(0.1),
-                    Color.gray.opacity(0.3)
+                    Color.gray.opacity(0.3),
                 ]),
                 startPoint: .leading,
                 endPoint: isAnimating ? .trailing : .leading
@@ -225,8 +225,8 @@ struct CometChatAISmartRepliesShimmerSwiftUI: View {
     }
 }
 
-extension CometChatAISmartReplySwiftUI {
-    public func toUIKit() -> UIView {
+public extension CometChatAISmartReplySwiftUI {
+    func toUIKit() -> UIView {
         let hostingController = UIHostingController(rootView: self)
         return hostingController.view
     }
@@ -240,30 +240,30 @@ struct CometChatAISmartReplySwiftUI_Previews: PreviewProvider {
                     "Thanks for your help!",
                     "Could you explain more?",
                     "I'll get back to you later",
-                    "That sounds great!"
+                    "That sounds great!",
                 ])
                 .previewLayout(.sizeThatFits)
                 .padding()
                 .previewDisplayName("Default")
-            
+
             CometChatAISmartReplySwiftUI()
                 .showLoadingView()
                 .previewLayout(.sizeThatFits)
                 .padding()
                 .previewDisplayName("Loading")
-            
+
             CometChatAISmartReplySwiftUI()
                 .show(error: true)
                 .previewLayout(.sizeThatFits)
                 .padding()
                 .previewDisplayName("Error")
-            
+
             CometChatAISmartReplySwiftUI()
                 .set(aiMessageOptions: [
                     "Thanks for your help!",
                     "Could you explain more?",
                     "I'll get back to you later",
-                    "That sounds great!"
+                    "That sounds great!",
                 ])
                 .preferredColorScheme(.dark)
                 .previewLayout(.sizeThatFits)

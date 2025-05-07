@@ -6,16 +6,15 @@ import Foundation
 import SwiftUI
 
 public class MessageTranslationExtensionSwiftUI: ExtensionDataSource {
-    
-    public override init() {}
-    
-    public override func addExtension() {
+    override public init() {}
+
+    override public func addExtension() {
         ChatConfigurator.enable { dataSource in
-            return MessageTranslationViewModelSwiftUI(dataSource: dataSource)
+            MessageTranslationViewModelSwiftUI(dataSource: dataSource)
         }
     }
-    
-    public override func getExtensionId() -> String {
-        return ExtensionConstants.messageTranslation
+
+    override public func getExtensionId() -> String {
+        ExtensionConstants.messageTranslation
     }
 }

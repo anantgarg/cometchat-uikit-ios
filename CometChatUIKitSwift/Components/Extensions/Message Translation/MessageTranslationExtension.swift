@@ -1,6 +1,6 @@
 //
 //  MessageTranslationExtension.swift
-//  
+//
 //
 //  Created by Ajay Verma on 24/02/23.
 //
@@ -8,16 +8,15 @@
 import Foundation
 
 public class MessageTranslationExtension: ExtensionDataSource {
-    
-    public override init(){}
-        
-    public override func addExtension() {
+    override public init() {}
+
+    override public func addExtension() {
         ChatConfigurator.enable { dataSource in
-            return MessageTranslationViewModel(dataSource: dataSource)
+            MessageTranslationViewModel(dataSource: dataSource)
         }
     }
-    
-    public override func getExtensionId() -> String {
-        return ExtensionConstants.messageTranslation
+
+    override public func getExtensionId() -> String {
+        ExtensionConstants.messageTranslation
     }
 }

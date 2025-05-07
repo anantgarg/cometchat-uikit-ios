@@ -2,8 +2,8 @@
 //
 //
 
-import SwiftUI
 import CometChatSDK
+import SwiftUI
 
 public struct CometChatGroupMembersSwiftUI: View {
     public static var style = GroupMembersStyle()
@@ -14,19 +14,19 @@ public struct CometChatGroupMembersSwiftUI: View {
         statusIndicatorStyle.borderWidth = 2
         return statusIndicatorStyle
     }()
-    
+
     private var style: GroupMembersStyle
     private var avatarStyle: AvatarStyle
     private var statusIndicatorStyle: StatusIndicatorStyle
-    
+
     private var hideUserStatus: Bool = false
     private var hideKickMemberOption: Bool = false
     private var hideBanMemberOption: Bool = false
     private var hideScopeChangeOption: Bool = false
-    
+
     private var selectionMode: SelectionMode = .none
     private var selectionLimit: Int?
-    
+
     private var listItemView: ((GroupMember) -> AnyView)?
     private var leadingView: ((GroupMember) -> AnyView)?
     private var titleView: ((GroupMember) -> AnyView)?
@@ -37,32 +37,32 @@ public struct CometChatGroupMembersSwiftUI: View {
     private var loadingStateView: (() -> AnyView)?
     private var options: ((Group, GroupMember) -> [CometChatGroupMemberOption])?
     private var addOptions: ((Group, GroupMember) -> [CometChatGroupMemberOption])?
-    
+
     private var onItemClick: ((GroupMember, Int, Int) -> Void)?
     private var onItemLongClick: ((GroupMember, IndexPath) -> Void)?
     private var onError: ((CometChatException) -> Void)?
     private var onEmpty: (() -> Void)?
     private var onLoad: (([GroupMember]) -> Void)?
     private var onSelectedItemProceed: (([GroupMember]) -> Void)?
-    
+
     @StateObject private var viewModel = GroupMembersViewModelSwiftUI()
     @State private var searchText: String = ""
     @State private var showingActionSheet: Bool = false
     @State private var selectedMemberForAction: GroupMember?
     @State private var actionType: MemberActionType = .none
     @State private var showingScopeChangeSheet: Bool = false
-    
+
     public init(style: GroupMembersStyle = CometChatGroupMembersSwiftUI.style) {
         self.style = style
-        self.avatarStyle = CometChatGroupMembersSwiftUI.avatarStyle
-        self.statusIndicatorStyle = CometChatGroupMembersSwiftUI.statusIndicatorStyle
+        avatarStyle = CometChatGroupMembersSwiftUI.avatarStyle
+        statusIndicatorStyle = CometChatGroupMembersSwiftUI.statusIndicatorStyle
     }
-    
+
     public var body: some View {
         ZStack {
-            if viewModel.isLoading && viewModel.groupMembers.isEmpty {
+            if viewModel.isLoading, viewModel.groupMembers.isEmpty {
                 loadingView
-            } else if viewModel.hasError && viewModel.groupMembers.isEmpty {
+            } else if viewModel.hasError, viewModel.groupMembers.isEmpty {
                 errorView
             } else if viewModel.groupMembers.isEmpty {
                 emptyView
@@ -95,7 +95,7 @@ public struct CometChatGroupMembersSwiftUI: View {
         .actionSheet(isPresented: $showingActionSheet) {
             switch actionType {
             case .ban:
-                return ActionSheet(
+                ActionSheet(
                     title: Text("Ban \(selectedMemberForAction?.name ?? "")"),
                     message: Text("Are you sure you want to ban \(selectedMemberForAction?.name ?? "") from this group ?"),
                     buttons: [
@@ -104,11 +104,11 @@ public struct CometChatGroupMembersSwiftUI: View {
                                 viewModel.banGroupMember(group: viewModel.group, member: member)
                             }
                         },
-                        .cancel()
+                        .cancel(),
                     ]
                 )
             case .kick:
-                return ActionSheet(
+                ActionSheet(
                     title: Text("Kick \(selectedMemberForAction?.name ?? "")"),
                     message: Text("Are you sure you want to kick \(selectedMemberForAction?.name ?? "") from this group ?"),
                     buttons: [
@@ -117,24 +117,24 @@ public struct CometChatGroupMembersSwiftUI: View {
                                 viewModel.kickGroupMember(group: viewModel.group, member: member)
                             }
                         },
-                        .cancel()
+                        .cancel(),
                     ]
                 )
             case .none:
-                return ActionSheet(title: Text(""))
+                ActionSheet(title: Text(""))
             }
         }
     }
-    
+
     private var groupMembersListView: some View {
         VStack(spacing: 0) {
             searchBar
-            
+
             List {
                 ForEach(viewModel.isSearching ? viewModel.filteredGroupMembers : viewModel.groupMembers, id: \.uid) { groupMember in
                     groupMemberItemView(for: groupMember, index: viewModel.groupMembers.firstIndex(of: groupMember) ?? 0)
                         .onAppear {
-                            if groupMember == viewModel.groupMembers.last && !viewModel.isFetchedAll {
+                            if groupMember == viewModel.groupMembers.last, !viewModel.isFetchedAll {
                                 viewModel.fetchGroupsMembers()
                             }
                         }
@@ -152,12 +152,12 @@ public struct CometChatGroupMembersSwiftUI: View {
             }
         }
     }
-    
+
     private var searchBar: some View {
         HStack {
             Image(systemName: "magnifyingglass")
                 .foregroundColor(Color(style.searchIconTint))
-            
+
             TextField("SEARCH".localize(), text: $searchText)
                 .foregroundColor(Color(style.searchTextColor))
                 .onChange(of: searchText) { newValue in
@@ -168,7 +168,7 @@ public struct CometChatGroupMembersSwiftUI: View {
                         viewModel.filterGroupMembers(text: newValue)
                     }
                 }
-            
+
             if !searchText.isEmpty {
                 Button(action: {
                     searchText = ""
@@ -186,7 +186,7 @@ public struct CometChatGroupMembersSwiftUI: View {
         .padding(.horizontal, 16)
         .padding(.vertical, 8)
     }
-    
+
     private func groupMemberItemView(for groupMember: GroupMember, index: Int) -> some View {
         if let customView = listItemView?(groupMember) {
             return customView
@@ -208,29 +208,29 @@ public struct CometChatGroupMembersSwiftUI: View {
                 .eraseToAnyView()
         }
     }
-    
-    private func groupMemberDefaultView(for groupMember: GroupMember, index: Int) -> some View {
+
+    private func groupMemberDefaultView(for groupMember: GroupMember, index _: Int) -> some View {
         HStack(spacing: 16) {
             if let leadingCustomView = leadingView?(groupMember) {
                 leadingCustomView
             } else {
                 leadingDefaultView(for: groupMember)
             }
-            
+
             VStack(alignment: .leading, spacing: 4) {
                 if let titleCustomView = titleView?(groupMember) {
                     titleCustomView
                 } else {
                     titleDefaultView(for: groupMember)
                 }
-                
+
                 if let subtitleCustomView = subtitleView?(groupMember) {
                     subtitleCustomView
                 }
             }
-            
+
             Spacer()
-            
+
             if let trailingCustomView = trailingView?(groupMember) {
                 trailingCustomView
             } else {
@@ -240,13 +240,13 @@ public struct CometChatGroupMembersSwiftUI: View {
         .padding(.vertical, 8)
         .background(
             viewModel.selectedGroupMembers.contains(where: { $0.uid == groupMember.uid }) ?
-            Color(style.selectedBackgroundColor) :
-            Color(style.backgroundColor)
+                Color(style.selectedBackgroundColor) :
+                Color(style.backgroundColor)
         )
         .cornerRadius(style.cornerRadius)
         .contentShape(Rectangle())
     }
-    
+
     private func leadingDefaultView(for groupMember: GroupMember) -> some View {
         ZStack {
             CometChatAvatarSwiftUI(style: avatarStyle)
@@ -255,8 +255,8 @@ public struct CometChatGroupMembersSwiftUI: View {
                 .set(width: 40)
                 .set(height: 40)
                 .set(cornerRadius: 20)
-            
-            if !hideUserStatus && groupMember.status == .online && groupMember.blockedByMe == false {
+
+            if !hideUserStatus, groupMember.status == .online, groupMember.blockedByMe == false {
                 CometChatStatusIndicatorSwiftUI(style: statusIndicatorStyle)
                     .set(status: .online)
                     .offset(x: 14, y: 14)
@@ -264,14 +264,14 @@ public struct CometChatGroupMembersSwiftUI: View {
         }
         .frame(width: 40, height: 40)
     }
-    
+
     private func titleDefaultView(for groupMember: GroupMember) -> some View {
         Text(groupMember.uid == CometChat.getLoggedInUser()?.uid ? "YOU".localize() : (groupMember.name ?? ""))
             .font(Font(style.titleFont))
             .foregroundColor(Color(style.titleColor))
             .lineLimit(1)
     }
-    
+
     private func trailingDefaultView(for groupMember: GroupMember) -> some View {
         Group {
             switch groupMember.scope {
@@ -312,7 +312,7 @@ public struct CometChatGroupMembersSwiftUI: View {
             }
         }
     }
-    
+
     private func swipeActionsView(for groupMember: GroupMember) -> some View {
         Group {
             if let customOptions = options?(viewModel.group, groupMember), !customOptions.isEmpty {
@@ -335,7 +335,7 @@ public struct CometChatGroupMembersSwiftUI: View {
                     .tint(Color(option.backgroundColor))
                 }
             } else {
-                if GroupMembersUtils.allowScopeChange(group: viewModel.group, groupMember: groupMember) && !hideScopeChangeOption {
+                if GroupMembersUtils.allowScopeChange(group: viewModel.group, groupMember: groupMember), !hideScopeChangeOption {
                     Button {
                         selectedMemberForAction = groupMember
                         showingScopeChangeSheet = true
@@ -344,8 +344,8 @@ public struct CometChatGroupMembersSwiftUI: View {
                     }
                     .tint(Color(CometChatTheme.primaryColor))
                 }
-                
-                if GroupMembersUtils.allowKickBanUnbanMember(group: viewModel.group, groupMember: groupMember) && !hideBanMemberOption {
+
+                if GroupMembersUtils.allowKickBanUnbanMember(group: viewModel.group, groupMember: groupMember), !hideBanMemberOption {
                     Button {
                         selectedMemberForAction = groupMember
                         actionType = .ban
@@ -355,8 +355,8 @@ public struct CometChatGroupMembersSwiftUI: View {
                     }
                     .tint(Color(CometChatTheme.warningColor))
                 }
-                
-                if GroupMembersUtils.allowKickBanUnbanMember(group: viewModel.group, groupMember: groupMember) && !hideKickMemberOption {
+
+                if GroupMembersUtils.allowKickBanUnbanMember(group: viewModel.group, groupMember: groupMember), !hideKickMemberOption {
                     Button {
                         selectedMemberForAction = groupMember
                         actionType = .kick
@@ -367,7 +367,7 @@ public struct CometChatGroupMembersSwiftUI: View {
                     .tint(Color(CometChatTheme.errorColor))
                 }
             }
-            
+
             if let additionalOptions = addOptions?(viewModel.group, groupMember) {
                 ForEach(additionalOptions, id: \.id) { option in
                     Button {
@@ -380,12 +380,12 @@ public struct CometChatGroupMembersSwiftUI: View {
             }
         }
     }
-    
+
     private var loadingView: some View {
         if let customLoadingView = loadingStateView?() {
-            return customLoadingView
+            customLoadingView
         } else {
-            return VStack {
+            VStack {
                 ProgressView()
                     .progressViewStyle(CircularProgressViewStyle())
                 Text("LOADING".localize())
@@ -397,27 +397,27 @@ public struct CometChatGroupMembersSwiftUI: View {
             .eraseToAnyView()
         }
     }
-    
+
     private var errorView: some View {
         if let customErrorView = errorStateView?() {
-            return customErrorView
+            customErrorView
         } else {
-            return VStack(spacing: 16) {
+            VStack(spacing: 16) {
                 Image(systemName: "exclamationmark.triangle")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 60, height: 60)
                     .foregroundColor(Color(style.errorStateIconTint))
-                
+
                 Text("OOPS!".localize())
                     .font(Font(style.errorStateTextFont))
                     .foregroundColor(Color(style.errorStateTextColor))
-                
+
                 Text("LOOKS_LIKE_SOMETHINGS_WENT_WORNG._PLEASE_TRY_AGAIN".localize())
                     .font(Font(style.errorStateTextFont))
                     .foregroundColor(Color(style.errorStateTextColor))
                     .multilineTextAlignment(.center)
-                
+
                 Button(action: {
                     viewModel.clearList()
                     viewModel.fetchGroupsMembers()
@@ -437,18 +437,18 @@ public struct CometChatGroupMembersSwiftUI: View {
             .eraseToAnyView()
         }
     }
-    
+
     private var emptyView: some View {
         if let customEmptyView = emptyStateView?() {
-            return customEmptyView
+            customEmptyView
         } else {
-            return VStack(spacing: 16) {
+            VStack(spacing: 16) {
                 Image(systemName: "person.fill")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 60, height: 60)
                     .foregroundColor(Color(style.emptyStateIconTint))
-                
+
                 Text("NO_MEMBERS_AVAILABLE".localize())
                     .font(Font(style.emptyStateTextFont))
                     .foregroundColor(Color(style.emptyStateTextColor))
@@ -459,7 +459,7 @@ public struct CometChatGroupMembersSwiftUI: View {
             .eraseToAnyView()
         }
     }
-    
+
     private func handleItemClick(_ groupMember: GroupMember, index: Int) {
         if selectionMode == .none {
             onItemClick?(groupMember, 0, index)
@@ -477,185 +477,185 @@ public struct CometChatGroupMembersSwiftUI: View {
             onSelectedItemProceed?(viewModel.selectedGroupMembers)
         }
     }
-    
+
     public func set(group: Group) -> CometChatGroupMembersSwiftUI {
         var view = self
         view.viewModel.set(group: group)
         return view
     }
-    
+
     public func set(style: GroupMembersStyle) -> CometChatGroupMembersSwiftUI {
         var view = self
         view.style = style
         return view
     }
-    
+
     public func set(avatarStyle: AvatarStyle) -> CometChatGroupMembersSwiftUI {
         var view = self
         view.avatarStyle = avatarStyle
         return view
     }
-    
+
     public func set(statusIndicatorStyle: StatusIndicatorStyle) -> CometChatGroupMembersSwiftUI {
         var view = self
         view.statusIndicatorStyle = statusIndicatorStyle
         return view
     }
-    
+
     public func hide(userStatus: Bool) -> CometChatGroupMembersSwiftUI {
         var view = self
         view.hideUserStatus = userStatus
         return view
     }
-    
+
     public func hide(kickMemberOption: Bool) -> CometChatGroupMembersSwiftUI {
         var view = self
         view.hideKickMemberOption = kickMemberOption
         return view
     }
-    
+
     public func hide(banMemberOption: Bool) -> CometChatGroupMembersSwiftUI {
         var view = self
         view.hideBanMemberOption = banMemberOption
         return view
     }
-    
+
     public func hide(scopeChangeOption: Bool) -> CometChatGroupMembersSwiftUI {
         var view = self
         view.hideScopeChangeOption = scopeChangeOption
         return view
     }
-    
+
     public func set(selectionMode: SelectionMode) -> CometChatGroupMembersSwiftUI {
         var view = self
         view.selectionMode = selectionMode
         return view
     }
-    
+
     public func set(selectionLimit: Int) -> CometChatGroupMembersSwiftUI {
         var view = self
         view.selectionLimit = selectionLimit
         return view
     }
-    
+
     public func set(groupMembersRequestBuilder: GroupMembersRequest.GroupMembersRequestBuilder) -> CometChatGroupMembersSwiftUI {
         var view = self
         view.viewModel.set(groupMembersRequestBuilder: groupMembersRequestBuilder)
         return view
     }
-    
+
     public func set(searchGroupMembersRequestBuilder: GroupMembersRequest.GroupMembersRequestBuilder) -> CometChatGroupMembersSwiftUI {
         var view = self
         view.viewModel.set(searchGroupMembersRequestBuilder: searchGroupMembersRequestBuilder)
         return view
     }
-    
-    public func set<T: View>(listItemView: @escaping (GroupMember) -> T) -> CometChatGroupMembersSwiftUI {
+
+    public func set(listItemView: @escaping (GroupMember) -> some View) -> CometChatGroupMembersSwiftUI {
         var view = self
         view.listItemView = { groupMember in
             AnyView(listItemView(groupMember))
         }
         return view
     }
-    
-    public func set<T: View>(leadingView: @escaping (GroupMember) -> T) -> CometChatGroupMembersSwiftUI {
+
+    public func set(leadingView: @escaping (GroupMember) -> some View) -> CometChatGroupMembersSwiftUI {
         var view = self
         view.leadingView = { groupMember in
             AnyView(leadingView(groupMember))
         }
         return view
     }
-    
-    public func set<T: View>(titleView: @escaping (GroupMember) -> T) -> CometChatGroupMembersSwiftUI {
+
+    public func set(titleView: @escaping (GroupMember) -> some View) -> CometChatGroupMembersSwiftUI {
         var view = self
         view.titleView = { groupMember in
             AnyView(titleView(groupMember))
         }
         return view
     }
-    
-    public func set<T: View>(subtitleView: @escaping (GroupMember) -> T) -> CometChatGroupMembersSwiftUI {
+
+    public func set(subtitleView: @escaping (GroupMember) -> some View) -> CometChatGroupMembersSwiftUI {
         var view = self
         view.subtitleView = { groupMember in
             AnyView(subtitleView(groupMember))
         }
         return view
     }
-    
-    public func set<T: View>(trailingView: @escaping (GroupMember) -> T) -> CometChatGroupMembersSwiftUI {
+
+    public func set(trailingView: @escaping (GroupMember) -> some View) -> CometChatGroupMembersSwiftUI {
         var view = self
         view.trailingView = { groupMember in
             AnyView(trailingView(groupMember))
         }
         return view
     }
-    
-    public func set<T: View>(emptyStateView: @escaping () -> T) -> CometChatGroupMembersSwiftUI {
+
+    public func set(emptyStateView: @escaping () -> some View) -> CometChatGroupMembersSwiftUI {
         var view = self
         view.emptyStateView = {
             AnyView(emptyStateView())
         }
         return view
     }
-    
-    public func set<T: View>(errorStateView: @escaping () -> T) -> CometChatGroupMembersSwiftUI {
+
+    public func set(errorStateView: @escaping () -> some View) -> CometChatGroupMembersSwiftUI {
         var view = self
         view.errorStateView = {
             AnyView(errorStateView())
         }
         return view
     }
-    
-    public func set<T: View>(loadingStateView: @escaping () -> T) -> CometChatGroupMembersSwiftUI {
+
+    public func set(loadingStateView: @escaping () -> some View) -> CometChatGroupMembersSwiftUI {
         var view = self
         view.loadingStateView = {
             AnyView(loadingStateView())
         }
         return view
     }
-    
+
     public func set(options: @escaping (Group, GroupMember) -> [CometChatGroupMemberOption]) -> CometChatGroupMembersSwiftUI {
         var view = self
         view.options = options
         return view
     }
-    
+
     public func set(addOptions: @escaping (Group, GroupMember) -> [CometChatGroupMemberOption]) -> CometChatGroupMembersSwiftUI {
         var view = self
         view.addOptions = addOptions
         return view
     }
-    
+
     public func set(onItemClick: @escaping (GroupMember, Int, Int) -> Void) -> CometChatGroupMembersSwiftUI {
         var view = self
         view.onItemClick = onItemClick
         return view
     }
-    
+
     public func set(onItemLongClick: @escaping (GroupMember, IndexPath) -> Void) -> CometChatGroupMembersSwiftUI {
         var view = self
         view.onItemLongClick = onItemLongClick
         return view
     }
-    
+
     public func set(onError: @escaping (CometChatException) -> Void) -> CometChatGroupMembersSwiftUI {
         var view = self
         view.onError = onError
         return view
     }
-    
+
     public func set(onEmpty: @escaping () -> Void) -> CometChatGroupMembersSwiftUI {
         var view = self
         view.onEmpty = onEmpty
         return view
     }
-    
+
     public func set(onLoad: @escaping ([GroupMember]) -> Void) -> CometChatGroupMembersSwiftUI {
         var view = self
         view.onLoad = onLoad
         return view
     }
-    
+
     public func set(onSelectedItemProceed: @escaping ([GroupMember]) -> Void) -> CometChatGroupMembersSwiftUI {
         var view = self
         view.onSelectedItemProceed = onSelectedItemProceed
@@ -663,8 +663,8 @@ public struct CometChatGroupMembersSwiftUI: View {
     }
 }
 
-extension CometChatGroupMembersSwiftUI {
-    public func toUIKit() -> UIView {
+public extension CometChatGroupMembersSwiftUI {
+    func toUIKit() -> UIView {
         let hostingController = UIHostingController(rootView: self)
         return hostingController.view
     }
@@ -672,7 +672,7 @@ extension CometChatGroupMembersSwiftUI {
 
 extension View {
     func eraseToAnyView() -> AnyView {
-        return AnyView(self)
+        AnyView(self)
     }
 }
 
@@ -688,28 +688,28 @@ struct CometChatGroupMembersSwiftUI_Previews: PreviewProvider {
             CometChatGroupMembersSwiftUI()
                 .padding()
                 .previewDisplayName("Default (Light)")
-            
+
             CometChatGroupMembersSwiftUI()
                 .padding()
                 .preferredColorScheme(.dark)
                 .previewDisplayName("Default (Dark)")
-            
+
             CometChatGroupMembersSwiftUI()
                 .set(selectionMode: .single)
                 .padding()
                 .previewDisplayName("Single Selection Mode (Light)")
-            
+
             CometChatGroupMembersSwiftUI()
                 .set(selectionMode: .single)
                 .padding()
                 .preferredColorScheme(.dark)
                 .previewDisplayName("Single Selection Mode (Dark)")
-            
+
             CometChatGroupMembersSwiftUI()
                 .set(selectionMode: .multiple)
                 .padding()
                 .previewDisplayName("Multiple Selection Mode (Light)")
-            
+
             CometChatGroupMembersSwiftUI()
                 .set(selectionMode: .multiple)
                 .padding()

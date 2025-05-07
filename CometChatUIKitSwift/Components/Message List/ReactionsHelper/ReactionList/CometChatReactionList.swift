@@ -1,28 +1,27 @@
 //
-//  CometChatRectionList.swift
+//  CometChatReactionList.swift
 //  CometChatUIKitSwift
 //
 //  Created by SuryanshBisen on 18/02/24.
 //
 
-import UIKit
 import CometChatSDK
 import Foundation
+import UIKit
 
 open class CometChatReactionList: UIViewController {
-    
-    //global styling
+    // global styling
     public static var style = ReactionListStyle()
     public static var avatarStyle: AvatarStyle = {
         var avatarStyle = CometChatAvatar.style
         avatarStyle.textFont = CometChatTypography.Heading4.bold
         return avatarStyle
     }()
-    
-    //local styling
+
+    // local styling
     public lazy var style = CometChatReactionList.style
     public lazy var avatarStyle = CometChatReactionList.avatarStyle
-    
+
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
     private var separatorView = UIView()
     private var tableView = UITableView()
@@ -31,91 +30,88 @@ open class CometChatReactionList: UIViewController {
     private var tableViewSpinner = UIActivityIndicatorView()
     private var defaultReaction: String?
     private var layout = UICollectionViewFlowLayout()
-    
+
     private var reactionRequestBuilder: ReactionsRequestBuilder?
     private var listItemStyle: ListItemStyle?
-    private var onClick: ((_ messageReaction: CometChatSDK.Reaction, _ messageObject: BaseMessage) -> ())?
+    private var onClick: ((_ messageReaction: CometChatSDK.Reaction, _ messageObject: BaseMessage) -> Void)?
     private var errorStateView: UIView?
     private var loadingStateView: UIView?
-    
+
     var loadingView: UIView!
     public var disableLoadingState: Bool = false
     var isLoadingViewVisible = false
-        
-    lazy var errorLabel : UILabel = {
+
+    lazy var errorLabel: UILabel = {
         let label = UILabel().withoutAutoresizingMaskConstraints()
         label.textAlignment = .center
         label.numberOfLines = 0
         return label
     }()
-    
+
     private var selectedIndex = 0 {
         didSet {
             if !collectionView.visibleCells.isEmpty {
                 if oldValue < (reactionDataSource.count) {
-                    self.collectionView.reloadItems(at: [IndexPath(row: oldValue, section: 0), IndexPath(row: selectedIndex, section: 0)])
+                    collectionView.reloadItems(at: [IndexPath(row: oldValue, section: 0), IndexPath(row: selectedIndex, section: 0)])
                 } else {
-                    self.collectionView.reloadItems(at: [IndexPath(row: selectedIndex, section: 0)])
+                    collectionView.reloadItems(at: [IndexPath(row: selectedIndex, section: 0)])
                 }
-                self.reloadViews()
+                reloadViews()
             }
         }
     }
 
-    open override func viewDidLoad() {
+    override open func viewDidLoad() {
         super.viewDidLoad()
         setUpDelegate()
         buildUI()
     }
-    
-    open override func viewWillAppear(_ animated: Bool) {
+
+    override open func viewWillAppear(_: Bool) {
         setupStyle()
         fetchReactions()
     }
-    
+
     func setUpDelegate() {
-        
-        //Setting Up CollectionView
+        // Setting Up CollectionView
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.register(ReactionListCollectionCell.self, forCellWithReuseIdentifier: "ReactionListCollectionCell")
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.showsVerticalScrollIndicator = false
-        
+
         // Setting up TableView
         tableView.dataSource = self
         tableView.delegate = self
         tableView.register(CometChatListItem.self, forCellReuseIdentifier: CometChatListItem.identifier)
     }
-    
+
     func fetchReactions() {
         showLoadingView()
-        
-        guard let baseMessage = baseMessage else { return }
-        
-        //populating reactionList which will be used for collection view
+
+        guard let baseMessage else { return }
+
+        // populating reactionList which will be used for collection view
         var totalReactions = 0
-        baseMessage.reactions.forEach({ totalReactions = totalReactions + $0.count })
+        baseMessage.reactions.forEach { totalReactions = totalReactions + $0.count }
         reactionDataSource.append(ReactionListDataModel(reaction: "ALL".localize(), count: totalReactions, messageID: baseMessage.id, reactionsRequest: reactionRequestBuilder))
-        baseMessage.reactions.forEach { reactions in
+        for reactions in baseMessage.reactions {
             reactionDataSource.append(ReactionListDataModel(reaction: reactions.reaction, count: reactions.count, messageID: baseMessage.id, reactionsRequest: reactionRequestBuilder))
         }
-        
+
         if defaultReaction != nil {
-            selectedIndex = self.reactionDataSource.firstIndex(where: { $0.reaction == defaultReaction }) ?? 0
-            if selectedIndex != 0 { reactionDataSource[0].fetchPrevious {   } onError: { error in } } 
+            selectedIndex = reactionDataSource.firstIndex(where: { $0.reaction == defaultReaction }) ?? 0
+            if selectedIndex != 0 { reactionDataSource[0].fetchPrevious {} onError: { _ in } }
         }
-        
+
         reloadViews()
-        
     }
-    
+
     func reloadViews() {
-        
         if collectionView.visibleCells.isEmpty {
-            self.collectionView.reloadData()
+            collectionView.reloadData()
         }
-        
+
         tableView.reloadData()
         if reactionDataSource[selectedIndex].messageReaction.isEmpty {
             showLoadingView()
@@ -125,29 +121,28 @@ open class CometChatReactionList: UIViewController {
         } else {
             tableView.reloadData()
         }
-        
     }
-    
+
     func fetchPrevious() {
         reactionDataSource[selectedIndex].fetchPrevious { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             DispatchQueue.main.async {
                 self.hideLoadingView()
                 self.tableView.reloadData()
             }
         } onError: { [weak self] _ in
-            DispatchQueue.main.async{
+            DispatchQueue.main.async {
                 self?.addErrorView()
                 self?.hideLoadingView()
             }
         }
     }
-    
+
     func addErrorView() {
-        if let errorStateView = errorStateView {
+        if let errorStateView {
             view.embed(errorStateView)
         } else {
-            //TODO: update the value of "SOMETHING_WENT_WRONG_ERROR" in localise files if other classes are using same text
+            // TODO: update the value of "SOMETHING_WENT_WRONG_ERROR" in localise files if other classes are using same text
             let backView = UIView().withoutAutoresizingMaskConstraints()
             view.embed(backView)
             backView.backgroundColor = CometChatTheme.backgroundColor01
@@ -157,18 +152,17 @@ open class CometChatReactionList: UIViewController {
             errorLabel.leadingAnchor.constraint(equalTo: backView.leadingAnchor, constant: CometChatSpacing.Spacing.s4).isActive = true
             errorLabel.trailingAnchor.constraint(equalTo: backView.trailingAnchor, constant: -(CometChatSpacing.Spacing.s4)).isActive = true
         }
-        
     }
-    
-    func setupStyle(){
-        self.view.backgroundColor = style.backgroundColor
-        self.view.borderWith(width: style.borderWidth)
-        self.view.borderColor(color: style.borderColor)
-        self.view.roundViewCorners(corner: style.cornerRadius ?? .init(cornerRadius: 20))
+
+    func setupStyle() {
+        view.backgroundColor = style.backgroundColor
+        view.borderWith(width: style.borderWidth)
+        view.borderColor(color: style.borderColor)
+        view.roundViewCorners(corner: style.cornerRadius ?? .init(cornerRadius: 20))
         errorLabel.textColor = style.errorTextColor
         errorLabel.font = style.errorTextFont
     }
-    
+
     func showLoadingView() {
         if disableLoadingState { return }
         (loadingView as? CometChatShimmerView)?.startShimmer()
@@ -179,67 +173,63 @@ open class CometChatReactionList: UIViewController {
         loadingView.topAnchor.constraint(equalTo: separatorView.bottomAnchor).isActive = true
         loadingView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
     }
-    
+
     func hideLoadingView() {
         (loadingView as? CometChatShimmerView)?.stopShimmer()
         isLoadingViewVisible = false
         loadingView.removeFromSuperview()
     }
-    
-    
+
     func buildUI() {
-        
         loadingView = CometChatReactionListShimmer()
-        
-        self.tableView.backgroundColor = .clear
-        self.tableView.separatorStyle = .none
-        self.collectionView.backgroundColor = .clear
-        self.separatorView.backgroundColor = CometChatTheme.borderColorDefault
-        
+
+        tableView.backgroundColor = .clear
+        tableView.separatorStyle = .none
+        collectionView.backgroundColor = .clear
+        separatorView.backgroundColor = CometChatTheme.borderColorDefault
+
         layout.scrollDirection = .horizontal
-        
+
         view.addSubview(collectionView)
         view.addSubview(separatorView)
         view.addSubview(tableView)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         separatorView.translatesAutoresizingMaskIntoConstraints = false
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        
+
         NSLayoutConstraint.activate([
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: CometChatSpacing.Spacing.s5),
             collectionView.heightAnchor.constraint(equalToConstant: 48),
-            
+
             separatorView.heightAnchor.constraint(equalToConstant: 1),
             separatorView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             separatorView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             separatorView.topAnchor.constraint(equalTo: collectionView.bottomAnchor),
-            
+
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: CometChatSpacing.Padding.p1),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -(CometChatSpacing.Padding.p1)),
             tableView.topAnchor.constraint(equalTo: separatorView.bottomAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
-
     }
-    
+
     func removeInternalReaction(forIndex index: Int, reactionIndex: Int) {
         if let removedReactionModel = reactionDataSource[safe: index] {
             if let reaction = removedReactionModel.messageReaction[safe: reactionIndex] {
                 if reaction.reactedBy?.uid == CometChat.getLoggedInUser()?.uid {
-                    
-                    //Table View Update
+                    // Table View Update
                     removedReactionModel.messageReaction.remove(at: reactionIndex)
                     if index == selectedIndex { tableView.deleteRows(at: [IndexPath(row: reactionIndex, section: 0)], with: .left) }
-                    
-                    //collection View update
+
+                    // collection View update
                     updateCollectionViewCount(index: index)
                 }
             }
         }
     }
-    
+
     func updateCollectionViewCount(index: Int) {
         if let removedReactionModel = reactionDataSource[safe: index] {
             removedReactionModel.count = removedReactionModel.count - 1
@@ -255,28 +245,26 @@ open class CometChatReactionList: UIViewController {
             }
         }
     }
-    
 }
 
 extension CometChatReactionList: PanModalPresentable {
     var panScrollable: UIScrollView? {
-        return nil
+        nil
     }
-    
+
     var longFormHeight: PanModalHeight {
-        return PanModalHeight.contentHeight(400)
+        PanModalHeight.contentHeight(400)
     }
 }
 
 extension CometChatReactionList: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
-    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return reactionDataSource.count
+    public func collectionView(_: UICollectionView, numberOfItemsInSection _: Int) -> Int {
+        reactionDataSource.count
     }
-        
+
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ReactionListCollectionCell", for: indexPath) as! ReactionListCollectionCell
-        
+
         cell.reaction = reactionDataSource[indexPath.row].reaction
         cell.count = reactionDataSource[indexPath.row].count
         cell.didSelected = (indexPath.row == selectedIndex)
@@ -284,50 +272,49 @@ extension CometChatReactionList: UICollectionViewDataSource, UICollectionViewDel
         cell.textColor = style.reactionTabTextColor
         cell.selectedTextColor = style.reactionActiveTabTextColor
         cell.font = style.reactionTabTextFont
-        cell.onTapped = { [weak self] reaction, _ in
-            guard let self = self else { return }
-            self.selectedIndex = indexPath.row
+        cell.onTapped = { [weak self] _, _ in
+            guard let self else { return }
+            selectedIndex = indexPath.row
         }
         cell.build()
 
         return cell
     }
-    
-    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: collectionView.frame.width / 6, height: 50)
+
+    public func collectionView(_ collectionView: UICollectionView, layout _: UICollectionViewLayout, sizeForItemAt _: IndexPath) -> CGSize {
+        CGSize(width: collectionView.frame.width / 6, height: 50)
     }
 }
 
 extension CometChatReactionList: UITableViewDataSource, UITableViewDelegate {
-    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return reactionDataSource[safe: selectedIndex]?.messageReaction.count ?? 0
+    public func tableView(_: UITableView, numberOfRowsInSection _: Int) -> Int {
+        reactionDataSource[safe: selectedIndex]?.messageReaction.count ?? 0
     }
-    
-    public func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
-        
-        //Calling configuration call back if there
-        if let onClick = onClick {
+
+    public func tableView(_: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        // Calling configuration call back if there
+        if let onClick {
             if let reaction = reactionDataSource[safe: selectedIndex]?.messageReaction[safe: indexPath.row],
-               let baseMessage = baseMessage {
+               let baseMessage
+            {
                 onClick(reaction, baseMessage)
             }
             return nil
         }
-        
-        //Default Implementation for Item onClick
+
+        // Default Implementation for Item onClick
         if let reaction = reactionDataSource[safe: selectedIndex]?.messageReaction[safe: indexPath.row] {
             if reaction.reactedBy?.uid == CometChat.getLoggedInUser()?.uid {
-                
-                CometChat.removeReaction(messageId: reactionDataSource[selectedIndex].messageID, reaction: reaction.reaction) { _ in    } onError: {  [weak self] error in
-                    guard let self = self else { return }
-                    if let baseMessage = self.baseMessage {
+                CometChat.removeReaction(messageId: reactionDataSource[selectedIndex].messageID, reaction: reaction.reaction) { _ in } onError: { [weak self] _ in
+                    guard let self else { return }
+                    if let baseMessage {
                         let updatedBaseMessage = CometChat.updateMessageWithReactionInfo(baseMessage: baseMessage, messageReaction: reaction, action: .REACTION_ADDED)
                         CometChatMessageEvents.ccMessageEdited(message: updatedBaseMessage, status: .success)
                     }
                 }
-                
+
                 if selectedIndex == 0 {
-                    if let collectionViewIndex = reactionDataSource.firstIndex(where: { $0.reaction ==  reaction.reaction }) {
+                    if let collectionViewIndex = reactionDataSource.firstIndex(where: { $0.reaction == reaction.reaction }) {
                         if let reactionIndex = reactionDataSource[collectionViewIndex].messageReaction.firstIndex(where: { $0.id == reaction.id }) {
                             removeInternalReaction(forIndex: collectionViewIndex, reactionIndex: reactionIndex)
                         } else {
@@ -335,7 +322,7 @@ extension CometChatReactionList: UITableViewDataSource, UITableViewDelegate {
                         }
                     }
                 }
-                
+
                 if selectedIndex != 0 {
                     if let reactionIndex = reactionDataSource[0].messageReaction.firstIndex(where: { $0.id == reaction.id }) {
                         removeInternalReaction(forIndex: 0, reactionIndex: reactionIndex)
@@ -343,155 +330,149 @@ extension CometChatReactionList: UITableViewDataSource, UITableViewDelegate {
                         updateCollectionViewCount(index: 0)
                     }
                 }
-                
+
                 removeInternalReaction(forIndex: selectedIndex, reactionIndex: indexPath.row)
-                
-                if let baseMessage = baseMessage {
+
+                if let baseMessage {
                     let updatedBaseMessage = CometChat.updateMessageWithReactionInfo(baseMessage: baseMessage, messageReaction: reaction, action: .REACTION_REMOVED)
                     CometChatMessageEvents.ccMessageEdited(message: updatedBaseMessage, status: .success)
                 }
-                
-                if reactionDataSource[0].messageReaction.isEmpty { self.dismiss(animated: true) }
-                
+
+                if reactionDataSource[0].messageReaction.isEmpty { dismiss(animated: true) }
+
                 return nil
-                
+
             } else {
                 return nil
             }
         }
         return nil
     }
-    
+
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if let listItem = tableView.dequeueReusableCell(withIdentifier: CometChatListItem.identifier, for: indexPath) as? CometChatListItem  {
-            
+        if let listItem = tableView.dequeueReusableCell(withIdentifier: CometChatListItem.identifier, for: indexPath) as? CometChatListItem {
             let reaction = reactionDataSource[selectedIndex].messageReaction[indexPath.row]
-            
+
             listItem.set(avatarURL: reaction.reactedBy?.avatar ?? "", with: reaction.reactedBy?.name ?? "")
             listItem.set(title: reaction.reactedBy?.name ?? "")
-            
+
             listItem.avatarHeightConstraint.constant = 32
             listItem.avatarWidthConstraint.constant = 32
-            
+
             listItem.titleStack.spacing = 2
-            
+
             listItem.avatar.style = avatarStyle
-            if let listItemStyle = listItemStyle {
+            if let listItemStyle {
                 listItem.style = listItemStyle
-            }else{
+            } else {
                 listItem.set(titleFont: style.titleTextFont)
                 listItem.set(titleColor: style.titleTextColor)
             }
-            
+
             listItem.hide(statusIndicator: true)
-            
+
             if reaction.reactedBy?.uid == CometChat.getLoggedInUser()?.uid {
                 let tapToRemoveLabel = UILabel()
                 tapToRemoveLabel.text = "TAP_TO_REMOVE".localize()
                 tapToRemoveLabel.font = style.subTitleTextFont
                 tapToRemoveLabel.textColor = style.subTitleTextColor
                 tapToRemoveLabel.textAlignment = .left
-                
+
                 listItem.set(subtitle: tapToRemoveLabel)
             }
-            
+
             let reactionLabel = UILabel()
             reactionLabel.text = reaction.reaction
             reactionLabel.font = style.tailViewTextFont
             reactionLabel.textAlignment = .right
 
             listItem.set(tail: reactionLabel)
-            
+
             return listItem
         }
         return UITableViewCell()
     }
-    
-    public func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if indexPath.row == (reactionDataSource[selectedIndex].messageReaction.count - 1)  && !reactionDataSource[selectedIndex].hasAllReactions {
+
+    public func tableView(_: UITableView, willDisplay _: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if indexPath.row == (reactionDataSource[selectedIndex].messageReaction.count - 1), !reactionDataSource[selectedIndex].hasAllReactions {
             fetchPrevious()
         }
     }
 }
 
-extension CometChatReactionList {
-    
+public extension CometChatReactionList {
     @discardableResult
-    public func set(defaultReaction: String) -> Self{
+    func set(defaultReaction: String) -> Self {
         self.defaultReaction = defaultReaction
         return self
     }
-    
+
     @discardableResult
-    public func set(message: BaseMessage) -> Self {
-        if let reactionRequestBuilder = reactionRequestBuilder {
+    func set(message: BaseMessage) -> Self {
+        if let reactionRequestBuilder {
             reactionRequestBuilder.set(messageId: message.id)
         }
-        self.baseMessage = message
+        baseMessage = message
         return self
     }
-    
+
     @discardableResult
-    public func set(reactionRequestBuilder: ReactionsRequestBuilder) -> Self {
+    func set(reactionRequestBuilder: ReactionsRequestBuilder) -> Self {
         if let messageID = baseMessage?.id {
             reactionRequestBuilder.set(messageId: messageID)
         }
         self.reactionRequestBuilder = reactionRequestBuilder
         return self
     }
-    
+
     @discardableResult
-    public func set(listItemStyle: ListItemStyle) -> Self {
+    func set(listItemStyle: ListItemStyle) -> Self {
         self.listItemStyle = listItemStyle
         return self
     }
-    
+
     @discardableResult
-    public func set(onClick: ((_ messageReaction: CometChatSDK.Reaction, _ messageObject: BaseMessage) -> ())?) -> Self {
+    func set(onClick: ((_ messageReaction: CometChatSDK.Reaction, _ messageObject: BaseMessage) -> Void)?) -> Self {
         self.onClick = onClick
         return self
     }
-    
+
     @discardableResult
-    public func set(errorStateView: UIView) -> Self {
+    func set(errorStateView: UIView) -> Self {
         self.errorStateView = errorStateView
         return self
     }
-    
+
     @discardableResult
-    public func set(loadingStateView: UIView) -> Self {
+    func set(loadingStateView: UIView) -> Self {
         self.loadingStateView = loadingStateView
         return self
     }
-    
+
     @discardableResult
-    public func set(configuration: ReactionListConfiguration?) -> Self {
-        
-        if let configuration = configuration {
-            
+    func set(configuration: ReactionListConfiguration?) -> Self {
+        if let configuration {
             if let reactionRequestBuilder = configuration.reactionRequestBuilder {
                 set(reactionRequestBuilder: reactionRequestBuilder)
             }
-            
+
             if let listItemStyle = configuration.listItemStyle {
                 set(listItemStyle: listItemStyle)
             }
-            
+
             if let onTappedToRemoveClicked = configuration.onTappedToRemoveClicked {
                 set(onClick: onTappedToRemoveClicked)
             }
-            
+
             if let errorStateView = configuration.errorStateView {
                 set(errorStateView: errorStateView)
             }
-            
+
             if let loadingStateView = configuration.loadingStateView {
                 set(loadingStateView: loadingStateView)
             }
-            
         }
-        
+
         return self
     }
-    
 }

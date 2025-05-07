@@ -6,8 +6,8 @@ import SwiftUI
 
 struct CometChatCreatePollQuestionsSwiftUI: View {
     @Binding var questionText: String
-    @State private var style: CreatePollStyle = CreatePollStyle()
-    
+    @State private var style: CreatePollStyle = .init()
+
     var body: some View {
         VStack {
             TextField("ASK_QUESTION".localize(), text: $questionText)
@@ -23,7 +23,7 @@ struct CometChatCreatePollQuestionsSwiftUI: View {
                 )
         }
     }
-    
+
     func set(style: CreatePollStyle) -> Self {
         var view = self
         view.style = style

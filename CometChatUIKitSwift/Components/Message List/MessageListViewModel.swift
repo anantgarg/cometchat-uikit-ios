@@ -1,13 +1,12 @@
 //
 //  MessageListViewModel.swift
- 
+
 //
 //  Created by Pushpsen Airekar on 01/12/22.
 //
 
-import Foundation
 import CometChatSDK
-
+import Foundation
 
 protocol MessageListViewModelProtocol {
     var user: CometChatSDK.User? { get set }
@@ -28,7 +27,6 @@ protocol MessageListViewModelProtocol {
 }
 
 open class MessageListViewModel: NSObject, MessageListViewModelProtocol {
-    
     var group: CometChatSDK.Group?
     var user: CometChatSDK.User?
     var parentMessage: CometChatSDK.BaseMessage?
@@ -69,70 +67,79 @@ open class MessageListViewModel: NSObject, MessageListViewModelProtocol {
             additionalConfiguration.messageBubbleStyle = messageBubbleStyle
         }
     }
+
     var actionBubbleStyle = CometChatMessageBubble.actionBubbleStyle {
         didSet {
             additionalConfiguration.actionBubbleStyle = actionBubbleStyle
         }
     }
+
     var callActionBubbleStyle = CometChatMessageBubble.callActionBubbleStyle {
         didSet {
             additionalConfiguration.callActionBubbleStyle = callActionBubbleStyle
         }
     }
-    
+
     var textFormatters = ChatConfigurator.getDataSource().getTextFormatters() {
         didSet {
             additionalConfiguration.textFormatter = textFormatters
         }
     }
-    
-    public var hideReplyInThreadOption: Bool = false{
-        didSet{
+
+    public var hideReplyInThreadOption: Bool = false {
+        didSet {
             additionalConfiguration.hideReplyInThreadOption = hideReplyInThreadOption
         }
     }
-    public var hideTranslateMessageOption: Bool = false{
-        didSet{
+
+    public var hideTranslateMessageOption: Bool = false {
+        didSet {
             additionalConfiguration.hideTranslateMessageOption = hideTranslateMessageOption
         }
     }
-    public var hideEditMessageOption: Bool = false{
-        didSet{
+
+    public var hideEditMessageOption: Bool = false {
+        didSet {
             additionalConfiguration.hideEditMessageOption = hideEditMessageOption
         }
     }
-    public var hideDeleteMessageOption: Bool = false{
-        didSet{
+
+    public var hideDeleteMessageOption: Bool = false {
+        didSet {
             additionalConfiguration.hideDeleteMessageOption = hideDeleteMessageOption
         }
     }
-    public var hideReactionOption: Bool = false{
-        didSet{
+
+    public var hideReactionOption: Bool = false {
+        didSet {
             additionalConfiguration.hideReactionOption = hideReactionOption
         }
     }
-    public var hideMessagePrivatelyOption: Bool = false{
-        didSet{
+
+    public var hideMessagePrivatelyOption: Bool = false {
+        didSet {
             additionalConfiguration.hideMessagePrivatelyOption = hideMessagePrivatelyOption
         }
     }
-    public var hideCopyMessageOption: Bool = false{
-        didSet{
+
+    public var hideCopyMessageOption: Bool = false {
+        didSet {
             additionalConfiguration.hideCopyMessageOption = hideCopyMessageOption
         }
     }
-    public var hideMessageInfoOption: Bool = false{
-        didSet{
+
+    public var hideMessageInfoOption: Bool = false {
+        didSet {
             additionalConfiguration.hideMessageInfoOption = hideMessageInfoOption
         }
     }
-    
-    public override init() {
+
+    override public init() {
         messagesRequestBuilder = MessagesRequest.MessageRequestBuilder()
         super.init()
         setUpDefaultTemplate()
     }
-    
+
     func set(group: Group, messagesRequestBuilder: CometChatSDK.MessagesRequest.MessageRequestBuilder?, parentMessage: BaseMessage? = nil) {
         self.group = group
         self.parentMessage = parentMessage
@@ -141,10 +148,10 @@ open class MessageListViewModel: NSObject, MessageListViewModelProtocol {
             .hideReplies(hide: true)
             .setParentMessageId(parentMessageId: parentMessage?.id ?? 0)
             .set(types: ChatConfigurator.getDataSource().getAllMessageTypes() ?? [])
-        self.messagesRequest = self.messagesRequestBuilder.build()
-        self.fetchUnreadMessageCount()
+        messagesRequest = self.messagesRequestBuilder.build()
+        fetchUnreadMessageCount()
     }
-    
+
     func set(user: User, messagesRequestBuilder: CometChatSDK.MessagesRequest.MessageRequestBuilder?, parentMessage: BaseMessage? = nil) {
         self.user = user
         self.parentMessage = parentMessage
@@ -153,70 +160,69 @@ open class MessageListViewModel: NSObject, MessageListViewModelProtocol {
             .hideReplies(hide: true)
             .setParentMessageId(parentMessageId: parentMessage?.id ?? 0)
             .set(types: ChatConfigurator.getDataSource().getAllMessageTypes() ?? [])
-        self.messagesRequest = self.messagesRequestBuilder.build()
-        self.fetchUnreadMessageCount()
+        messagesRequest = self.messagesRequestBuilder.build()
+        fetchUnreadMessageCount()
     }
-    
+
     func set(messagesRequestBuilder: CometChatSDK.MessagesRequest.MessageRequestBuilder) {
-        if let user = user {
+        if let user {
             self.messagesRequestBuilder = messagesRequestBuilder.set(uid: user.uid ?? "").setParentMessageId(parentMessageId: parentMessage?.id ?? 0)
-        } else if let group = group {
+        } else if let group {
             self.messagesRequestBuilder = messagesRequestBuilder.set(guid: group.guid).setParentMessageId(parentMessageId: parentMessage?.id ?? 0)
         }
     }
-    
+
     func sendActiveChatChangeEvent() {
-        
         onFirstMessageFetch?()
-        
-        var id = [String:Any]()
-        if let user = user {
+
+        var id = [String: Any]()
+        if let user {
             id["uid"] = user.uid
         }
-        if let group = group {
+        if let group {
             id["guid"] = group.guid
         }
         if parentMessage?.id != 0 {
             id["parentMessageId"] = parentMessage?.id
         }
-        if let unReadMessageCount = unReadMessageCount{
+        if let unReadMessageCount {
             id["unReadMessageCount"] = unReadMessageCount
         }
-        
+
         CometChatUIEvents.ccActiveChatChanged(id: id, lastMessage: messages.last?.messages.last, user: user, group: group)
     }
 
     func fetchNextMessages() {
-        guard let messagesRequest = messagesRequest else { return }
+        guard let messagesRequest else { return }
         MessagesListBuilder.fetchNextMessages(messageRequest: messagesRequest) { [weak self] result in
             guard let this = self else { return }
             switch result {
-            case .success(let fetchedMessages):
+            case let .success(fetchedMessages):
                 if fetchedMessages.count > 0 {
-                    this.processMessageList(fetchedMessages, {fetchedMessages_ in
+                    this.processMessageList(fetchedMessages) { fetchedMessages_ in
                         this.groupMessages(messages: fetchedMessages_)
-                    })
+                    }
                 }
-            case .failure(let error):
+            case let .failure(error):
                 this.failure?(error)
             }
         }
     }
-    
+
     func setUpDefaultTemplate() {
-        additionalConfiguration.textFormatter = self.textFormatters
+        additionalConfiguration.textFormatter = textFormatters
         additionalConfiguration.messageBubbleStyle = messageBubbleStyle
         additionalConfiguration.actionBubbleStyle = actionBubbleStyle
         additionalConfiguration.callActionBubbleStyle = callActionBubbleStyle
-        
-        let messageTypes =  ChatConfigurator.getDataSource().getAllMessageTemplates(additionalConfiguration: additionalConfiguration)
-        messageTypes.forEach { template in
+
+        let messageTypes = ChatConfigurator.getDataSource().getAllMessageTemplates(additionalConfiguration: additionalConfiguration)
+        for template in messageTypes {
             templates["\(template.category)_\(template.type)"] = template
         }
     }
-    
+
     func fetchPreviousMessages() {
-        guard let messagesRequest = messagesRequest else { return }
+        guard let messagesRequest else { return }
         if isAllMessagesFetchedInPrevious == true { return }
         isUIUpdating = true
         hasFetchedMessagesBefore = true
@@ -224,136 +230,135 @@ open class MessageListViewModel: NSObject, MessageListViewModelProtocol {
             guard let this = self else { return }
             this.isUIUpdating = false
             switch result {
-            case .success(let fetchedMessages):
+            case let .success(fetchedMessages):
                 if fetchedMessages.isEmpty {
                     this.isAllMessagesFetchedInPrevious = true
                     this.appendMessagesAtTop?(0, 0)
                 }
-                this.processMessageList(fetchedMessages, {fetchedMessages_ in
+                this.processMessageList(fetchedMessages) { fetchedMessages_ in
                     this.groupMessages(messages: fetchedMessages_)
-                })
+                }
                 self?.sendActiveChatChangeEvent()
-            case .failure(let error):
+            case let .failure(error):
                 this.failure?(error)
             }
         }
     }
-    
+
     func fetchMissedMessages() {
         if let id = messages.first?.messages.first?.id {
-            if let user = self.user, let _ = user.uid {
+            if let user, let _ = user.uid {
                 messageNextRequestBuilder = messagesRequestBuilder.set(messageID: id).build()
-            } else if let _ = self.group {
+            } else if let _ = group {
                 messageNextRequestBuilder = messagesRequestBuilder.set(messageID: id).build()
             }
             fetchNextMessagesFromLastMessage()
         }
     }
-    
+
     func fetchUnreadMessageCount() {
         if let uid = user?.uid {
             CometChat.getUnreadMessageCountForUser(uid) { [weak self] countDic in
                 guard let this = self else { return }
                 this.unReadMessageCount = countDic[uid] as? Int
             } onError: { [weak self] error in
-                guard let this = self, let error = error else { return }
+                guard let this = self, let error else { return }
                 this.failure?(error)
             }
             return
         }
-        
+
         if let guid = group?.guid {
             CometChat.getUnreadMessageCountForGroup(guid) { [weak self] countDic in
                 guard let this = self else { return }
                 this.unReadMessageCount = countDic[guid] as? Int
             } onError: { [weak self] error in
-                guard let this = self, let error = error else { return }
+                guard let this = self, let error else { return }
                 this.failure?(error)
             }
             return
         }
     }
-    
+
     func fetchNextMessagesFromLastMessage() {
-            MessagesListBuilder.fetchNextMessages(messageRequest: messageNextRequestBuilder) { [weak self] result in
-                guard let this = self else { return }
-                switch result {
-                case .success(let fetchedMessages):
-                    if fetchedMessages.count > 0 {
-                        this.processMessageList(fetchedMessages, { fetchedMessages_ in
-                            
-                            var missedMessagesWithoutActions = [BaseMessage]()
-                            for message in fetchedMessages_ {
-                                if message as? ActionMessage == nil {
-                                    missedMessagesWithoutActions.append(message)
-                                }
+        MessagesListBuilder.fetchNextMessages(messageRequest: messageNextRequestBuilder) { [weak self] result in
+            guard let this = self else { return }
+            switch result {
+            case let .success(fetchedMessages):
+                if fetchedMessages.count > 0 {
+                    this.processMessageList(fetchedMessages) { fetchedMessages_ in
+
+                        var missedMessagesWithoutActions = [BaseMessage]()
+                        for message in fetchedMessages_ {
+                            if message as? ActionMessage == nil {
+                                missedMessagesWithoutActions.append(message)
                             }
-                            
-                            this.groupMessages(messages: missedMessagesWithoutActions, atBottom: true)
-                            if this.messages.first?.messages.first?.id != fetchedMessages.last?.id {
-                                this.fetchNextMessagesFromLastMessage()
-                            }
-                        })
-                    } else {
-                        DispatchQueue.main.async { [weak self] in
-                            self?.sendActiveChatChangeEvent()
+                        }
+
+                        this.groupMessages(messages: missedMessagesWithoutActions, atBottom: true)
+                        if this.messages.first?.messages.first?.id != fetchedMessages.last?.id {
+                            this.fetchNextMessagesFromLastMessage()
                         }
                     }
-                case .failure(let error):
-                    this.failure?(error)
+                } else {
+                    DispatchQueue.main.async { [weak self] in
+                        self?.sendActiveChatChangeEvent()
+                    }
                 }
+            case let .failure(error):
+                this.failure?(error)
             }
+        }
     }
-    
+
     func updateUserAndGroup() {
-        if let user = user {
+        if let user {
             CometChat.getUser(UID: user.uid ?? "") { [weak self] user in
                 guard let this = self else { return }
                 this.user = user
-            } onError: { _ in   }
-        } else if let group = group {
+            } onError: { _ in }
+        } else if let group {
             CometChat.getGroup(GUID: group.guid) { [weak self] group in
                 guard let this = self else { return }
                 this.group = group
-            } onError: { _ in   }
+            } onError: { _ in }
         }
     }
-    
-    func fetchActionMessages(_ success: @escaping (Bool) -> ()) {
+
+    func fetchActionMessages(_ success: @escaping (Bool) -> Void) {
         if let id = messages.last?.messages.last?.id {
             let messageActionRequest = MessagesRequest.MessageRequestBuilder().set(messageID: id)
                 .set(categories: ["action"]).set(types: ["message"])
-            if let user = self.user, let uid = user.uid {
+            if let user, let uid = user.uid {
                 messageActionRequestBuilder = messageActionRequest.set(uid: uid).build()
-            } else if let group = self.group {
+            } else if let group {
                 messageActionRequestBuilder = messageActionRequest.set(guid: group.guid).build()
             }
             MessagesListBuilder.fetchNextMessages(messageRequest: messageActionRequestBuilder) { [weak self] result in
                 guard let this = self else { return }
                 switch result {
-                case .success(let fetchedMessages):
+                case let .success(fetchedMessages):
                     this.groupActionMessages(messages: fetchedMessages, withRefresh: true)
                     success(true)
-                case .failure(let error):
+                case let .failure(error):
                     this.failure?(error)
                     success(true)
                 }
             }
         }
     }
-    
+
     private func groupMessages(messages: [BaseMessage], atBottom: Bool = false) {
-        
         if let lastMessage = messages.last {
             if lastMessage.deliveredAt == 0.0 {
-                self.markAsDelivered(message: lastMessage)
+                markAsDelivered(message: lastMessage)
             }
             if lastMessage.readAt == 0.0 {
-                self.markAsRead(message: lastMessage)
+                markAsRead(message: lastMessage)
             }
         }
-        
-        let groupedMessages = Dictionary(grouping: messages) { (element) -> Date in
+
+        let groupedMessages = Dictionary(grouping: messages) { element -> Date in
             let date = Date(timeIntervalSince1970: TimeInterval(element.sentAt))
             return date.reduceToMonthDayYear()
         }
@@ -361,7 +366,7 @@ open class MessageListViewModel: NSObject, MessageListViewModelProtocol {
         let _ = groupedMessages.map { (date: Date, messages: [BaseMessage]) in
             var messages = messages
             messages.reverse()
-            if let index = self.messages.firstIndex(where: {$0.date == date}) {
+            if let index = self.messages.firstIndex(where: { $0.date == date }) {
                 if atBottom == false {
                     self.messages[index].messages.append(contentsOf: messages)
                 } else {
@@ -371,33 +376,33 @@ open class MessageListViewModel: NSObject, MessageListViewModelProtocol {
                 self.messages.append((date: date, messages: messages))
             }
         }
-        self.messages = self.messages.sorted(by: { $0.date.compare($1.date) == .orderedDescending})
-        
-        self.reload?()
+        self.messages = self.messages.sorted(by: { $0.date.compare($1.date) == .orderedDescending })
 
+        reload?()
     }
-        
-    private func groupActionMessages(messages: [BaseMessage], withRefresh: Bool) {
-        let groupedMessages = Dictionary(grouping: messages) { (element) -> Date in
+
+    private func groupActionMessages(messages: [BaseMessage], withRefresh _: Bool) {
+        let groupedMessages = Dictionary(grouping: messages) { element -> Date in
             let date = Date(timeIntervalSince1970: TimeInterval(element.sentAt))
             return date.reduceToMonthDayYear()
         }
         for baseMessage in messages {
             if let actionMessage = baseMessage as? ActionMessage,
-               let actionOnMessage = actionMessage.actionOn as? BaseMessage {
-                let _ = groupedMessages.map { (date: Date, messages: [BaseMessage]) in
-                    if let index = self.messages.firstIndex(where: {$0.date == date}) {
-                        if let index_ = self.messages[index].messages.firstIndex(where: {$0.id == actionOnMessage.id}) {
+               let actionOnMessage = actionMessage.actionOn as? BaseMessage
+            {
+                let _ = groupedMessages.map { (date: Date, _: [BaseMessage]) in
+                    if let index = self.messages.firstIndex(where: { $0.date == date }) {
+                        if let index_ = self.messages[index].messages.firstIndex(where: { $0.id == actionOnMessage.id }) {
                             self.messages[index].messages[index_] = actionOnMessage
                         }
                     }
                 }
             }
         }
-        self.reload?()
+        reload?()
     }
-    
-    private func processMessageList(_ messageList:[BaseMessage], _ messages: @escaping ([BaseMessage]) -> ()) {
+
+    private func processMessageList(_ messageList: [BaseMessage], _ messages: @escaping ([BaseMessage]) -> Void) {
         var messagesList = [BaseMessage]()
         for message in messageList {
             if let message_ = message as? InteractiveMessage, message_.messageCategory == .interactive {
@@ -414,15 +419,16 @@ open class MessageListViewModel: NSObject, MessageListViewModelProtocol {
                     let customMessage = CustomInteractiveMessage.toCustomInteractiveMessage(message_)
                     messagesList.append(customMessage)
                 }
-                
+
             } else {
                 messagesList.append(message)
             }
         }
         messages(messagesList)
     }
-    
-    // MARK:- connect message listener
+
+    // MARK: - connect message listener
+
     public func connect() {
         CometChatUIEvents.addListener("message-list-event-listener\(currentRandomDate)", self as CometChatUIEventListener)
         CometChat.addConnectionListener("messages-connection-sdk-listener\(currentRandomDate)", self)
@@ -432,8 +438,9 @@ open class MessageListViewModel: NSObject, MessageListViewModelProtocol {
         CometChat.addGroupListener("message-list-groups-sdk-listner-\(currentRandomDate)", self)
         CometChatGroupEvents.addListener("message-list-groups-events-listener-\(currentRandomDate)", self)
     }
-    
-    // MARK:- disconnect message listener
+
+    // MARK: - disconnect message listener
+
     public func disconnect() {
         CometChatUIEvents.removeListener("message-list-event-listener\(currentRandomDate)")
         CometChat.removeConnectionListener("messages-connection-sdk-listener\(currentRandomDate)")
@@ -443,19 +450,19 @@ open class MessageListViewModel: NSObject, MessageListViewModelProtocol {
         CometChat.removeGroupListener("message-list-groups-sdk-listner-\(currentRandomDate)")
         CometChatGroupEvents.removeListener("message-list-groups-events-listener-\(currentRandomDate)")
     }
-    
+
     func checkThreadedMessageBelongsToThisConversation(message: BaseMessage) -> Bool {
         if (parentMessage == nil && message.parentMessageId == 0) || parentMessage?.id == message.parentMessageId {
-            return true
+            true
         } else {
-            return false
+            false
         }
     }
-    
+
     func ifThreadedMessageUpdateCount(message: BaseMessage) {
         DispatchQueue.main.async { [weak self] in
             guard let this = self else { return }
-            if message.parentMessageId > 0 && this.parentMessage == nil {
+            if message.parentMessageId > 0, this.parentMessage == nil {
                 for (sectionIndex, messageData) in this.messages.enumerated() {
                     let (date, messages) = messageData
                     for (rowIndex, baseMessage) in messages.enumerated() {
@@ -469,28 +476,28 @@ open class MessageListViewModel: NSObject, MessageListViewModelProtocol {
             }
         }
     }
-    
+
     func isReactionOfThisList(receipt: ReactionEvent) -> Bool {
-        if let parentMessage = parentMessage, receipt.parentMessageId != 0 {
-            if (receipt.parentMessageId == parentMessage.id) {
+        if let parentMessage, receipt.parentMessageId != 0 {
+            if receipt.parentMessageId == parentMessage.id {
                 return true
             } else {
                 return false
             }
         } else {
-            if let user = user {
-                if (receipt.receiverType == CometChat.ReceiverType.user && (receipt.receiverId == user.uid || receipt.reaction?.reactedBy?.uid == user.uid)) {
+            if let user {
+                if receipt.receiverType == CometChat.ReceiverType.user, receipt.receiverId == user.uid || receipt.reaction?.reactedBy?.uid == user.uid {
                     return true
                 }
-            } else if let group = group {
-                if (receipt.receiverType == CometChat.ReceiverType.group && (receipt.receiverId == group.guid)) {
+            } else if let group {
+                if receipt.receiverType == CometChat.ReceiverType.group, receipt.receiverId == group.guid {
                     return true
                 }
             }
         }
         return false
     }
-    
+
     func updateReaction(reactionEvent: ReactionEvent, updateType: CometChat.ReactionAction) {
         guard let reaction = reactionEvent.reaction else { return }
         if isReactionOfThisList(receipt: reactionEvent) {
@@ -498,28 +505,28 @@ open class MessageListViewModel: NSObject, MessageListViewModelProtocol {
                 if let messageIndex = message.firstIndex(where: { $0.id == reaction.messageId }) {
                     let reactedMessage = message[messageIndex]
                     let updatedMessage = CometChat.updateMessageWithReactionInfo(baseMessage: reactedMessage, messageReaction: reaction, action: updateType)
-                    self.messages[index].messages[messageIndex] = updatedMessage
-                    self.updateAtIndex?(index, messageIndex, updatedMessage)
+                    messages[index].messages[messageIndex] = updatedMessage
+                    updateAtIndex?(index, messageIndex, updatedMessage)
                     return
                 }
             }
         }
     }
-    
+
     func getTemplate(for message: BaseMessage) -> CometChatMessageTemplate? {
-        return templates["\(MessageUtils.getDefaultMessageCategories(message: message))_\(MessageUtils.getDefaultMessageTypes(message: message))"]
+        templates["\(MessageUtils.getDefaultMessageCategories(message: message))_\(MessageUtils.getDefaultMessageTypes(message: message))"]
     }
-    
+
     func isMessageForThisUser(message: BaseMessage) -> Bool {
         switch message.receiverType {
         case .user:
-            if (CometChat.getLoggedInUser()?.uid == message.sender?.uid && message.receiverUid == self.user?.uid)  || (CometChat.getLoggedInUser()?.uid != message.sender?.uid && message.sender?.uid == self.user?.uid) {
+            if (CometChat.getLoggedInUser()?.uid == message.sender?.uid && message.receiverUid == user?.uid) || (CometChat.getLoggedInUser()?.uid != message.sender?.uid && message.sender?.uid == user?.uid) {
                 return true
             } else {
                 return false
             }
         case .group:
-            if message.receiverUid == self.group?.guid {
+            if message.receiverUid == group?.guid {
                 return true
             } else {
                 return false
@@ -530,62 +537,58 @@ open class MessageListViewModel: NSObject, MessageListViewModelProtocol {
     }
 }
 
-extension MessageListViewModel {
-    
+public extension MessageListViewModel {
     @discardableResult
-    public func add(message: BaseMessage) -> Self {
-        
+    func add(message: BaseMessage) -> Self {
         guard let loggedInUser = CometChat.getLoggedInUser() else { return self }
-        if getTemplate(for: message) == nil { return self } ///Checking if template exists
-        
-        if isMessageForThisUser(message: message){
+        if getTemplate(for: message) == nil { return self } /// Checking if template exists
+
+        if isMessageForThisUser(message: message) {
             markAsRead(message: message)
             markAsDelivered(message: message)
         }
-        
-        
+
         DispatchQueue.main.async { [weak self] in
             guard let this = self else { return }
-            
-            if (message.receiverType == .user) && ((CometChat.getLoggedInUser()?.uid == message.sender?.uid && message.receiverUid == this.user?.uid)  || (CometChat.getLoggedInUser()?.uid != message.sender?.uid && message.sender?.uid == this.user?.uid))
+
+            if (message.receiverType == .user) && ((CometChat.getLoggedInUser()?.uid == message.sender?.uid && message.receiverUid == this.user?.uid) || (CometChat.getLoggedInUser()?.uid != message.sender?.uid && message.sender?.uid == this.user?.uid))
                 ||
-               (message.receiverType == .group) && message.receiverUid == this.group?.guid {
-                
-                if let lastMessage = this.messages.first?.messages.last, String().compareDates(newTimeInterval: Double(message.muid) ?? 0.0, currentTimeInterval: Double(lastMessage.muid) ?? 0.0)  || Calendar.current.isDateInToday(Date(timeIntervalSince1970: TimeInterval(lastMessage.sentAt))) {
+                (message.receiverType == .group) && message.receiverUid == this.group?.guid
+            {
+                if let lastMessage = this.messages.first?.messages.last, String().compareDates(newTimeInterval: Double(message.muid) ?? 0.0, currentTimeInterval: Double(lastMessage.muid) ?? 0.0) || Calendar.current.isDateInToday(Date(timeIntervalSince1970: TimeInterval(lastMessage.sentAt))) {
                     this.messages[0].messages.insert(message, at: 0)
                     this.appendAtIndex?(0, 0, message, false)
                 } else {
-                    this.messages.insert((date: Date(timeIntervalSince1970: TimeInterval( Double(message.muid) ?? 0.0)), messages: [message]), at: 0)
+                    this.messages.insert((date: Date(timeIntervalSince1970: TimeInterval(Double(message.muid) ?? 0.0)), messages: [message]), at: 0)
                     this.appendAtIndex?(0, 0, message, true)
                 }
-                
             }
         }
         return self
     }
-    
+
     @discardableResult
-    public func update(message: BaseMessage) -> Self {
-       processMessageList([message]) { [weak self] messages in
-           guard let this = self else { return }
+    func update(message: BaseMessage) -> Self {
+        processMessageList([message]) { [weak self] messages in
+            guard let this = self else { return }
             guard let message = messages.first else { return }
-            if let section = this.messages.firstIndex(where: { (date: Date, messages: [BaseMessage]) in
+            if let section = this.messages.firstIndex(where: { (date: Date, _: [BaseMessage]) in
                 if let muid = Double(message.muid), muid != 0.0 {
                     if date.timeIntervalSince1970 == 0.0 {
-                        return true
+                        true
                     } else {
-                        return String().compareDates(newTimeInterval:  muid, currentTimeInterval:  date.timeIntervalSince1970) ? true : false
+                        String().compareDates(newTimeInterval: muid, currentTimeInterval: date.timeIntervalSince1970) ? true : false
                     }
-                   
+
                 } else {
-                    return String().compareDates(newTimeInterval: Double(message.sentAt), currentTimeInterval: date.timeIntervalSince1970) ? true : false
+                    String().compareDates(newTimeInterval: Double(message.sentAt), currentTimeInterval: date.timeIntervalSince1970) ? true : false
                 }
             }), let row = this.messages[section].messages.firstIndex(where: {
                 if message.muid != "" {
-                    return $0.muid == message.muid
-                    
+                    $0.muid == message.muid
+
                 } else {
-                    return $0.id == message.id
+                    $0.id == message.id
                 }
             }) {
                 this.messages[section].messages[row] = message
@@ -594,25 +597,25 @@ extension MessageListViewModel {
         }
         return self
     }
-    
+
     @discardableResult
-    public func update(receipt: MessageReceipt) -> Self {
+    func update(receipt: MessageReceipt) -> Self {
         if !disableReceipt {
             let loggedInUid = CometChat.getLoggedInUser()?.uid
-            
-            //Checking For User
-            if receipt.receiverType == .user && receipt.sender?.uid == self.user?.uid {
+
+            // Checking For User
+            if receipt.receiverType == .user, receipt.sender?.uid == user?.uid {
                 for (section, currentMessages) in messages.enumerated() {
                     for (row, message) in currentMessages.messages.enumerated() {
                         if message.senderUid == loggedInUid {
-                            if receipt.receiptType == .read && message.readAt == 0.0 {
+                            if receipt.receiptType == .read, message.readAt == 0.0 {
                                 message.readAt = Double(receipt.timeStamp)
                                 DispatchQueue.main.async { [weak self] in
                                     guard let this = self else { return }
                                     this.messages[section].messages[row] = message
                                     this.updateAtIndex?(section, row, message)
                                 }
-                            } else if receipt.receiptType == .delivered && message.deliveredAt == 0.0 {
+                            } else if receipt.receiptType == .delivered, message.deliveredAt == 0.0 {
                                 message.deliveredAt = Double(receipt.timeStamp)
                                 DispatchQueue.main.async { [weak self] in
                                     guard let this = self else { return }
@@ -620,25 +623,23 @@ extension MessageListViewModel {
                                     this.updateAtIndex?(section, row, message)
                                 }
                             } else if String(message.id) == receipt.messageId {
-                                updateAtIndex?(section, row, message) ///updating last message because it was conflicting with conversation's update
+                                updateAtIndex?(section, row, message) /// updating last message because it was conflicting with conversation's update
                             }
                         }
                     }
                 }
-            } else if receipt.receiverType == .group && receipt.receiverId == group?.guid {
-                
-                //Checking For Group
+            } else if receipt.receiverType == .group, receipt.receiverId == group?.guid {
+                // Checking For Group
                 for (section, currentMessages) in messages.enumerated() {
                     for (row, message) in currentMessages.messages.enumerated() {
-                        
-                        if receipt.receiptType == .readByAll && message.readAt == 0.0 {
+                        if receipt.receiptType == .readByAll, message.readAt == 0.0 {
                             message.readAt = Double(receipt.timeStamp)
                             DispatchQueue.main.async { [weak self] in
                                 guard let this = self else { return }
                                 this.messages[section].messages[row] = message
                                 this.updateAtIndex?(section, row, message)
                             }
-                        } else if receipt.receiptType == .deliveredToAll && message.deliveredAt == 0.0 {
+                        } else if receipt.receiptType == .deliveredToAll, message.deliveredAt == 0.0 {
                             message.deliveredAt = Double(receipt.timeStamp)
                             DispatchQueue.main.async { [weak self] in
                                 guard let this = self else { return }
@@ -646,34 +647,33 @@ extension MessageListViewModel {
                                 this.updateAtIndex?(section, row, message)
                             }
                         } else if String(message.id) == receipt.messageId {
-                            updateAtIndex?(section, row, message) ///updating last message because it was conflicting with conversation's update
+                            updateAtIndex?(section, row, message) /// updating last message because it was conflicting with conversation's update
                         }
-                        
                     }
                 }
             }
         }
         return self
     }
-    
-    func getIndexPath(for message: BaseMessage) -> IndexPath? {
-        if let section = messages.firstIndex(where: { (date: Date, messages: [BaseMessage]) in
+
+    internal func getIndexPath(for message: BaseMessage) -> IndexPath? {
+        if let section = messages.firstIndex(where: { (date: Date, _: [BaseMessage]) in
             if let muid = Double(message.muid), muid != 0.0 {
                 if date.timeIntervalSince1970 == 0.0 {
-                    return true
+                    true
                 } else {
-                    return String().compareDates(newTimeInterval:  muid, currentTimeInterval:  date.timeIntervalSince1970) ? true : false
+                    String().compareDates(newTimeInterval: muid, currentTimeInterval: date.timeIntervalSince1970) ? true : false
                 }
-                
+
             } else {
-                return String().compareDates(newTimeInterval: Double(message.sentAt), currentTimeInterval: date.timeIntervalSince1970) ? true : false
+                String().compareDates(newTimeInterval: Double(message.sentAt), currentTimeInterval: date.timeIntervalSince1970) ? true : false
             }
         }), let row = messages[section].messages.firstIndex(where: {
             if message.muid != "" {
-                return $0.muid == message.muid
-                
+                $0.muid == message.muid
+
             } else {
-                return $0.id == message.id
+                $0.id == message.id
             }
         }) {
             return IndexPath(row: row, section: section)
@@ -681,21 +681,19 @@ extension MessageListViewModel {
         return nil
     }
 
-    
-    
     @discardableResult
-    public func remove(message: BaseMessage) -> Self {
-        if let section = messages.firstIndex(where: { (date: Date, messages: [BaseMessage]) in
-            return String().compareDates(newTimeInterval: date.timeIntervalSince1970, currentTimeInterval: Double(message.sentAt)) ? true : false
-        }), let row = messages[section].messages.firstIndex(where: { $0.id == message.id || $0.muid == message.muid}) {
+    func remove(message: BaseMessage) -> Self {
+        if let section = messages.firstIndex(where: { (date: Date, _: [BaseMessage]) in
+            String().compareDates(newTimeInterval: date.timeIntervalSince1970, currentTimeInterval: Double(message.sentAt)) ? true : false
+        }), let row = messages[section].messages.firstIndex(where: { $0.id == message.id || $0.muid == message.muid }) {
             messages[section].messages.remove(at: row)
-            self.deleteAtIndex?(section, row, message)
+            deleteAtIndex?(section, row, message)
         }
         return self
     }
-    
+
     @discardableResult
-    public func delete(message: BaseMessage) -> Self {
+    func delete(message: BaseMessage) -> Self {
         CometChat.deleteMessage(message.id) { message in
             CometChatMessageEvents.onMessageDeleted(message: message)
         } onError: { [weak self] error in
@@ -704,28 +702,28 @@ extension MessageListViewModel {
         }
         return self
     }
-    
+
     @discardableResult
-    public func copy(message: BaseMessage) -> Self {
+    func copy(message: BaseMessage) -> Self {
         if let message = message as? TextMessage {
             UIPasteboard.general.string = message.text
         }
         return self
     }
-    
+
     @discardableResult
-    public func clearList() -> Self {
-        self.messages.removeAll()
+    func clearList() -> Self {
+        messages.removeAll()
         return self
     }
-    
+
     @discardableResult
-    public func markAsRead(message: BaseMessage) -> Self {
-        if !disableReceipt && message.readAt == 0 {
-            if (
+    func markAsRead(message: BaseMessage) -> Self {
+        if !disableReceipt, message.readAt == 0 {
+            if
                 (message.receiverType == .group && message.receiverUid == group?.guid && (message.sender?.uid != CometChat.getLoggedInUser()?.uid)) ||
                 (message.receiverType == .user && (message.sender?.uid != CometChat.getLoggedInUser()?.uid))
-            ) {
+            {
                 CometChat.markAsRead(baseMessage: message)
                 message.readAt = Double(NSDate().timeIntervalSince1970)
                 CometChatMessageEvents.ccMessageRead(message: message)
@@ -733,121 +731,112 @@ extension MessageListViewModel {
         }
         return self
     }
-    
+
     @discardableResult
-    public func markAsDelivered(message: BaseMessage) -> Self {
-        if !disableReceipt && message.deliveredAt == 0 {
+    func markAsDelivered(message: BaseMessage) -> Self {
+        if !disableReceipt, message.deliveredAt == 0 {
             CometChat.markAsDelivered(baseMessage: message)
         }
         return self
     }
-    
+
     @discardableResult
-    public func disable(receipt: Bool) -> Self {
-        self.disableReceipt = receipt
+    func disable(receipt: Bool) -> Self {
+        disableReceipt = receipt
         return self
     }
-    
+
     @discardableResult
-    public func disable(reactions: Bool) -> Self {
-        self.disableReaction = reactions
+    func disable(reactions: Bool) -> Self {
+        disableReaction = reactions
         return self
     }
 }
 
 extension MessageListViewModel: CometChatMessageEventListener {
-    
     public func onFormMessageReceived(message: FormMessage) {
-        
-        if self.getTemplate(for: message) == nil { return }
+        if getTemplate(for: message) == nil { return }
         ifThreadedMessageUpdateCount(message: message)
         if checkThreadedMessageBelongsToThisConversation(message: message) {
-            self.newMessageReceived?(message)
-            self.add(message: message)
+            newMessageReceived?(message)
+            add(message: message)
         }
     }
-    
+
     public func onSchedulerMessageReceived(message: SchedulerMessage) {
-        
-        if self.getTemplate(for: message) == nil { return }
+        if getTemplate(for: message) == nil { return }
         ifThreadedMessageUpdateCount(message: message)
         if checkThreadedMessageBelongsToThisConversation(message: message) {
-            self.newMessageReceived?(message)
-            self.add(message: message)
+            newMessageReceived?(message)
+            add(message: message)
         }
     }
-    
+
     public func onCustomInteractiveMessageReceived(message: CustomInteractiveMessage) {
-        
-        if self.getTemplate(for: message) == nil { return }
+        if getTemplate(for: message) == nil { return }
         ifThreadedMessageUpdateCount(message: message)
         if checkThreadedMessageBelongsToThisConversation(message: message) {
-            self.newMessageReceived?(message)
-            self.add(message: message)
+            newMessageReceived?(message)
+            add(message: message)
         }
     }
-    
+
     public func onCardMessageReceived(message: CardMessage) {
-        
-        if self.getTemplate(for: message) == nil { return }
+        if getTemplate(for: message) == nil { return }
         ifThreadedMessageUpdateCount(message: message)
         if checkThreadedMessageBelongsToThisConversation(message: message) {
-            self.newMessageReceived?(message)
-            self.add(message: message)
+            newMessageReceived?(message)
+            add(message: message)
         }
     }
-    
-    
+
     public func onTextMessageReceived(textMessage: TextMessage) {
-        
-        if self.getTemplate(for: textMessage) == nil { return }
+        if getTemplate(for: textMessage) == nil { return }
         ifThreadedMessageUpdateCount(message: textMessage)
         if checkThreadedMessageBelongsToThisConversation(message: textMessage) {
-            self.newMessageReceived?(textMessage)
-            self.add(message: textMessage)
+            newMessageReceived?(textMessage)
+            add(message: textMessage)
         }
     }
-    
+
     public func onMediaMessageReceived(mediaMessage: MediaMessage) {
-        
-        if self.getTemplate(for: mediaMessage) == nil { return }
+        if getTemplate(for: mediaMessage) == nil { return }
         ifThreadedMessageUpdateCount(message: mediaMessage)
         if checkThreadedMessageBelongsToThisConversation(message: mediaMessage) {
-            self.newMessageReceived?(mediaMessage)
-            self.add(message: mediaMessage)
+            newMessageReceived?(mediaMessage)
+            add(message: mediaMessage)
         }
     }
-    
+
     public func onCustomMessageReceived(customMessage: CustomMessage) {
-                
-        if self.getTemplate(for: customMessage) == nil { return }
+        if getTemplate(for: customMessage) == nil { return }
         ifThreadedMessageUpdateCount(message: customMessage)
         if checkThreadedMessageBelongsToThisConversation(message: customMessage) {
-            self.newMessageReceived?(customMessage)
-            self.add(message: customMessage)
+            newMessageReceived?(customMessage)
+            add(message: customMessage)
         }
     }
-    
+
     public func onMessagesDelivered(receipt: MessageReceipt) {
         update(receipt: receipt)
     }
-    
+
     public func onMessagesRead(receipt: MessageReceipt) {
         update(receipt: receipt)
     }
-    
+
     public func onMessagesReadByAll(receipt: MessageReceipt) {
         update(receipt: receipt)
     }
-    
+
     public func onMessagesDeliveredToAll(receipt: MessageReceipt) {
         update(receipt: receipt)
     }
-    
+
     public func ccMessageRead(message: CometChatSDK.BaseMessage) {
-        self.update(message: message)
+        update(message: message)
     }
-    
+
     public func ccMessageDeleted(message: BaseMessage) {
         if checkThreadedMessageBelongsToThisConversation(message: message) {
             if hideDeletedMessages {
@@ -857,7 +846,7 @@ extension MessageListViewModel: CometChatMessageEventListener {
             }
         }
     }
-    
+
     public func onMessageDeleted(message: BaseMessage) {
         if checkThreadedMessageBelongsToThisConversation(message: message) {
             if hideDeletedMessages {
@@ -867,34 +856,33 @@ extension MessageListViewModel: CometChatMessageEventListener {
             }
         }
     }
-            
+
     public func ccMessageSent(message: CometChatSDK.BaseMessage, status: MessageStatus) {
-        
         ccMessageSent?(message, status)
         if status == .success { ifThreadedMessageUpdateCount(message: message) }
         if checkThreadedMessageBelongsToThisConversation(message: message) {
             switch status {
             case .inProgress:
-                self.add(message: message)
+                add(message: message)
             case .success:
-                self.update(message: message)
+                update(message: message)
             case .error:
-                self.update(message: message)
+                update(message: message)
             }
         }
     }
-    
+
     public func ccMessageEdited(message: BaseMessage, status: MessageStatus) {
         if checkThreadedMessageBelongsToThisConversation(message: message) {
             if status == .success {
-                self.update(message: message)
+                update(message: message)
             }
         }
     }
-    
+
     public func onMessageEdited(message: BaseMessage) {
         if checkThreadedMessageBelongsToThisConversation(message: message) {
-            self.update(message: message)
+            update(message: message)
         }
     }
 
@@ -903,169 +891,157 @@ extension MessageListViewModel: CometChatMessageEventListener {
             updateReaction(reactionEvent: reactionEvent, updateType: .REACTION_ADDED)
         }
     }
-    
+
     public func onMessageReactionRemoved(reactionEvent: ReactionEvent) {
         if !disableReaction {
             updateReaction(reactionEvent: reactionEvent, updateType: .REACTION_REMOVED)
         }
     }
-    
 }
 
 extension MessageListViewModel: CometChatGroupDelegate {
-    
-    public func onGroupMemberJoined(action: CometChatSDK.ActionMessage, joinedUser: CometChatSDK.User, joinedGroup: CometChatSDK.Group) {
-        self.newMessageReceived?(action)
-        self.add(message: action)
+    public func onGroupMemberJoined(action: CometChatSDK.ActionMessage, joinedUser _: CometChatSDK.User, joinedGroup _: CometChatSDK.Group) {
+        newMessageReceived?(action)
+        add(message: action)
     }
-    
-    public func onGroupMemberLeft(action: CometChatSDK.ActionMessage, leftUser: CometChatSDK.User, leftGroup: CometChatSDK.Group) {
+
+    public func onGroupMemberLeft(action: CometChatSDK.ActionMessage, leftUser _: CometChatSDK.User, leftGroup _: CometChatSDK.Group) {
         /*
          close detail
          */
-        self.newMessageReceived?(action)
-        self.add(message: action)
+        newMessageReceived?(action)
+        add(message: action)
     }
-    
-    public func onGroupMemberKicked(action: CometChatSDK.ActionMessage, kickedUser: CometChatSDK.User, kickedBy: CometChatSDK.User, kickedFrom: CometChatSDK.Group) {
+
+    public func onGroupMemberKicked(action: CometChatSDK.ActionMessage, kickedUser _: CometChatSDK.User, kickedBy _: CometChatSDK.User, kickedFrom _: CometChatSDK.Group) {
         /*
          // append to list.
          */
-        self.newMessageReceived?(action)
-        self.add(message: action)
-        
+        newMessageReceived?(action)
+        add(message: action)
     }
-    
-    public func onGroupMemberBanned(action: CometChatSDK.ActionMessage, bannedUser: CometChatSDK.User, bannedBy: CometChatSDK.User, bannedFrom: CometChatSDK.Group) {
+
+    public func onGroupMemberBanned(action: CometChatSDK.ActionMessage, bannedUser _: CometChatSDK.User, bannedBy _: CometChatSDK.User, bannedFrom _: CometChatSDK.Group) {
         /*
          Append to the list.
          */
-        self.newMessageReceived?(action)
-        self.add(message: action)
+        newMessageReceived?(action)
+        add(message: action)
     }
-    
-    public func onGroupMemberUnbanned(action: CometChatSDK.ActionMessage, unbannedUser: CometChatSDK.User, unbannedBy: CometChatSDK.User, unbannedFrom: CometChatSDK.Group) {
+
+    public func onGroupMemberUnbanned(action: CometChatSDK.ActionMessage, unbannedUser _: CometChatSDK.User, unbannedBy _: CometChatSDK.User, unbannedFrom _: CometChatSDK.Group) {
         /*
          Do Nothing.
          */
-        self.newMessageReceived?(action)
-        self.add(message: action)
+        newMessageReceived?(action)
+        add(message: action)
     }
-    
-    public func onGroupMemberScopeChanged(action: CometChatSDK.ActionMessage, scopeChangeduser: CometChatSDK.User, scopeChangedBy: CometChatSDK.User, scopeChangedTo: String, scopeChangedFrom: String, group: CometChatSDK.Group) {
-        self.newMessageReceived?(action)
-        self.add(message: action)
+
+    public func onGroupMemberScopeChanged(action: CometChatSDK.ActionMessage, scopeChangeduser _: CometChatSDK.User, scopeChangedBy _: CometChatSDK.User, scopeChangedTo _: String, scopeChangedFrom _: String, group _: CometChatSDK.Group) {
+        newMessageReceived?(action)
+        add(message: action)
     }
-    
-    public func onMemberAddedToGroup(action: CometChatSDK.ActionMessage, addedBy: CometChatSDK.User, addedUser: CometChatSDK.User, addedTo: CometChatSDK.Group) {
-        self.newMessageReceived?(action)
-        self.add(message: action)
+
+    public func onMemberAddedToGroup(action: CometChatSDK.ActionMessage, addedBy _: CometChatSDK.User, addedUser _: CometChatSDK.User, addedTo _: CometChatSDK.Group) {
+        newMessageReceived?(action)
+        add(message: action)
     }
 }
 
-
-
-extension MessageListViewModel: CometChatGroupEventListener { 
-    
-    public func ccGroupMemberKicked(action: ActionMessage, kickedUser: User, kickedBy: User, kickedFrom: Group) {
-        self.newMessageReceived?(action)
-        self.add(message: action)
+extension MessageListViewModel: CometChatGroupEventListener {
+    public func ccGroupMemberKicked(action: ActionMessage, kickedUser _: User, kickedBy _: User, kickedFrom _: Group) {
+        newMessageReceived?(action)
+        add(message: action)
     }
-    
-    public func ccGroupMemberAdded(messages: [ActionMessage], usersAdded: [User], groupAddedIn: Group, addedBy: User) {
+
+    public func ccGroupMemberAdded(messages: [ActionMessage], usersAdded _: [User], groupAddedIn: Group, addedBy _: User) {
         if groupAddedIn.guid == group?.guid {
-            messages.forEach { messages in
-                self.newMessageReceived?(messages)
-                self.add(message: messages)
+            for messages in messages {
+                newMessageReceived?(messages)
+                add(message: messages)
             }
         }
     }
-    
-    public func ccGroupMemberBanned(action: ActionMessage, bannedUser: User, bannedBy: User, bannedFrom: Group) {
-        self.newMessageReceived?(action)
-        self.add(message: action)
+
+    public func ccGroupMemberBanned(action: ActionMessage, bannedUser _: User, bannedBy _: User, bannedFrom _: Group) {
+        newMessageReceived?(action)
+        add(message: action)
     }
-    
-    public func ccGroupMemberUnbanned(action: ActionMessage, unbannedUser: User, unbannedBy: User, unbannedFrom: Group) {
-        self.newMessageReceived?(action)
-        self.add(message: action)
+
+    public func ccGroupMemberUnbanned(action: ActionMessage, unbannedUser _: User, unbannedBy _: User, unbannedFrom _: Group) {
+        newMessageReceived?(action)
+        add(message: action)
     }
-    
-    public func ccGroupMemberScopeChanged(action: ActionMessage, updatedUser: User, scopeChangedTo: String, scopeChangedFrom: String, group: Group) {
+
+    public func ccGroupMemberScopeChanged(action: ActionMessage, updatedUser: User, scopeChangedTo _: String, scopeChangedFrom: String, group: Group) {
         if group.guid == self.group?.guid {
-            if (CometChat.getLoggedInUser()?.uid == updatedUser.uid) {
+            if CometChat.getLoggedInUser()?.uid == updatedUser.uid {
                 if let newScope = CometChat.GroupMemberScopeType.from(string: scopeChangedFrom) {
                     self.group?.scope = newScope
                 }
             }
-            self.newMessageReceived?(action)
-            self.add(message: action)
+            newMessageReceived?(action)
+            add(message: action)
         }
     }
-    
 }
 
 extension MessageListViewModel: CometChatCallDelegate {
-    public func onIncomingCallReceived(incomingCall: CometChatSDK.Call?, error: CometChatSDK.CometChatException?) {
-        if let incomingCall = incomingCall {
-            self.add(message: incomingCall)
+    public func onIncomingCallReceived(incomingCall: CometChatSDK.Call?, error _: CometChatSDK.CometChatException?) {
+        if let incomingCall {
+            add(message: incomingCall)
         }
     }
-    
-    public func onOutgoingCallAccepted(acceptedCall: CometChatSDK.Call?, error: CometChatSDK.CometChatException?) {
-        if let acceptedCall = acceptedCall {
-            self.add(message: acceptedCall)
+
+    public func onOutgoingCallAccepted(acceptedCall: CometChatSDK.Call?, error _: CometChatSDK.CometChatException?) {
+        if let acceptedCall {
+            add(message: acceptedCall)
         }
     }
-    
-    public func onOutgoingCallRejected(rejectedCall: CometChatSDK.Call?, error: CometChatSDK.CometChatException?) {
-        if let rejectedCall = rejectedCall {
-            self.add(message: rejectedCall)
+
+    public func onOutgoingCallRejected(rejectedCall: CometChatSDK.Call?, error _: CometChatSDK.CometChatException?) {
+        if let rejectedCall {
+            add(message: rejectedCall)
         }
     }
-    
-    public func onIncomingCallCancelled(canceledCall: CometChatSDK.Call?, error: CometChatSDK.CometChatException?) {
-        if let canceledCall = canceledCall {
-            self.add(message: canceledCall)
+
+    public func onIncomingCallCancelled(canceledCall: CometChatSDK.Call?, error _: CometChatSDK.CometChatException?) {
+        if let canceledCall {
+            add(message: canceledCall)
         }
     }
-    
-    public func onCallEndedMessageReceived(endedCall: Call?, error: CometChatException?) {
-        if let endedCall = endedCall {
-            self.add(message: endedCall)
+
+    public func onCallEndedMessageReceived(endedCall: Call?, error _: CometChatException?) {
+        if let endedCall {
+            add(message: endedCall)
         }
     }
-    
 }
 
-extension MessageListViewModel:  CometChatCallEventListener {
-    
+extension MessageListViewModel: CometChatCallEventListener {
     public func ccOutgoingCall(call: Call) {
-        self.add(message: call)
+        add(message: call)
     }
 
     public func ccCallAccepted(call: Call) {
-        self.add(message: call)
+        add(message: call)
     }
 
     public func ccCallRejected(call: Call) {
-        self.add(message: call)
+        add(message: call)
     }
 
     public func ccCallEnded(call: Call) {
-        if let _ =   (call.callReceiver as? User) {
-            self.add(message: call)
+        if let _ = (call.callReceiver as? User) {
+            add(message: call)
         }
     }
-    
 }
 
-
 extension MessageListViewModel: CometChatUIEventListener {
-    
-    public func showPanel(id: [String : Any]?, alignment: UIAlignment, view: UIView?) {
+    public func showPanel(id: [String: Any]?, alignment: UIAlignment, view: UIView?) {
         if !isForThisView(id: id) { return }
-        if let view = view {
+        if let view {
             switch alignment {
             case .messageListTop:
                 setHeaderView?(view)
@@ -1075,8 +1051,8 @@ extension MessageListViewModel: CometChatUIEventListener {
             }
         }
     }
-    
-    public func hidePanel(id: [String : Any]?, alignment: UIAlignment) {
+
+    public func hidePanel(id: [String: Any]?, alignment: UIAlignment) {
         if !isForThisView(id: id) { return }
         switch alignment {
         case .messageListTop:
@@ -1087,41 +1063,39 @@ extension MessageListViewModel: CometChatUIEventListener {
             hideFooterView?(true)
         }
     }
-    
-    fileprivate func isForThisView(id: [String:Any]?) -> Bool {
-        guard let id = id , !id.isEmpty else { return false }
+
+    fileprivate func isForThisView(id: [String: Any]?) -> Bool {
+        guard let id, !id.isEmpty else { return false }
         if (id["uid"] != nil && id["uid"] as? String ==
-            self.user?.uid) || (id["guid"] != nil && id["guid"] as? String ==
-                                      self.group?.guid) {
-            
-            if (id["parentMessageId"] != nil &&
-                id["parentMessageId"] as? Int == self.parentMessage?.id) {
+            user?.uid) || (id["guid"] != nil && id["guid"] as? String ==
+            group?.guid)
+        {
+            if id["parentMessageId"] != nil,
+               id["parentMessageId"] as? Int == parentMessage?.id
+            {
                 return true
-            }else if(id["parentMessageId"] == nil && self.parentMessage == nil ){
-                return true;
+            } else if id["parentMessageId"] == nil, parentMessage == nil {
+                return true
             }
         }
         return false
     }
 }
 
-//MARK: Connection Listener
+// MARK: Connection Listener
+
 extension MessageListViewModel: CometChatConnectionDelegate {
     public func connected() {
         updateUserAndGroup()
-        fetchActionMessages({
+        fetchActionMessages {
             success in
             if success {
                 self.fetchMissedMessages()
             }
-        })
+        }
     }
-    
-    public func disconnected() {
-        
-    }
-    
-    public func connecting() {
-        
-    }
+
+    public func disconnected() {}
+
+    public func connecting() {}
 }

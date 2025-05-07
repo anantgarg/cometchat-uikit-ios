@@ -1,6 +1,6 @@
 //
 //  ConversationConstants.swift
-//  
+//
 //
 //  Created by Pushpsen Airekar on 20/12/22.
 //
@@ -8,7 +8,6 @@
 import Foundation
 
 public enum ConversationConstants {
-    
     static let you = "YOU".localize()
     static let tryAgain = "TRY_AGAIN".localize()
     static let cancel = "CANCEL".localize()
@@ -31,12 +30,11 @@ public enum ConversationConstants {
     static let customMessageDocument = "CUSTOM_MESSAGE_DOCUMENT".localize()
     static let hasIntiatedGroupAudioCall = "HAS_INITIATED_GROUP_AUDIO_CALL".localize()
     static let hasIntiatedGroupCall = "HAS_INITIATED_GROUP_VIDEO_CALL".localize()
-    static let youInitiatedGroupCall =  "YOU_INITIATED_GROUP_VIDEO_CALL".localize()
-    static let youInitiatedGroupAudioCall =  "YOU_INITIATED_GROUP_AUDIO_CALL".localize()
+    static let youInitiatedGroupCall = "YOU_INITIATED_GROUP_VIDEO_CALL".localize()
+    static let youInitiatedGroupAudioCall = "YOU_INITIATED_GROUP_AUDIO_CALL".localize()
     static let hasSentACall = "HAS_SENT_A_CALL".localize()
     static let cardMessage = "CARD_MESSAGE".localize()
     static let formMessage = "FORM_MESSAGE".localize()
     static let schedulerMessage = "SCHEDULER_MESSAGE".localize()
     static let notSupportedMessage = "MESSAGE_NOT_SUPPORTED".localize()
-
 }

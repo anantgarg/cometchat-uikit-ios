@@ -6,25 +6,24 @@
 //
 
 import Foundation
-import UIKit
 import MessageUI
+import UIKit
 
 /// A view representing a message bubble that displays both the original and translated versions of a message.
 /// The class handles the layout of the original and translated messages and provides functionality for tapping on URLs, phone numbers, and email addresses.
 public class CometChatMessageTranslationBubble: UIView, MFMailComposeViewControllerDelegate {
-
     // MARK: - Properties
-    
+
     /// The parent view controller, if any, used for presenting additional interfaces such as a mail composer.
     public weak var controller: UIViewController?
 
     // MARK: Styling
-    
+
     /// The style configuration for the message translation bubble, allowing customization of fonts, colors, and separators.
     public var style = MessageTranslationBubbleStyle()
 
     // MARK: - UI Elements
-    
+
     /// A label displaying the original message. Supports hyperlinks.
     public let originalMessageLabel: HyperlinkLabel = {
         let label = HyperlinkLabel().withoutAutoresizingMaskConstraints()
@@ -38,7 +37,7 @@ public class CometChatMessageTranslationBubble: UIView, MFMailComposeViewControl
         label.numberOfLines = 0
         return label
     }()
-    
+
     /// A label indicating that the message is translated.
     lazy var textTranslatedLabel: UILabel = {
         let label = UILabel().withoutAutoresizingMaskConstraints()
@@ -46,7 +45,7 @@ public class CometChatMessageTranslationBubble: UIView, MFMailComposeViewControl
         label.text = "TRANSLATED_TEXT".localize()
         return label
     }()
-    
+
     /// A separator line between the original and translated messages.
     private let separatorLine: UIView = {
         let line = UIView().withoutAutoresizingMaskConstraints()
@@ -69,12 +68,13 @@ public class CometChatMessageTranslationBubble: UIView, MFMailComposeViewControl
     }
 
     /// Initializes the view from an NSCoder object (not implemented).
-    required init?(coder: NSCoder) {
+    @available(*, unavailable)
+    required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    public override func willMove(toWindow newWindow: UIWindow?) {
-        if newWindow != nil{
+
+    override public func willMove(toWindow newWindow: UIWindow?) {
+        if newWindow != nil {
             setupStyle()
         }
     }
@@ -83,7 +83,7 @@ public class CometChatMessageTranslationBubble: UIView, MFMailComposeViewControl
 
     /// Builds the user interface by embedding the message labels, separator, and translated text label within the container view.
     private func buildUI() {
-        self.embed(containerView, insets: .init(top: CometChatSpacing.Spacing.s2, leading: CometChatSpacing.Spacing.s2, bottom: CometChatSpacing.Spacing.s1, trailing: CometChatSpacing.Spacing.s2))
+        embed(containerView, insets: .init(top: CometChatSpacing.Spacing.s2, leading: CometChatSpacing.Spacing.s2, bottom: CometChatSpacing.Spacing.s1, trailing: CometChatSpacing.Spacing.s2))
 
         containerView.addSubview(originalMessageLabel)
         containerView.addSubview(separatorLine)
@@ -99,18 +99,18 @@ public class CometChatMessageTranslationBubble: UIView, MFMailComposeViewControl
             translatedMessageLabel.topAnchor.pin(equalTo: separatorLine.bottomAnchor, constant: CometChatSpacing.Padding.p2),
             separatorLine.topAnchor.pin(equalTo: originalMessageLabel.bottomAnchor, constant: CometChatSpacing.Padding.p2),
             separatorLine.heightAnchor.pin(equalToConstant: 1),
-            translatedMessageLabel.bottomAnchor.pin(equalTo: textTranslatedLabel.topAnchor, constant: -(CometChatSpacing.Padding.p2))
+            translatedMessageLabel.bottomAnchor.pin(equalTo: textTranslatedLabel.topAnchor, constant: -(CometChatSpacing.Padding.p2)),
         ])
 
-        self.withoutAutoresizingMaskConstraints()
+        withoutAutoresizingMaskConstraints()
         NSLayoutConstraint.activate([
-            self.widthAnchor.constraint(lessThanOrEqualToConstant: UIScreen.main.bounds.width / 1.2)
+            widthAnchor.constraint(lessThanOrEqualToConstant: UIScreen.main.bounds.width / 1.2),
         ])
     }
 
     /// Applies the style configurations for the message bubble elements such as fonts and colors.
     private func setupStyle() {
-        self.backgroundColor = .clear
+        backgroundColor = .clear
         originalMessageLabel.font = style.textFont
         translatedMessageLabel.font = style.textFont
         originalMessageLabel.textColor = style.textColor
@@ -130,7 +130,7 @@ public class CometChatMessageTranslationBubble: UIView, MFMailComposeViewControl
     }
 
     // MARK: - Hyperlink Configuration
-    
+
     /// Configures hyperlink support for phone numbers, URLs, and email addresses.
     private func setUpHyperlinkLabels() {
         configureHyperlinkLabel(originalMessageLabel)
@@ -165,7 +165,8 @@ public class CometChatMessageTranslationBubble: UIView, MFMailComposeViewControl
         label.handleCustomTap(for: phoneParser1) { number in
             let number = number.components(separatedBy: CharacterSet.decimalDigits.inverted).joined()
             if let url = URL(string: "tel://\(number)"),
-               UIApplication.shared.canOpenURL(url) {
+               UIApplication.shared.canOpenURL(url)
+            {
                 UIApplication.shared.open(url, options: [:], completionHandler: nil)
             }
         }
@@ -173,7 +174,8 @@ public class CometChatMessageTranslationBubble: UIView, MFMailComposeViewControl
         label.handleCustomTap(for: phoneParser2) { number in
             let number = number.components(separatedBy: CharacterSet.decimalDigits.inverted)
             if let url = URL(string: "tel://\(number)"),
-               UIApplication.shared.canOpenURL(url) {
+               UIApplication.shared.canOpenURL(url)
+            {
                 UIApplication.shared.open(url, options: [:], completionHandler: nil)
             }
         }

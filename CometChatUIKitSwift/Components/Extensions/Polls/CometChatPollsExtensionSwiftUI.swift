@@ -6,16 +6,15 @@ import Foundation
 import SwiftUI
 
 public class CometChatPollsExtensionSwiftUI: ExtensionDataSource {
-    
-    public override init() {}
-    
-    public override func addExtension() {
+    override public init() {}
+
+    override public func addExtension() {
         ChatConfigurator.enable { dataSource in
-            return CometChatPollsViewModelSwiftUI(dataSource: dataSource)
+            CometChatPollsViewModelSwiftUI(dataSource: dataSource)
         }
     }
-    
-    public override func getExtensionId() -> String {
-        return ExtensionConstants.polls
+
+    override public func getExtensionId() -> String {
+        ExtensionConstants.polls
     }
 }

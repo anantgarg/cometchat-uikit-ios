@@ -1,32 +1,33 @@
 //
 //  CometChatGroups.swift
- 
+
 //
 //  Created by Pushpsen Airekar on 17/11/22.
 //
 
-import UIKit
 import CometChatSDK
+import UIKit
 
 @MainActor
 open class CometChatGroups: CometChatListBase {
-    
     // MARK: - Declaration of View Model
+
     // Internal variable to hold the instance of GroupsViewModel, which manages the data and business logic for groups.
     public var viewModel: GroupsViewModel
 
     // MARK: - Declaration of View Properties
+
     // Closure for generating a subtitle view for a given group.
     var subtitle: ((_ group: Group?) -> UIView)?
 
     // Closure for generating a list item view for a given group.
     var listItemView: ((_ group: Group?) -> UIView)?
-    
+
     var titleView: ((_ group: Group?) -> UIView)?
     var trailingView: ((_ group: Group?) -> UIView)?
     var leadingView: ((_ group: Group?) -> UIView)?
     var addOptions: ((_ group: Group?) -> [CometChatGroupOption])?
-    
+
     var onEmpty: (() -> Void)?
     var onLoad: (([Group]) -> Void)?
 
@@ -38,7 +39,7 @@ open class CometChatGroups: CometChatListBase {
 
     // Closure called when an item in the list is clicked, providing the group and index path.
     var onItemClick: ((_ group: Group, _ indexPath: IndexPath) -> Void)?
-    
+
     // Closure called when an proceed clicked after selecting groups, providing the group.
     public var onSelectedItemProceed: ((_ group: [Group]) -> Void)?
 
@@ -55,7 +56,7 @@ open class CometChatGroups: CometChatListBase {
 
     // Closure called when the create group button is clicked.
     public var joinPasswordProtectedGroup: ((_ group: Group) -> Void)?
-    
+
     var onSelection: ((_ group: [Group]) -> Void)?
 
     // Public property to limit the number of selections allowed, with internal setter.
@@ -66,17 +67,15 @@ open class CometChatGroups: CometChatListBase {
     public static var avatarStyle: AvatarStyle = CometChatAvatar.style
     public static var statusIndicatorStyle: StatusIndicatorStyle = CometChatStatusIndicator.style
 
-
     // Lazy property for styling, set to the style defined in CometChatGroups.
     public lazy var style = CometChatGroups.style
     public lazy var avatar: AvatarStyle = CometChatGroups.avatarStyle
     public lazy var statusIndicatorStyle: StatusIndicatorStyle = CometChatGroups.statusIndicatorStyle
 
-     
-    public let groupsRequestBuilder : GroupsRequest.GroupsRequestBuilder = GroupsBuilder.getDefaultRequestBuilder()
+    public let groupsRequestBuilder: GroupsRequest.GroupsRequestBuilder = GroupsBuilder.getDefaultRequestBuilder()
     public var tickButton: [UIBarButtonItem]?
     public var joiningGroupAlert: UIAlertController?
-    
+
     public var hideGroupType: Bool = false
 
     // A variable to track the number of selected cells.
@@ -87,21 +86,24 @@ open class CometChatGroups: CometChatListBase {
     }
 
     // MARK: - Initialization
+
     // Initializes the view with an optional GroupsRequestBuilder to configure the GroupsViewModel.
     public init() {
-        self.viewModel = GroupsViewModel(groupsRequestBuilder: groupsRequestBuilder)
+        viewModel = GroupsViewModel(groupsRequestBuilder: groupsRequestBuilder)
         super.init(nibName: nil, bundle: nil)
         defaultSetup()
     }
 
     // Required initializer to support loading from a storyboard or xib, throws a fatal error if called.
-    required public init?(coder: NSCoder) {
+    @available(*, unavailable)
+    public required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
     // MARK: - Lifecycle Methods
+
     // Overrides the viewDidLoad lifecycle method to perform setup after the view has loaded.
-    public override func viewDidLoad() {
+    override public func viewDidLoad() {
         super.viewDidLoad() // Calls the superclass implementation.
         // Sets up the table view with a grouped style and enables refresh control.
         setupTableView(style: .plain, withRefreshControl: true)
@@ -111,22 +113,22 @@ open class CometChatGroups: CometChatListBase {
         registerCells()
         // Displays a loading view while data is being fetched.
         showLoadingView()
-    
+
         tableView.separatorStyle = .none
-        
-        if selectionMode == .single{
+
+        if selectionMode == .single {
             tableView.allowsMultipleSelection = false
-        }else{
+        } else {
             tableView.allowsMultipleSelection = true
         }
     }
-    
+
     override func onRefreshControlTriggered() {
         viewModel.isRefresh = true
     }
-    
+
     // Called just before the view appears on the screen
-    open override func viewWillAppear(_ animated: Bool) {
+    override open func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         CometChat.addConnectionListener("groups-sdk-listener", self)
         // Connect the view model to the CometChat server
@@ -134,37 +136,39 @@ open class CometChatGroups: CometChatListBase {
         setupViewModel() // Setup the view model
         fetchData() // Fetch data for display
     }
-    
+
     // Called when the view is about to disappear, used for cleanup tasks.
-    open override func viewWillDisappear(_ animated: Bool) {
+    override open func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated) // Calls the superclass implementation.
         // Removes the connection listener for the groups SDK to avoid memory leaks.
         CometChat.removeConnectionListener("groups-sdk-listener")
     }
-    
-    deinit{
+
+    deinit {
         viewModel.disconnect()
     }
 
     // MARK: - Styling Methods
+
     // Overrides the setupStyle method to apply styles to various components.
-    open override func setupStyle() {
+    override open func setupStyle() {
         listBaseStyle = style
         super.setupStyle()
     }
-    
-    open override func styleSearchBar() {
+
+    override open func styleSearchBar() {
         searchStyle = style
         super.styleSearchBar()
     }
-    
+
     // MARK: - Update Navigation Bar Title with Selected Cell Count
+
     open func updateNavigationBarTitleWithCount() {
         // Update the title to show "Groups (X)" where X is the selected cell count.
-        if selectedCellCount == 0{
+        if selectedCellCount == 0 {
             navigationItem.rightBarButtonItems = rightBarButtonItem
             navigationItem.leftBarButtonItems = leftBarButtonItem
-        }else{
+        } else {
             let button = UIButton(type: .custom)
             button.widthAnchor.constraint(equalToConstant: 50).isActive = true
             button.setTitle("\(selectedCellCount)", for: .normal)
@@ -184,9 +188,10 @@ open class CometChatGroups: CometChatListBase {
     }
 
     // MARK: - Tick Button Action
+
     @objc open func tickButtonTapped() {
         guard let selectedRows = tableView.indexPathsForSelectedRows else { return }
-        
+
         onSelectedItemProceed?(viewModel.selectedGroups)
 
         for indexPath in selectedRows {
@@ -196,11 +201,11 @@ open class CometChatGroups: CometChatListBase {
         viewModel.selectedGroups.removeAll()
         selectedCellCount = 0
         selectionMode = .none
-        
+
         // Reload the table to apply changes visually if necessary
         tableView.reloadData()
     }
-    
+
     @objc open func crossButtonTapped() {
         guard let selectedRows = tableView.indexPathsForSelectedRows else { return }
 
@@ -212,14 +217,14 @@ open class CometChatGroups: CometChatListBase {
         viewModel.selectedGroups.removeAll()
         selectedCellCount = 0
         selectionMode = .none
-        
+
         // Reload the table to apply changes visually if necessary
         tableView.reloadData()
     }
 
     // Call this method when a cell is selected or deselected to update the count.
     open func updateSelectedCellCount(isSelected: Bool) {
-        if selectionMode != .none{
+        if selectionMode != .none {
             if isSelected {
                 selectedCellCount += 1
             } else {
@@ -246,7 +251,7 @@ open class CometChatGroups: CometChatListBase {
                 this.reload()
                 // Hides the footer loading indicator.
                 this.hideFooterIndicator()
-                
+
                 // Checks if the view model is currently searching for groups.
                 switch this.viewModel.isSearching {
                 case true:
@@ -268,17 +273,17 @@ open class CometChatGroups: CometChatListBase {
                         this.tableView.restore()
                     }
                 }
-                
-                if let onLoad = this.onLoad?(this.viewModel.groups){
+
+                if let onLoad = this.onLoad?(this.viewModel.groups) {
                     onLoad
                 }
-                
+
                 // Hides the loading view once data has been processed.
                 this.removeLoadingView()
                 this.refreshControl.endRefreshing()
             }
         }
-        
+
         // Failure closure that gets called when an error occurs.
         viewModel.failure = { [weak self] error in
             guard let this = self else { return } // Prevents strong reference cycles.
@@ -290,14 +295,14 @@ open class CometChatGroups: CometChatListBase {
                 this.refreshControl.endRefreshing()
                 this.removeLoadingView()
                 this.refreshControl.endRefreshing()
-                
+
                 // If there are no groups, show the error view.
                 if this.viewModel.groups.isEmpty {
                     this.showErrorView()
                 }
             }
         }
-        
+
         // Closure to reload a specific row in the table view.
         viewModel.reloadAt = { row in
             // Reloads the specified row in the table view without animation.
@@ -308,11 +313,11 @@ open class CometChatGroups: CometChatListBase {
     // Registers the custom cell class for use in the table view.
     public func registerCells() {
         // Registers CometChatListItem for reuse with its identifier.
-        self.tableView.register(CometChatListItem.self, forCellReuseIdentifier: CometChatListItem.identifier)
+        tableView.register(CometChatListItem.self, forCellReuseIdentifier: CometChatListItem.identifier)
     }
 
     // Handles search functionality based on the current search state and text.
-    open override func onSearch(state: SearchState, text: String) {
+    override open func onSearch(state: SearchState, text: String) {
         switch state {
         case .clear:
             // Resets the search state and reloads the table view.
@@ -321,7 +326,7 @@ open class CometChatGroups: CometChatListBase {
             tableView.restore()
             // Hides the empty view if there are groups present.
             if !viewModel.groups.isEmpty {
-                self.removeEmptyView()
+                removeEmptyView()
             }
         case .filter:
             // Sets the search state to true and filters groups based on the search text.
@@ -335,34 +340,34 @@ open class CometChatGroups: CometChatListBase {
         // Sets the title of the view controller and enables large title preference.
         title = "GROUPS".localize() // Localizes the title string.
         prefersLargeTitles = true
-        
+
         // Initializes the loading view with a shimmer effect.
         loadingView = GroupsShimmerView()
-        
+
         // Configures text and image for the error state view.
         errorStateTitleText = "OOPS!".localize() // Localizes the error title.
         errorStateSubTitleText = "LOOKS_LIKE_SOMETHINGS_WENT_WORNG._PLEASE_TRY_AGAIN".localize() // Localizes the error subtitle.
         errorStateImage = UIImage(named: "error-icon", in: CometChatUIKit.bundle, compatibleWith: nil)?.withRenderingMode(.alwaysOriginal) ?? UIImage()
         (errorStateView as? StateView)?.retryButton.isHidden = true
-        
+
         // Configures text and image for the empty state view.
         emptyStateImage = UIImage(systemName: "person.2.fill") ?? UIImage()
-        emptyStateTitleText = "GROUPS_EMPTY_MESSAGE".localize()  // Localizes the empty state title (TODO: add to localize files).
+        emptyStateTitleText = "GROUPS_EMPTY_MESSAGE".localize() // Localizes the empty state title (TODO: add to localize files).
         emptyStateSubTitleText = "CREATE_GROUP_MESSAGE".localize() // Localizes the empty state subtitle (TODO: add to localize files).
         (emptyStateView as? StateView)?.retryButton.isHidden = true
-        
+
         // Configures the status indicator style.
         statusIndicatorStyle.borderColor = style.backgroundColor // Sets the border color for the status indicator.
         statusIndicatorStyle.borderWidth = 2 // Sets the border width for the status indicator.
         avatar.textFont = CometChatTypography.Heading3.bold
     }
-    
-    @objc func cancelSelection(){
+
+    @objc func cancelSelection() {
         selectionMode = .none
         tableView.reloadData()
     }
-    
-    open func showJoiningGroupAlert(for group: Group) {
+
+    open func showJoiningGroupAlert(for _: Group) {
         joiningGroupAlert = UIAlertController(title: nil, message: "JOINING_GROUP".localize(), preferredStyle: .alert)
         let loadingIndicator = UIActivityIndicatorView(frame: CGRect(x: 30, y: 7, width: 50, height: 50))
         loadingIndicator.hidesWhenStopped = true
@@ -370,41 +375,41 @@ open class CometChatGroups: CometChatListBase {
         loadingIndicator.color = CometChatTheme.iconColorSecondary
         loadingIndicator.startAnimating()
         joiningGroupAlert!.view.addSubview(loadingIndicator)
-        self.present(joiningGroupAlert!, animated: true, completion: nil)
+        present(joiningGroupAlert!, animated: true, completion: nil)
     }
-    
+
     open func hideJoiningGroupAlert(completion: @escaping (() -> Void)) {
         joiningGroupAlert?.dismiss(animated: true, completion: completion)
     }
 }
 
-//MARK: TABLE VIEW DELEGATES
-extension CometChatGroups {
+// MARK: TABLE VIEW DELEGATES
 
+extension CometChatGroups {
     // Function that returns a configured UITableViewCell for a given indexPath
-    open override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    override open func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let listItem = tableView.dequeueReusableCell(withIdentifier: CometChatListItem.identifier, for: indexPath) as? CometChatListItem else {
             return UITableViewCell()
         }
 
         // Determine the group based on whether the user is searching or not
         let group = viewModel.isSearching ? viewModel.filteredGroups[indexPath.row] : viewModel.groups[indexPath.row]
-        
+
         // Custom view setup for the listItem
         if let customView = listItemView?(group) {
             listItem.set(customView: customView)
             return listItem
         }
-        
+
         // Set the title for the group in the listItem
         if let name = group.name {
             listItem.set(title: name)
         }
-        
+
         // Set the avatar for the group using the group icon or name
         listItem.set(avatarURL: group.icon ?? "", with: group.name)
-        
-        if let leadingView = leadingView?(group){
+
+        if let leadingView = leadingView?(group) {
             listItem.set(leadingView: leadingView)
         }
 
@@ -420,13 +425,13 @@ extension CometChatGroups {
             label.font = style.listItemSubTitleFont
             listItem.set(subtitle: label)
         }
-        
+
         // Set up the status indicator based on the group type
         setupStatusIndicator(for: group, in: listItem)
 
         // Apply custom styles to the listItem
         listItem.style = style
-        
+
         // Manage selection based on the current selection mode
         switch selectionMode {
         case .single, .multiple: listItem.allow(selection: true)
@@ -443,26 +448,25 @@ extension CometChatGroups {
 
         return listItem
     }
-    
+
     // Function to configure the status indicator based on the group type
     private func setupStatusIndicator(for group: Group, in listItem: CometChatListItem) {
         switch group.groupType {
         case .public:
             listItem.statusIndicator.isHidden = true
         case .private:
-            if !hideGroupType{
+            if !hideGroupType {
                 configureStatusIndicator(for: listItem, icon: style.privateGroupIcon, tintColor: style.privateGroupImageTintColor, backgroundColor: style.privateGroupImageBackgroundColor)
             }
-            
         case .password:
-            if !hideGroupType{
+            if !hideGroupType {
                 configureStatusIndicator(for: listItem, icon: style.protectedGroupIcon, tintColor: .white, backgroundColor: style.passwordGroupImageBackgroundColor)
             }
         @unknown default:
             listItem.statusIndicator.isHidden = true
         }
     }
-    
+
     // Function to configure the status indicator's icon, tint, and background color
     private func configureStatusIndicator(for listItem: CometChatListItem, icon: UIImage?, tintColor: UIColor, backgroundColor: UIColor) {
         listItem.statusIndicator.style = statusIndicatorStyle
@@ -472,7 +476,7 @@ extension CometChatGroups {
         listItem.statusIndicator.style.backgroundColor = backgroundColor
         listItem.statusIndicator.layoutSubviews()
     }
-    
+
     // Function to manage the selection state of a group in the listItem
     private func manageSelectionState(for group: Group, in listItem: CometChatListItem, at indexPath: IndexPath) {
         listItem.isSelected = viewModel.selectedGroups.contains(group)
@@ -484,17 +488,17 @@ extension CometChatGroups {
     }
 
     // Returns the number of rows in the given section based on whether the user is searching
-    open override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.isSearching ? viewModel.filteredGroups.count : viewModel.groups.count
+    override open func tableView(_: UITableView, numberOfRowsInSection _: Int) -> Int {
+        viewModel.isSearching ? viewModel.filteredGroups.count : viewModel.groups.count
     }
 
     // Returns the automatic height for each row in the tableView
-    open override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
+    override open func tableView(_: UITableView, heightForRowAt _: IndexPath) -> CGFloat {
+        UITableView.automaticDimension
     }
 
     // Handles selection of a group at the given indexPath
-    open override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    override open func tableView(_: UITableView, didSelectRowAt indexPath: IndexPath) {
         let group = viewModel.isSearching ? viewModel.filteredGroups[indexPath.row] : viewModel.groups[indexPath.row]
         handleSelection(for: group, at: indexPath)
         updateSelectedCellCount(isSelected: true)
@@ -503,23 +507,23 @@ extension CometChatGroups {
     // Function to handle the selection of a group based on the current selection mode
     func handleSelection(for group: Group, at indexPath: IndexPath) {
         if selectionMode == .none {
-            if let onItemClick = onItemClick, group.hasJoined {
+            if let onItemClick, group.hasJoined {
                 onItemClick(group, indexPath)
-            } else if let onDidSelect = onDidSelect {
+            } else if let onDidSelect {
                 onDidSelect(group, indexPath)
             }
-            
+
             tableView.deselectRow(at: indexPath, animated: true)
             if !group.hasJoined, group.groupType == .public {
                 showJoiningGroupAlert(for: group)
-                viewModel.joinGroup(withGuid: group.guid, name: group.name ?? "", groupType: group.groupType, password: "", indexPath: indexPath, completion: {  [weak self] joinedGroup in
+                viewModel.joinGroup(withGuid: group.guid, name: group.name ?? "", groupType: group.groupType, password: "", indexPath: indexPath, completion: { [weak self] joinedGroup in
                     guard let this = self else { return }
-                    if let joinedGroup = joinedGroup {
+                    if let joinedGroup {
                         group.hasJoined = true
                     }
                     DispatchQueue.main.async {
                         this.hideJoiningGroupAlert(completion: {
-                            if let joinedGroup = joinedGroup {
+                            if let joinedGroup {
                                 this.onItemClick?(joinedGroup, indexPath)
                             }
                         })
@@ -539,7 +543,7 @@ extension CometChatGroups {
             } else {
                 selectGroup(group, at: indexPath)
             }
-            self.onSelection?(viewModel.selectedGroups)
+            onSelection?(viewModel.selectedGroups)
         }
     }
 
@@ -561,22 +565,22 @@ extension CometChatGroups {
     }
 
     // Handles the deselection of a group at the given indexPath
-    open override func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+    override open func tableView(_: UITableView, didDeselectRowAt indexPath: IndexPath) {
         let group = viewModel.isSearching ? viewModel.filteredGroups[indexPath.row] : viewModel.groups[indexPath.row]
         deselectGroup(group)
         updateSelectedCellCount(isSelected: false)
-        self.onSelection?(viewModel.selectedGroups)
+        onSelection?(viewModel.selectedGroups)
     }
 
     // Provides swipe actions for each row (e.g., delete, options)
-    open override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+    override open func tableView(_: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let group = viewModel.isSearching ? viewModel.filteredGroups[indexPath.row] : viewModel.groups[indexPath.row]
         var actions = [UIContextualAction]()
-        
+
         // Add contextual actions for each option in the group
         if let options = options?(group) {
             for option in options {
-                let action = UIContextualAction(style: .destructive, title: "", handler: { (_, _, completionHandler) in
+                let action = UIContextualAction(style: .destructive, title: "", handler: { _, _, completionHandler in
                     option.onClick?(group, indexPath.section, option, self)
                     completionHandler(true)
                 })
@@ -585,10 +589,10 @@ extension CometChatGroups {
                 actions.append(action)
             }
         }
-        
-        if let addOptions = addOptions?(group){
+
+        if let addOptions = addOptions?(group) {
             let customActions = addOptions.map { option -> UIContextualAction in
-                let action = UIContextualAction(style: .normal, title: option.title) { (action, sourceView, completionHandler) in
+                let action = UIContextualAction(style: .normal, title: option.title) { _, _, completionHandler in
                     option.onClick?(nil, indexPath.section, option, self)
                     completionHandler(true)
                 }
@@ -598,32 +602,32 @@ extension CometChatGroups {
             }
             actions.append(contentsOf: customActions)
         }
-        
+
         return UISwipeActionsConfiguration(actions: actions)
     }
-    
+
     // Called when a cell is about to be displayed. Handles pagination by fetching more groups when needed
-    open func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if indexPath.row == (viewModel.groups.count - 1) && !viewModel.isFetchedAll && !viewModel.isFetching {
+    open func tableView(_: UITableView, willDisplay _: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if indexPath.row == (viewModel.groups.count - 1), !viewModel.isFetchedAll, !viewModel.isFetching {
             showFooterIndicator()
             viewModel.isRefresh = false
             viewModel.fetchGroups()
-        }else{
+        } else {
             hideFooterIndicator()
         }
     }
 }
 
+// MARK: Connection Listener
 
-//MARK: Connection Listener
 extension CometChatGroups: CometChatConnectionDelegate {
     public func connected() {
         setupViewModel()
         tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
         viewModel.isRefresh = true
     }
-    
+
     public func connecting() {}
-    
+
     public func disconnected() {}
 }
