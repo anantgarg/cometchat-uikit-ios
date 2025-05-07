@@ -4,6 +4,7 @@
 
 import SwiftUI
 import CometChatSDK
+import CometChatUIKitSwift.Components.Shared.Constants
 
 public struct CometChatAISmartReplySwiftUI: View {
     @StateObject private var viewModel = AISmartRepliesViewModelSwiftUI()
@@ -30,16 +31,16 @@ public struct CometChatAISmartReplySwiftUI: View {
                 Button(action: {
                     onAiCloseButtonClicked?()
                 }) {
-                    Image(uiImage: style.cancelButtonImage)
+                    Image(systemName: "xmark")
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 20, height: 20)
+                        .frame(width: LayoutMetrics.mediumIconSize, height: LayoutMetrics.mediumIconSize)
                         .foregroundColor(Color(style.cancelButtonImageTintColor))
                 }
-                .frame(width: 20, height: 20)
+                .frame(width: LayoutMetrics.mediumIconSize, height: LayoutMetrics.mediumIconSize)
             }
-            .padding(.horizontal, CometChatSpacing.Padding.p3)
-            .padding(.top, CometChatSpacing.Padding.p3)
+            .padding(.horizontal, LayoutMetrics.spacingMedium)
+            .padding(.top, LayoutMetrics.spacingMedium)
             
             if viewModel.showError {
                 errorView
@@ -50,9 +51,9 @@ public struct CometChatAISmartReplySwiftUI: View {
             }
         }
         .background(Color(style.backgroundColor))
-        .cornerRadius(style.cornerRadius?.cornerRadius ?? CometChatSpacing.Radius.r4)
+        .cornerRadius(style.cornerRadius?.cornerRadius ?? LayoutMetrics.cornerRadiusLarge)
         .overlay(
-            RoundedRectangle(cornerRadius: style.cornerRadius?.cornerRadius ?? CometChatSpacing.Radius.r4)
+            RoundedRectangle(cornerRadius: style.cornerRadius?.cornerRadius ?? LayoutMetrics.cornerRadiusLarge)
                 .stroke(Color(style.borderColor), lineWidth: style.borderWidth)
         )
         .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
@@ -64,25 +65,25 @@ public struct CometChatAISmartReplySwiftUI: View {
                 .font(Font(style.errorViewTextFont))
                 .foregroundColor(Color(style.errorViewTextColor))
                 .multilineTextAlignment(.center)
-                .padding(.horizontal, CometChatSpacing.Padding.p6)
-                .padding(.vertical, CometChatSpacing.Padding.p2)
+                .padding(.horizontal, LayoutMetrics.spacingExtraLarge)
+                .padding(.vertical, LayoutMetrics.spacingStandard)
                 .frame(height: 200)
         }
-        .padding(.top, CometChatSpacing.Padding.p2)
-        .padding(.bottom, CometChatSpacing.Padding.p2)
+        .padding(.top, LayoutMetrics.spacingStandard)
+        .padding(.bottom, LayoutMetrics.spacingStandard)
     }
     
     private var loadingView: some View {
         CometChatAISmartRepliesShimmerSwiftUI()
             .frame(height: 217)
-            .cornerRadius(16)
-            .padding(.top, CometChatSpacing.Padding.p2)
-            .padding(.bottom, CometChatSpacing.Padding.p)
+            .cornerRadius(LayoutMetrics.cornerRadiusLarge)
+            .padding(.top, LayoutMetrics.spacingStandard)
+            .padding(.bottom, LayoutMetrics.spacingSmall)
     }
     
     private var repliesListView: some View {
         ScrollView {
-            LazyVStack(spacing: 8) {
+            LazyVStack(spacing: LayoutMetrics.spacingStandard) {
                 ForEach(viewModel.aiMessagesList, id: \.self) { message in
                     AIRepliesCellSwiftUI(
                         message: message,
@@ -93,8 +94,8 @@ public struct CometChatAISmartReplySwiftUI: View {
                     )
                 }
             }
-            .padding(.top, CometChatSpacing.Padding.p2)
-            .padding(.bottom, CometChatSpacing.Padding.p3)
+            .padding(.top, LayoutMetrics.spacingStandard)
+            .padding(.bottom, LayoutMetrics.spacingMedium)
         }
     }
     
@@ -177,16 +178,16 @@ struct AIRepliesCellSwiftUI: View {
                 .font(Font(style.repliesTextFont))
                 .foregroundColor(Color(style.repliesTextColor))
                 .multilineTextAlignment(.leading)
-                .padding(.horizontal, CometChatSpacing.Padding.p3)
-                .padding(.vertical, CometChatSpacing.Padding.p2)
+                .padding(.horizontal, LayoutMetrics.spacingMedium)
+                .padding(.vertical, LayoutMetrics.spacingStandard)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .background(Color(style.repliesViewBackgroundColor))
-                .cornerRadius(style.repliesViewCornerRadius?.cornerRadius ?? CometChatSpacing.Radius.r2)
+                .cornerRadius(style.repliesViewCornerRadius?.cornerRadius ?? LayoutMetrics.cornerRadiusStandard)
                 .overlay(
-                    RoundedRectangle(cornerRadius: style.repliesViewCornerRadius?.cornerRadius ?? CometChatSpacing.Radius.r2)
+                    RoundedRectangle(cornerRadius: style.repliesViewCornerRadius?.cornerRadius ?? LayoutMetrics.cornerRadiusStandard)
                         .stroke(Color(style.repliesViewBorderColor), lineWidth: style.repliesViewBorderWidth)
                 )
-                .padding(.horizontal, CometChatSpacing.Padding.p3)
+                .padding(.horizontal, LayoutMetrics.spacingMedium)
         }
         .buttonStyle(PlainButtonStyle())
     }
@@ -201,7 +202,7 @@ struct CometChatAISmartRepliesShimmerSwiftUI: View {
                 shimmerCell
             }
         }
-        .padding(.horizontal, CometChatSpacing.Padding.p3)
+        .padding(.horizontal, LayoutMetrics.spacingMedium)
         .onAppear {
             withAnimation(Animation.linear(duration: 1.5).repeatForever(autoreverses: false)) {
                 isAnimating = true
@@ -210,17 +211,17 @@ struct CometChatAISmartRepliesShimmerSwiftUI: View {
     }
     
     private var shimmerCell: some View {
-        RoundedRectangle(cornerRadius: CometChatSpacing.Radius.r2)
+        RoundedRectangle(cornerRadius: LayoutMetrics.cornerRadiusStandard)
             .fill(LinearGradient(
                 gradient: Gradient(colors: [
-                    Color(UIColor.systemGray5),
-                    Color(UIColor.systemGray6),
-                    Color(UIColor.systemGray5)
+                    Color.gray.opacity(0.3),
+                    Color.gray.opacity(0.1),
+                    Color.gray.opacity(0.3)
                 ]),
                 startPoint: .leading,
                 endPoint: isAnimating ? .trailing : .leading
             ))
-            .frame(height: 36)
+            .frame(height: LayoutMetrics.avatarSmall)
     }
 }
 
