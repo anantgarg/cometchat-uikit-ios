@@ -291,7 +291,6 @@
 		11601E5F2D6CF4C400129BBA /* AIAssistBotDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601AE12D6CF4C400129BBA /* AIAssistBotDecorator.swift */; };
 		11601E602D6CF4C400129BBA /* CometChatDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601CAB2D6CF4C400129BBA /* CometChatDialog.swift */; };
 		11601E612D6CF4C400129BBA /* AIAssistViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601AE42D6CF4C400129BBA /* AIAssistViewController.swift */; };
-		11601E622D6CF4C400129BBA /* CometChatMessageList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601BCA2D6CF4C400129BBA /* CometChatMessageList.swift */; };
 		11601E632D6CF4C400129BBA /* CallLogStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B152D6CF4C400129BBA /* CallLogStyle.swift */; };
 		11601E642D6CF4C400129BBA /* BaseNibView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601CD22D6CF4C400129BBA /* BaseNibView.swift */; };
 		11601E652D6CF4C400129BBA /* ReactionListStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601BC22D6CF4C400129BBA /* ReactionListStyle.swift */; };
@@ -6188,7 +6187,6 @@
 				11601E5F2D6CF4C400129BBA /* AIAssistBotDecorator.swift in Sources */,
 				11601E602D6CF4C400129BBA /* CometChatDialog.swift in Sources */,
 				11601E612D6CF4C400129BBA /* AIAssistViewController.swift in Sources */,
-				11601E622D6CF4C400129BBA /* CometChatMessageList.swift in Sources */,
 				11601E632D6CF4C400129BBA /* CallLogStyle.swift in Sources */,
 				11601E642D6CF4C400129BBA /* BaseNibView.swift in Sources */,
 				11601E652D6CF4C400129BBA /* ReactionListStyle.swift in Sources */,
