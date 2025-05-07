@@ -222,7 +222,6 @@
 		11601E1D2D6CF4C400129BBA /* LimitedFormatterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B962D6CF4C400129BBA /* LimitedFormatterView.swift */; };
 		11601E1E2D6CF4C400129BBA /* CollaborativeDocumentBubbleConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B3C2D6CF4C400129BBA /* CollaborativeDocumentBubbleConfiguration.swift */; };
 		11601E1F2D6CF4C400129BBA /* AIAssistBotConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601AE02D6CF4C400129BBA /* AIAssistBotConfiguration.swift */; };
-		11601E202D6CF4C400129BBA /* StickersExtensionDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B7B2D6CF4C400129BBA /* StickersExtensionDecorator.swift */; };
 		11601E212D6CF4C400129BBA /* AISmartRepliesDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601AF82D6CF4C400129BBA /* AISmartRepliesDecorator.swift */; };
 		11601E222D6CF4C400129BBA /* Gradient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601C4E2D6CF4C400129BBA /* Gradient.swift */; };
 		11601E242D6CF4C400129BBA /* IncomingCallConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B1E2D6CF4C400129BBA /* IncomingCallConfiguration.swift */; };
@@ -6106,7 +6105,6 @@
 				11601E1D2D6CF4C400129BBA /* LimitedFormatterView.swift in Sources */,
 				11601E1E2D6CF4C400129BBA /* CollaborativeDocumentBubbleConfiguration.swift in Sources */,
 				11601E1F2D6CF4C400129BBA /* AIAssistBotConfiguration.swift in Sources */,
-				11601E202D6CF4C400129BBA /* StickersExtensionDecorator.swift in Sources */,
 				11601E212D6CF4C400129BBA /* AISmartRepliesDecorator.swift in Sources */,
 				11601E222D6CF4C400129BBA /* Gradient.swift in Sources */,
 				11601E242D6CF4C400129BBA /* IncomingCallConfiguration.swift in Sources */,
