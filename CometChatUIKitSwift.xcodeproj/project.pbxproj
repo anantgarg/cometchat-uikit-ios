@@ -349,7 +349,6 @@
 		11601E962D6CF4C400129BBA /* DownloadableCircularProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601C282D6CF4C400129BBA /* DownloadableCircularProgressBar.swift */; };
 		11601E972D6CF4C400129BBA /* HyperlinkLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601CF82D6CF4C400129BBA /* HyperlinkLabel.swift */; };
 		11601E982D6CF4C400129BBA /* CardMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601C0A2D6CF4C400129BBA /* CardMessage.swift */; };
-		11601E992D6CF4C400129BBA /* CometChatConversations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B2F2D6CF4C400129BBA /* CometChatConversations.swift */; };
 		11601E9A2D6CF4C400129BBA /* MessageUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601C8E2D6CF4C400129BBA /* MessageUtils.swift */; };
 		11601E9B2D6CF4C400129BBA /* MessageHeaderViewModel + GroupsEventListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601BAD2D6CF4C400129BBA /* MessageHeaderViewModel + GroupsEventListener.swift */; };
 		11601E9C2D6CF4C400129BBA /* CometChatGroups + Properties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B8C2D6CF4C400129BBA /* CometChatGroups + Properties.swift */; };
@@ -6251,7 +6250,6 @@
 				11601E962D6CF4C400129BBA /* DownloadableCircularProgressBar.swift in Sources */,
 				11601E972D6CF4C400129BBA /* HyperlinkLabel.swift in Sources */,
 				11601E982D6CF4C400129BBA /* CardMessage.swift in Sources */,
-				11601E992D6CF4C400129BBA /* CometChatConversations.swift in Sources */,
 				11601E9A2D6CF4C400129BBA /* MessageUtils.swift in Sources */,
 				11601E9B2D6CF4C400129BBA /* MessageHeaderViewModel + GroupsEventListener.swift in Sources */,
 				11601E9C2D6CF4C400129BBA /* CometChatGroups + Properties.swift in Sources */,
