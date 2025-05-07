@@ -154,7 +154,6 @@
 		11601DD42D6CF4C400129BBA /* OutgoingCallConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B272D6CF4C400129BBA /* OutgoingCallConfiguration.swift */; };
 		11601DD52D6CF4C400129BBA /* CometChatMessageInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601CFB2D6CF4C400129BBA /* CometChatMessageInput.swift */; };
 		11601DD62D6CF4C400129BBA /* AIStateManagementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601AF12D6CF4C400129BBA /* AIStateManagementView.swift */; };
-		11601DD72D6CF4C400129BBA /* CollaborativeDocumentExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B3E2D6CF4C400129BBA /* CollaborativeDocumentExtension.swift */; };
 		11601DD82D6CF4C400129BBA /* HyperlinkType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601CF92D6CF4C400129BBA /* HyperlinkType.swift */; };
 		11601DD92D6CF4C400129BBA /* UsersStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601D272D6CF4C400129BBA /* UsersStyle.swift */; };
 		11601DDA2D6CF4C400129BBA /* ReceiptStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601D022D6CF4C400129BBA /* ReceiptStyle.swift */; };
@@ -6031,7 +6030,6 @@
 				11601DD42D6CF4C400129BBA /* OutgoingCallConfiguration.swift in Sources */,
 				11601DD52D6CF4C400129BBA /* CometChatMessageInput.swift in Sources */,
 				11601DD62D6CF4C400129BBA /* AIStateManagementView.swift in Sources */,
-				11601DD72D6CF4C400129BBA /* CollaborativeDocumentExtension.swift in Sources */,
 				11601DD82D6CF4C400129BBA /* HyperlinkType.swift in Sources */,
 				11601DD92D6CF4C400129BBA /* UsersStyle.swift in Sources */,
 				11601DDA2D6CF4C400129BBA /* ReceiptStyle.swift in Sources */,
