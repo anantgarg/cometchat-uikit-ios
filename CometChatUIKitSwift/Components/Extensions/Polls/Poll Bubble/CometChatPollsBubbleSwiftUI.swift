@@ -4,6 +4,7 @@
 
 import SwiftUI
 import CometChatSDK
+import CometChatUIKitSwift.Components.Shared.Constants
 
 public struct CometChatPollsBubbleSwiftUI: View {
     
@@ -11,39 +12,39 @@ public struct CometChatPollsBubbleSwiftUI: View {
     @State private var message: CustomMessage?
     @State private var controller: UIViewController?
     @State private var pollsData: PollsData = PollsData()
-    @State private var optionCheckIcon: UIImage? = UIImage(systemName: "checkmark.circle.fill")?.withRenderingMode(.alwaysTemplate)
-    @State private var optionUncheckIcon: UIImage? = UIImage(systemName: "circle")?.withRenderingMode(.alwaysTemplate)
+    @State private var optionCheckIconName: String = "checkmark.circle.fill"
+    @State private var optionUncheckIconName: String = "circle"
     
     public init() {}
     
     public var body: some View {
-        VStack(alignment: .leading, spacing: CometChatSpacing.Padding.p4) {
+        VStack(alignment: .leading, spacing: LayoutMetrics.spacingSmall) {
             Text(pollsData.question)
-                .font(Font(style.pollTextFont))
+                .font(.body)
                 .foregroundColor(Color(style.pollTextColor))
                 .multilineTextAlignment(.leading)
-                .padding(.horizontal, CometChatSpacing.Padding.p3)
-                .padding(.top, CometChatSpacing.Padding.p3)
+                .padding(.horizontal, LayoutMetrics.spacingMedium)
+                .padding(.top, LayoutMetrics.spacingMedium)
             
-            VStack(alignment: .leading, spacing: CometChatSpacing.Padding.p5) {
+            VStack(alignment: .leading, spacing: LayoutMetrics.spacingMedium) {
                 ForEach(pollsData.options, id: \.id) { option in
                     PollsOptionViewSwiftUI(pollOption: option, total: pollsData.total)
                         .set(style: style)
-                        .set(optionCheckIcon: optionCheckIcon)
-                        .set(optionUncheckIcon: optionUncheckIcon)
+                        .set(optionCheckIconName: optionCheckIconName)
+                        .set(optionUncheckIconName: optionUncheckIconName)
                         .set(onClicked: { pollOption in
                             onSelected(pollOptions: pollOption)
                         })
                 }
             }
-            .padding(.horizontal, CometChatSpacing.Padding.p3)
-            .padding(.bottom, CometChatSpacing.Padding.p3)
+            .padding(.horizontal, LayoutMetrics.spacingMedium)
+            .padding(.bottom, LayoutMetrics.spacingMedium)
         }
-        .frame(maxWidth: 240)
+        .frame(maxWidth: LayoutMetrics.loadingContentWidth + LayoutMetrics.spacingExtraLarge)
         .background(Color(style.backgroundColor ?? .clear))
-        .cornerRadius(style.cornerRadius?.cornerRadius ?? 12)
+        .cornerRadius(style.cornerRadius?.cornerRadius ?? LayoutMetrics.cornerRadiusMedium)
         .overlay(
-            RoundedRectangle(cornerRadius: style.cornerRadius?.cornerRadius ?? 12)
+            RoundedRectangle(cornerRadius: style.cornerRadius?.cornerRadius ?? LayoutMetrics.cornerRadiusMedium)
                 .stroke(Color(style.borderColor ?? .clear), lineWidth: style.borderWidth ?? 0)
         )
     }
@@ -73,14 +74,14 @@ public struct CometChatPollsBubbleSwiftUI: View {
     @discardableResult
     public func set(optionCheckIcon: UIImage?) -> Self {
         var view = self
-        view.optionCheckIcon = optionCheckIcon
+        view._optionCheckIconName = State(initialValue: "checkmark.circle.fill")
         return view
     }
     
     @discardableResult
     public func set(optionUncheckIcon: UIImage?) -> Self {
         var view = self
-        view.optionUncheckIcon = optionUncheckIcon
+        view._optionUncheckIconName = State(initialValue: "circle")
         return view
     }
     
@@ -111,16 +112,21 @@ struct CometChatPollsBubbleSwiftUI_Previews: PreviewProvider {
                 .set(pollMessage: pollData)
                 .set(style: PollBubbleStyle(styleType: .incoming))
                 .padding()
-                .previewLayout(.sizeThatFits)
-                .previewDisplayName("Incoming Poll")
+                .previewDisplayName("Incoming Poll (Light)")
             
             let outgoingPollData = createMockPollData(isOutgoing: true)
             CometChatPollsBubbleSwiftUI()
                 .set(pollMessage: outgoingPollData)
                 .set(style: PollBubbleStyle(styleType: .outgoing))
                 .padding()
-                .previewLayout(.sizeThatFits)
-                .previewDisplayName("Outgoing Poll")
+                .previewDisplayName("Outgoing Poll (Light)")
+                
+            CometChatPollsBubbleSwiftUI()
+                .set(pollMessage: pollData)
+                .set(style: PollBubbleStyle(styleType: .incoming))
+                .padding()
+                .preferredColorScheme(.dark)
+                .previewDisplayName("Incoming Poll (Dark)")
         }
     }
     
