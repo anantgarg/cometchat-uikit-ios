@@ -338,7 +338,6 @@
 		11601EAF2D6CF4C400129BBA /* LoggedInUserInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601C632D6CF4C400129BBA /* LoggedInUserInformation.swift */; };
 		11601EB02D6CF4C400129BBA /* ReactionListDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601BC12D6CF4C400129BBA /* ReactionListDataModel.swift */; };
 		11601EB12D6CF4C400129BBA /* ReactionListConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601BC02D6CF4C400129BBA /* ReactionListConfiguration.swift */; };
-		11601EB22D6CF4C400129BBA /* ThumbnailGenerationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B7D2D6CF4C400129BBA /* ThumbnailGenerationExtension.swift */; };
 		11601EB32D6CF4C400129BBA /* ConversationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601C552D6CF4C400129BBA /* ConversationHelper.swift */; };
 		11601EB52D6CF4C400129BBA /* StatusIndicatorStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601D112D6CF4C400129BBA /* StatusIndicatorStyle.swift */; };
 		11601EB62D6CF4C400129BBA /* OutgoingCallStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B282D6CF4C400129BBA /* OutgoingCallStyle.swift */; };
@@ -6202,7 +6201,6 @@
 				11601EAF2D6CF4C400129BBA /* LoggedInUserInformation.swift in Sources */,
 				11601EB02D6CF4C400129BBA /* ReactionListDataModel.swift in Sources */,
 				11601EB12D6CF4C400129BBA /* ReactionListConfiguration.swift in Sources */,
-				11601EB22D6CF4C400129BBA /* ThumbnailGenerationExtension.swift in Sources */,
 				11601EB32D6CF4C400129BBA /* ConversationHelper.swift in Sources */,
 				11601EB52D6CF4C400129BBA /* StatusIndicatorStyle.swift in Sources */,
 				11601EB62D6CF4C400129BBA /* OutgoingCallStyle.swift in Sources */,
