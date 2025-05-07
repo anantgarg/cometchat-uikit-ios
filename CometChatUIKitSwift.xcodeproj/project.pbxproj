@@ -283,7 +283,6 @@
 		11601E672D6CF4C400129BBA /* ViewTransformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601C522D6CF4C400129BBA /* ViewTransformation.swift */; };
 		11601E682D6CF4C400129BBA /* StickerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B782D6CF4C400129BBA /* StickerExtension.swift */; };
 		11601E692D6CF4C400129BBA /* CometChatBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601CA02D6CF4C400129BBA /* CometChatBadge.swift */; };
-		11601E6A2D6CF4C400129BBA /* CollaborativeDocumentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B3F2D6CF4C400129BBA /* CollaborativeDocumentViewModel.swift */; };
 		11601E6B2D6CF4C400129BBA /* MessageHeaderConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601BAA2D6CF4C400129BBA /* MessageHeaderConstants.swift */; };
 		11601E6C2D6CF4C400129BBA /* AssetConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601BEF2D6CF4C400129BBA /* AssetConstants.swift */; };
 		11601E6E2D6CF4C400129BBA /* CameraHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601C262D6CF4C400129BBA /* CameraHandler.swift */; };
@@ -6161,7 +6160,6 @@
 				11601E672D6CF4C400129BBA /* ViewTransformation.swift in Sources */,
 				11601E682D6CF4C400129BBA /* StickerExtension.swift in Sources */,
 				11601E692D6CF4C400129BBA /* CometChatBadge.swift in Sources */,
-				11601E6A2D6CF4C400129BBA /* CollaborativeDocumentViewModel.swift in Sources */,
 				11601E6B2D6CF4C400129BBA /* MessageHeaderConstants.swift in Sources */,
 				11601E6C2D6CF4C400129BBA /* AssetConstants.swift in Sources */,
 				11601E6E2D6CF4C400129BBA /* CameraHandler.swift in Sources */,
