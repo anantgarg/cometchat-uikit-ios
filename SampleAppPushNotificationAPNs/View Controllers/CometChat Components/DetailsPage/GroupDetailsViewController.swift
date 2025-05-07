@@ -397,8 +397,9 @@ extension GroupDetailsViewController{
     
     public func addMembers(){
         if let group = self.group {
-            let addMemberController = AddMembersVC(group: group)
-            let navController = UINavigationController(rootViewController: addMemberController)
+            let addMemberView = AddMembersSwiftUI(group: group)
+            let hostingController = addMemberView.toUIKit()
+            let navController = UINavigationController(rootViewController: hostingController)
             self.present(navController, animated: true, completion: nil)
         }
     }
