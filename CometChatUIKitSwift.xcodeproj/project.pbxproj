@@ -227,7 +227,6 @@
 		11601E202D6CF4C400129BBA /* StickersExtensionDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B7B2D6CF4C400129BBA /* StickersExtensionDecorator.swift */; };
 		11601E212D6CF4C400129BBA /* AISmartRepliesDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601AF82D6CF4C400129BBA /* AISmartRepliesDecorator.swift */; };
 		11601E222D6CF4C400129BBA /* Gradient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601C4E2D6CF4C400129BBA /* Gradient.swift */; };
-		11601E232D6CF4C400129BBA /* CollaborativeWhiteboardExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B452D6CF4C400129BBA /* CollaborativeWhiteboardExtension.swift */; };
 		11601E242D6CF4C400129BBA /* IncomingCallConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B1E2D6CF4C400129BBA /* IncomingCallConfiguration.swift */; };
 		11601E252D6CF4C400129BBA /* LargeEmojis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601C3E2D6CF4C400129BBA /* LargeEmojis.swift */; };
 		11601E262D6CF4C400129BBA /* LargeTitleDisplayMode+String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601C402D6CF4C400129BBA /* LargeTitleDisplayMode+String.swift */; };
@@ -6116,7 +6115,6 @@
 				11601E202D6CF4C400129BBA /* StickersExtensionDecorator.swift in Sources */,
 				11601E212D6CF4C400129BBA /* AISmartRepliesDecorator.swift in Sources */,
 				11601E222D6CF4C400129BBA /* Gradient.swift in Sources */,
-				11601E232D6CF4C400129BBA /* CollaborativeWhiteboardExtension.swift in Sources */,
 				11601E242D6CF4C400129BBA /* IncomingCallConfiguration.swift in Sources */,
 				11601E252D6CF4C400129BBA /* LargeEmojis.swift in Sources */,
 				11601E262D6CF4C400129BBA /* LargeTitleDisplayMode+String.swift in Sources */,
