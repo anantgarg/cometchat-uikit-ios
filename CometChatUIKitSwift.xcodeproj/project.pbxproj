@@ -231,7 +231,6 @@
 		11601E272D6CF4C400129BBA /* ActionEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601C082D6CF4C400129BBA /* ActionEntity.swift */; };
 		11601E282D6CF4C400129BBA /* CheckboxElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601C0B2D6CF4C400129BBA /* CheckboxElement.swift */; };
 		11601E292D6CF4C400129BBA /* PanModalPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601CED2D6CF4C400129BBA /* PanModalPresentationController.swift */; };
-		11601E2B2D6CF4C400129BBA /* CometChatStickerKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B702D6CF4C400129BBA /* CometChatStickerKeyboard.swift */; };
 		11601E2C2D6CF4C400129BBA /* ConversationViewModel + UserEventListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B3A2D6CF4C400129BBA /* ConversationViewModel + UserEventListener.swift */; };
 		11601E2D2D6CF4C400129BBA /* DataSourceDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601C1C2D6CF4C400129BBA /* DataSourceDecorator.swift */; };
 		11601E2E2D6CF4C400129BBA /* CometChatGradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601CBB2D6CF4C400129BBA /* CometChatGradientView.swift */; };
@@ -6116,7 +6115,6 @@
 				11601E272D6CF4C400129BBA /* ActionEntity.swift in Sources */,
 				11601E282D6CF4C400129BBA /* CheckboxElement.swift in Sources */,
 				11601E292D6CF4C400129BBA /* PanModalPresentationController.swift in Sources */,
-				11601E2B2D6CF4C400129BBA /* CometChatStickerKeyboard.swift in Sources */,
 				11601E2C2D6CF4C400129BBA /* ConversationViewModel + UserEventListener.swift in Sources */,
 				11601E2D2D6CF4C400129BBA /* DataSourceDecorator.swift in Sources */,
 				11601E2E2D6CF4C400129BBA /* CometChatGradientView.swift in Sources */,
