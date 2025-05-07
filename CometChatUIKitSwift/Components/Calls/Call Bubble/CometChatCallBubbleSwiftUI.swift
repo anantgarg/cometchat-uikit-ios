@@ -4,6 +4,7 @@
 
 import SwiftUI
 import CometChatSDK
+import CometChatUIKitSwift.Components.Shared.Constants
 
 public struct CometChatCallBubbleSwiftUI: View {
     @StateObject private var viewModel = CallBubbleViewModelSwiftUI()
@@ -16,25 +17,25 @@ public struct CometChatCallBubbleSwiftUI: View {
     public init() {}
     
     public var body: some View {
-        VStack(spacing: CometChatSpacing.Padding.p2) {
-            HStack(spacing: CometChatSpacing.Padding.p2) {
+        VStack(spacing: LayoutMetrics.spacingStandard) {
+            HStack(spacing: LayoutMetrics.spacingStandard) {
                 ZStack {
                     Circle()
                         .fill(Color(style.callImageBackgroundColor))
-                        .frame(width: 40, height: 40)
+                        .frame(width: LayoutMetrics.avatarMedium, height: LayoutMetrics.avatarMedium)
                         .overlay(
                             Circle()
                                 .stroke(Color(style.callImageBorderColor), lineWidth: style.callImageBorderWidth)
                         )
                     
-                    Image(uiImage: viewModel.callType == .audio ? style.audioCallImage : style.videoCallImage)
+                    Image(systemName: viewModel.callType == .audio ? "phone.fill" : "video.fill")
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 20, height: 20)
+                        .frame(width: LayoutMetrics.mediumIconSize, height: LayoutMetrics.mediumIconSize)
                         .foregroundColor(Color(style.callImageTintColor))
                 }
                 
-                VStack(alignment: .leading, spacing: CometChatSpacing.Padding.p1) {
+                VStack(alignment: .leading, spacing: LayoutMetrics.spacingSmall) {
                     Text(viewModel.callType == .audio ? viewModel.audioCallTitleText : viewModel.videoCallTitleText)
                         .font(Font(style.titleTextFont))
                         .foregroundColor(Color(style.titleTextColor))
@@ -46,13 +47,13 @@ public struct CometChatCallBubbleSwiftUI: View {
                 
                 Spacer()
             }
-            .padding(.horizontal, CometChatSpacing.Padding.p2)
-            .padding(.top, CometChatSpacing.Padding.p3)
+            .padding(.horizontal, LayoutMetrics.spacingStandard)
+            .padding(.top, LayoutMetrics.spacingMedium)
             
             Rectangle()
                 .fill(Color(style.separatorBackgroundColor))
-                .frame(height: 1)
-                .padding(.horizontal, CometChatSpacing.Padding.p1)
+                .frame(height: LayoutMetrics.dividerHeight)
+                .padding(.horizontal, LayoutMetrics.spacingSmall)
             
             Button(action: {
                 onClick?(viewModel.callType)
@@ -61,7 +62,7 @@ public struct CometChatCallBubbleSwiftUI: View {
                     .font(Font(style.joinButtonTextFont))
                     .foregroundColor(Color(style.joinButtonTextColor))
             }
-            .padding(.bottom, CometChatSpacing.Padding.p2)
+            .padding(.bottom, LayoutMetrics.spacingStandard)
         }
     }
     
@@ -121,24 +122,28 @@ struct CometChatCallBubbleSwiftUI_Previews: PreviewProvider {
             CometChatCallBubbleSwiftUI()
                 .set(callType: .audio)
                 .set(dateText: "10:30 AM")
-                .previewLayout(.sizeThatFits)
                 .padding()
-                .previewDisplayName("Audio Call")
+                .previewDisplayName("Audio Call (Light)")
+            
+            CometChatCallBubbleSwiftUI()
+                .set(callType: .audio)
+                .set(dateText: "10:30 AM")
+                .preferredColorScheme(.dark)
+                .padding()
+                .previewDisplayName("Audio Call (Dark)")
             
             CometChatCallBubbleSwiftUI()
                 .set(callType: .video)
                 .set(dateText: "Yesterday")
-                .previewLayout(.sizeThatFits)
                 .padding()
-                .previewDisplayName("Video Call")
+                .previewDisplayName("Video Call (Light)")
             
             CometChatCallBubbleSwiftUI()
                 .set(callType: .video)
                 .set(dateText: "Yesterday")
                 .preferredColorScheme(.dark)
-                .previewLayout(.sizeThatFits)
                 .padding()
-                .previewDisplayName("Dark Mode")
+                .previewDisplayName("Video Call (Dark)")
         }
     }
 }
