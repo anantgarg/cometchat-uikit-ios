@@ -192,7 +192,6 @@
 		11601E072D6CF4C400129BBA /* ActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601C962D6CF4C400129BBA /* ActivityIndicator.swift */; };
 		11601E082D6CF4C400129BBA /* AIParentStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601AF52D6CF4C400129BBA /* AIParentStyle.swift */; };
 		11601E092D6CF4C400129BBA /* CometChatCallEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601BF42D6CF4C400129BBA /* CometChatCallEvents.swift */; };
-		11601E0C2D6CF4C400129BBA /* ThumbnailGenerationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B7E2D6CF4C400129BBA /* ThumbnailGenerationViewModel.swift */; };
 		11601E0D2D6CF4C400129BBA /* CometChatFileBubble.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601CB82D6CF4C400129BBA /* CometChatFileBubble.swift */; };
 		11601E0E2D6CF4C400129BBA /* MessageHeaderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601BAC2D6CF4C400129BBA /* MessageHeaderViewModel.swift */; };
 		11601E0F2D6CF4C400129BBA /* CometChatEmojiKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601CB12D6CF4C400129BBA /* CometChatEmojiKeyboard.swift */; };
@@ -6055,7 +6054,6 @@
 				11601E072D6CF4C400129BBA /* ActivityIndicator.swift in Sources */,
 				11601E082D6CF4C400129BBA /* AIParentStyle.swift in Sources */,
 				11601E092D6CF4C400129BBA /* CometChatCallEvents.swift in Sources */,
-				11601E0C2D6CF4C400129BBA /* ThumbnailGenerationViewModel.swift in Sources */,
 				11601E0D2D6CF4C400129BBA /* CometChatFileBubble.swift in Sources */,
 				11601E0E2D6CF4C400129BBA /* MessageHeaderViewModel.swift in Sources */,
 				11601E0F2D6CF4C400129BBA /* CometChatEmojiKeyboard.swift in Sources */,
