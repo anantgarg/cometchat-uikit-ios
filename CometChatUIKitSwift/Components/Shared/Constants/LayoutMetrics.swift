@@ -61,4 +61,6 @@ public enum LayoutMetrics {
     public static let whiteboardButtonHeight: CGFloat = 25
     public static let whiteboardBubbleWidth: CGFloat = 228
     public static let whiteboardBubbleHeight: CGFloat = 145
+    
+    public static let messageBubbleMaxWidth: CGFloat = 312 // Approximately UIScreen.main.bounds.width / 1.2 for iPhone 12
 }

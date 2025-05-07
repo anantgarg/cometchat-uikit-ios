@@ -5,6 +5,7 @@
 import SwiftUI
 import CometChatSDK
 import MessageUI
+import CometChatUIKitSwift.Components.Shared.Constants
 
 public struct CometChatMessageTranslationBubbleSwiftUI: View {
     
@@ -17,7 +18,7 @@ public struct CometChatMessageTranslationBubbleSwiftUI: View {
     public init() {}
     
     public var body: some View {
-        VStack(alignment: .leading, spacing: CometChatSpacing.Padding.p2) {
+        VStack(alignment: .leading, spacing: LayoutMetrics.spacingStandard) {
             if let originalMessage = originalMessage {
                 AttributedTextView(attributedText: originalMessage)
                     .fixedSize(horizontal: false, vertical: true)
@@ -25,7 +26,7 @@ public struct CometChatMessageTranslationBubbleSwiftUI: View {
             
             Divider()
                 .background(Color(style.separatorBackgroundColor))
-                .padding(.vertical, CometChatSpacing.Padding.p1)
+                .padding(.vertical, LayoutMetrics.spacingSmall)
             
             if let translatedMessage = translatedMessage {
                 AttributedTextView(attributedText: translatedMessage)
@@ -35,10 +36,10 @@ public struct CometChatMessageTranslationBubbleSwiftUI: View {
             Text("TRANSLATED_TEXT".localize())
                 .font(Font(style.subtitleTextFont))
                 .foregroundColor(Color(style.subtitleTextColor))
-                .padding(.top, CometChatSpacing.Padding.p1)
+                .padding(.top, LayoutMetrics.spacingSmall)
         }
-        .padding(CometChatSpacing.Padding.p2)
-        .frame(maxWidth: UIScreen.main.bounds.width / 1.2)
+        .padding(LayoutMetrics.spacingStandard)
+        .frame(maxWidth: LayoutMetrics.messageBubbleMaxWidth)
     }
     
     @discardableResult
@@ -155,13 +156,19 @@ struct AttributedTextView: UIViewRepresentable {
 
 struct CometChatMessageTranslationBubbleSwiftUI_Previews: PreviewProvider {
     static var previews: some View {
-        VStack {
+        Group {
             CometChatMessageTranslationBubbleSwiftUI()
                 .set(originalMessage: NSAttributedString(string: "Hello, how are you?"), 
                      translatedMessage: NSAttributedString(string: "Hola, ¿cómo estás?"))
                 .padding()
-                .previewLayout(.sizeThatFits)
-                .previewDisplayName("Message Translation Bubble")
+                .previewDisplayName("Message Translation Bubble (Light)")
+                
+            CometChatMessageTranslationBubbleSwiftUI()
+                .set(originalMessage: NSAttributedString(string: "Hello, how are you?"), 
+                     translatedMessage: NSAttributedString(string: "Hola, ¿cómo estás?"))
+                .padding()
+                .preferredColorScheme(.dark)
+                .previewDisplayName("Message Translation Bubble (Dark)")
         }
     }
 }
