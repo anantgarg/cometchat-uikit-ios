@@ -166,7 +166,6 @@
 		11601DDA2D6CF4C400129BBA /* ReceiptStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601D022D6CF4C400129BBA /* ReceiptStyle.swift */; };
 		11601DDB2D6CF4C400129BBA /* AIConversationSummaryConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601AFE2D6CF4C400129BBA /* AIConversationSummaryConfiguration.swift */; };
 		11601DDC2D6CF4C400129BBA /* ThreadedMessageHeaderStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601D202D6CF4C400129BBA /* ThreadedMessageHeaderStyle.swift */; };
-		11601DDD2D6CF4C400129BBA /* CometChatSmartReplyExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B692D6CF4C400129BBA /* CometChatSmartReplyExtension.swift */; };
 		11601DDE2D6CF4C400129BBA /* MessageComposerStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601BA32D6CF4C400129BBA /* MessageComposerStyle.swift */; };
 		11601DDF2D6CF4C400129BBA /* AudioContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601CCF2D6CF4C400129BBA /* AudioContext.swift */; };
 		11601DE02D6CF4C400129BBA /* CometChatTheme_v4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601C342D6CF4C400129BBA /* CometChatTheme_v4.swift */; };
@@ -6056,7 +6055,6 @@
 				11601DDA2D6CF4C400129BBA /* ReceiptStyle.swift in Sources */,
 				11601DDB2D6CF4C400129BBA /* AIConversationSummaryConfiguration.swift in Sources */,
 				11601DDC2D6CF4C400129BBA /* ThreadedMessageHeaderStyle.swift in Sources */,
-				11601DDD2D6CF4C400129BBA /* CometChatSmartReplyExtension.swift in Sources */,
 				11601DDE2D6CF4C400129BBA /* MessageComposerStyle.swift in Sources */,
 				11601DDF2D6CF4C400129BBA /* AudioContext.swift in Sources */,
 				11601DE02D6CF4C400129BBA /* CometChatTheme_v4.swift in Sources */,
