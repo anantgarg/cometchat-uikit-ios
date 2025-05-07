@@ -104,7 +104,6 @@
 		11601D9A2D6CF4C400129BBA /* TimeSlotSelectorStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601D0E2D6CF4C400129BBA /* TimeSlotSelectorStyle.swift */; };
 		11601D9C2D6CF4C400129BBA /* PanModalPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601CEF2D6CF4C400129BBA /* PanModalPresenter.swift */; };
 		11601D9D2D6CF4C400129BBA /* ConversationViewModel + ConversationEventListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B372D6CF4C400129BBA /* ConversationViewModel + ConversationEventListener.swift */; };
-		11601D9E2D6CF4C400129BBA /* ProfanityDataMaskingExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B642D6CF4C400129BBA /* ProfanityDataMaskingExtension.swift */; };
 		11601D9F2D6CF4C400129BBA /* CometChatMessageInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601BB12D6CF4C400129BBA /* CometChatMessageInformation.swift */; };
 		11601DA02D6CF4C400129BBA /* ConversationViewModel + GroupEventListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B382D6CF4C400129BBA /* ConversationViewModel + GroupEventListener.swift */; };
 		11601DA12D6CF4C400129BBA /* GroupsBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11601B8D2D6CF4C400129BBA /* GroupsBuilder.swift */; };
@@ -5986,7 +5985,6 @@
 				11601D9A2D6CF4C400129BBA /* TimeSlotSelectorStyle.swift in Sources */,
 				11601D9C2D6CF4C400129BBA /* PanModalPresenter.swift in Sources */,
 				11601D9D2D6CF4C400129BBA /* ConversationViewModel + ConversationEventListener.swift in Sources */,
-				11601D9E2D6CF4C400129BBA /* ProfanityDataMaskingExtension.swift in Sources */,
 				11601D9F2D6CF4C400129BBA /* CometChatMessageInformation.swift in Sources */,
 				11601DA02D6CF4C400129BBA /* ConversationViewModel + GroupEventListener.swift in Sources */,
 				11601DA12D6CF4C400129BBA /* GroupsBuilder.swift in Sources */,
