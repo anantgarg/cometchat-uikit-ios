@@ -48,4 +48,10 @@ public enum LayoutMetrics {
     public static let loadingTextWidth: CGFloat = 120
     public static let loadingContentHeight: CGFloat = 60
     public static let loadingContentWidth: CGFloat = 200
+    
+    public static let spacingNone: CGFloat = 0
+    public static let dividerHeight: CGFloat = 1
+    public static let standardOpacity: CGFloat = 0.3
+    public static let stickerKeyboardHeight: CGFloat = 250
+    public static let previewWidth: CGFloat = 375
 }

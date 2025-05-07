@@ -84,10 +84,10 @@ public struct CometChatStickerKeyboardSwiftUI: View {
     }
     
     public var body: some View {
-        VStack(spacing: 0) {
+        VStack(spacing: LayoutMetrics.spacingNone) {
             Rectangle()
                 .fill(Color(CometChatTheme.palatte.accent100))
-                .frame(height: 1)
+                .frame(height: LayoutMetrics.dividerHeight)
             
             if isLoading {
                 loadingView
@@ -123,7 +123,7 @@ public struct CometChatStickerKeyboardSwiftUI: View {
             
             Rectangle()
                 .fill(Color(CometChatTheme.palatte.accent100))
-                .frame(height: 1)
+                .frame(height: LayoutMetrics.dividerHeight)
             
             ScrollView(.horizontal, showsIndicators: false) {
                 LazyHGrid(rows: [GridItem(.fixed(32))], spacing: CometChatSpacing.Spacing.s4) {
@@ -137,7 +137,7 @@ public struct CometChatStickerKeyboardSwiftUI: View {
                                     CometChatStickerKeyboardSwiftUI.stickerDelegate?.didStickerSetSelected(stickerSet: stickerSet)
                                 }
                             }
-                            .background(selectedStickerSetIndex == index ? Color(CometChatTheme.palatte.accent100).opacity(0.3) : Color.clear)
+                            .background(selectedStickerSetIndex == index ? Color(CometChatTheme.palatte.accent100).opacity(LayoutMetrics.standardOpacity) : Color.clear)
                             .cornerRadius(LayoutMetrics.cornerRadiusLarge)
                     }
                 }
@@ -285,7 +285,7 @@ public struct CometChatStickerKeyboardSwiftUI: View {
         let hostingController = UIHostingController(rootView: self)
         let view = hostingController.view
         view?.translatesAutoresizingMaskIntoConstraints = false
-        view?.heightAnchor.constraint(equalToConstant: 250).isActive = true
+        view?.heightAnchor.constraint(equalToConstant: LayoutMetrics.stickerKeyboardHeight).isActive = true
         return view ?? UIView()
     }
 }
@@ -300,11 +300,11 @@ struct CometChatStickerKeyboardSwiftUI_Previews: PreviewProvider {
     static var previews: some View {
         Group {
             CometChatStickerKeyboardSwiftUI()
-                .frame(width: 375, height: 250)
+                .frame(width: LayoutMetrics.previewWidth, height: LayoutMetrics.stickerKeyboardHeight)
                 .previewDisplayName("Sticker Keyboard (Light)")
             
             CometChatStickerKeyboardSwiftUI()
-                .frame(width: 375, height: 250)
+                .frame(width: LayoutMetrics.previewWidth, height: LayoutMetrics.stickerKeyboardHeight)
                 .preferredColorScheme(.dark)
                 .previewDisplayName("Sticker Keyboard (Dark)")
         }
